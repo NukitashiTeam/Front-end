@@ -9,11 +9,12 @@ import {
     Image,
     TouchableOpacity,
     FlatList,
-    Dimensions
+    Dimensions,
+    Pressable
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from '@expo/vector-icons';
-import styles from "./HomeStyles";
+import styles from "./styles/HomeStyles";
 import { useFonts as useIrishGrover, IrishGrover_400Regular} from '@expo-google-fonts/irish-grover';
 import { useFonts as useMontserrat, Montserrat_400Regular, Montserrat_700Bold } from "@expo-google-fonts/montserrat";
 import * as SplashScreen from 'expo-splash-screen';

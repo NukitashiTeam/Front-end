@@ -9,7 +9,7 @@ import {
     useWindowDimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import styles from "./UserOptionsSheetStyles";
+import styles from "./styles/UserOptionsSheetStyles";
 
 type Props = {
     visible: boolean;
