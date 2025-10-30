@@ -17,35 +17,6 @@ const styles = StyleSheet.create({
         paddingBottom: 200,
     },
 
-    /* HEADER */
-    headerRow: {
-        flexDirection: "row",
-        alignItems: "flex-start",
-        justifyContent: "space-between",
-        marginBottom: 24,
-    },
-    headerLeaf: {},
-    appName: {
-        color: "white",
-        fontSize: 24,
-        fontWeight: "400",
-        fontFamily: 'IrishGrover_400Regular',
-    },
-    headerRight: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 12,
-    },
-    iconCircle: {
-        width: 32,
-        height: 32,
-        borderRadius: 18,
-        borderWidth: 1,
-        borderColor: "transparent",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-
     /* QUICK START CARD */
     quickStartWrapper: {
         marginBottom: 28,
@@ -134,6 +105,14 @@ const styles = StyleSheet.create({
         fontFamily: "Montserrat_700Bold",
     },
 
+    /* RECENT PLAYLISTS*/
+    playlistTitle: {
+        marginTop: 8,
+        fontSize: 14,
+        color: "#FFFFFF",
+        fontFamily: "Montserrat_700Bold",
+    },
+
     /* PLACEHOLDERS */
     placeholderCard: {
         backgroundColor: "rgba(0, 0, 0, 0.25)",
@@ -157,13 +136,77 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "#2a0055",
-        borderTopLeftRadius: 24,
-        borderTopRightRadius: 24,
-        borderWidth: 1,
-        borderColor: "rgba(255,255,255,0.25)",
-        paddingHorizontal: 16,
-        paddingVertical: 24,
+    },
+    miniBg: {
+        paddingTop: 10,
+        paddingBottom: 22,
+        paddingHorizontal: 20,
+        borderTopLeftRadius: 28,
+        borderTopRightRadius: 28,
+        overflow: "hidden",
+        shadowColor: "#000",
+        shadowOpacity: 0.25,
+        shadowOffset: {
+            width: 0,
+            height: -4,
+        },
+        shadowRadius: 10,
+        elevation: 10
+    },
+    miniHeaderRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 6,
+    },
+    miniTitle: {
+        textAlign: "center",
+        color: "white",
+        fontSize: 22,
+        fontFamily: "Montserrat_700Bold",
+        marginTop: 4,
+    },
+    miniSubtitle: {
+        textAlign: "center",
+        color: "rgba(255, 255, 255, 0.9)",
+        fontSize: 14,
+        fontStyle: "italic",
+        marginTop: 4,
+    },
+    miniControlRow: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 10,
+        marginBottom: 10,
+        gap: 10,
+    },
+    miniIconBtn: {
+        padding: 6
+    },
+    miniProgressRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
+    progressTrack: {
+        flex: 1,
+        height: 14,
+        backgroundColor: "#E8DEF8",
+        borderRadius: 999,
+        overflow: "hidden",
+    },
+    progressFill: {
+        height: "100%",
+        backgroundColor: "#6750A4",
+        borderRadius: 999,
+    },
+    miniDivider: {
+        width: 8,
+        height: 26,
+        borderRadius: 4,
+        backgroundColor: "rgba(255, 255, 255, 0.7)",
+        marginHorizontal: 10,
     },
 });
 

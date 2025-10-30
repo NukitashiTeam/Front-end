@@ -1,11 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text, ScrollView, StatusBar, Switch, Image, TouchableOpacity } from "react-native";
+import { 
+    View,
+    StyleSheet,
+    Text,
+    ScrollView,
+    StatusBar,
+    Switch,
+    Image,
+    TouchableOpacity,
+    FlatList,
+    Dimensions
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from '@expo/vector-icons';
 import styles from "./HomeStyles";
 import { useFonts as useIrishGrover, IrishGrover_400Regular} from '@expo-google-fonts/irish-grover';
 import { useFonts as useMontserrat, Montserrat_400Regular, Montserrat_700Bold } from "@expo-google-fonts/montserrat";
 import * as SplashScreen from 'expo-splash-screen';
+import Header from "./components/Header";
+import BottomBar from "./components/BottomBar";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -21,6 +34,19 @@ export default function HomeScreen() {
 
     const fontsLoaded = fontsIrishGroverLoaded && fontsMontserratLoaded;
     const [isModEnabled, setIsModEnabled] = useState(true);
+    const [isPlaying, setIsPlaying] = useState(true);
+    
+    const RECENT_PLAYLISTS = [
+        {id: "1", title: "Wibu Songs", cover: require("../../assets/images/weebooSong.jpg")},
+        {id: "2", title: "Sad Songs", cover: require("../../assets/images/sadSong.jpg")},
+        {id: "3", title: "Lonely Songs", cover: require("../../assets/images/lonelySong.jpg")},
+        {id: "4", title: "Allegory of the cave Songs", cover: require("../../assets/images/allegoryOfTheCaveSong.jpg")},
+    ];
+
+    const NUM_COLS = 2;
+    const H_PADDING = 20;
+    const GAP = 16;
+    const ITEM_W = Math.floor((Dimensions.get("window").width - H_PADDING * 2 - GAP) / NUM_COLS);
 
     useEffect(() => {
         async function prepare() {
@@ -47,85 +73,126 @@ export default function HomeScreen() {
                 style={styles.bgGradient}
             />
 
-            <ScrollView 
-                style={styles.contentWrapper}
-                contentContainerStyle={styles.contentInner}
+            <FlatList
+                data={RECENT_PLAYLISTS}
+                keyExtractor={(it) => it.id}
+                numColumns={2}
+                contentContainerStyle={[styles.contentInner, { paddingBottom: 250 }]}
                 showsVerticalScrollIndicator={false}
-            >
-                {/* Header */}
-                <View style={styles.headerRow}>
-                    <View style={styles.headerLeaf}>
-                        <Text style={styles.appName}>MoodyBlue</Text>
+                ListHeaderComponent={<>
+                    <Header isModEnabled={isModEnabled} onToggleMod={setIsModEnabled} />
+
+                    {/* QUICK START */}
+                    <View style={{ width: "100%", alignItems: "center" }}>
+                        <Text style={styles.sectionTitle}>QUICK START</Text>
+                    </View>
+                    
+                    <View style={styles.quickStartWrapper}>
+                        <LinearGradient
+                            colors={["#4F3BDB", "#2E266F"]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            style={styles.quickStartCard}
+                        >
+                            <View style={styles.quickStartTopRow}>
+                                <Text style={styles.quickStartLabel}>Last Mood</Text>
+                                <View style={styles.quickStartLeftDown}>
+                                    <View style={styles.moodAvatarCircle}>
+                                        <Image source={require("../../assets/images/avatar.png")} style={styles.moodAvatarImg} />
+                                    </View>
+                                    <Text style={styles.moodNameText}>Chill</Text>
+                                </View>
+                            </View>
+                            
+                            <View style={styles.quickStartBottomRow}>
+                                <View style={styles.playOuterCircle}>
+                                    <View style={styles.playInnerTriangle}>
+                                        <Ionicons name="play" size={24} color="#2E266F" />
+                                    </View>
+                                </View>
+                            </View>
+                        </LinearGradient>
                     </View>
 
-                    <View style={styles.headerRight}>
-                        <Switch 
-                            trackColor={{false: '#767577', true: '#7056A1'}}
-                            thumbColor={"#FFFFFF"}
-                            ios_backgroundColor="#3e3e3e"
-                            onValueChange={setIsModEnabled}
-                            value={isModEnabled}
-                        />
-
-                        <View style={styles.iconCircle}>
-                            <Ionicons name="heart-outline" size={24} color="#1D1B20" /> 
-                        </View>
-
-                        <View style={[styles.iconCircle, {backgroundColor: "#EADDFF"}]}>
-                            <Ionicons name="person-outline" size={26} color="#4A2F7C" />
-                        </View>
+                    {/* RECENT PLAYLIST title */}
+                    <View style={{ width: "100%", alignItems: "center" }}>
+                        <Text style={styles.sectionTitle}>RECENT PLAYLIST</Text>
                     </View>
-                </View>
+                </>}
 
-                {/* QUICK START */}
-                <View style={{width: "100%", alignItems: "center"}}>
-                    <Text style={styles.sectionTitle}>QUICK START</Text>
-                </View>
-
-                <View style={styles.quickStartWrapper}>
-                    <LinearGradient
-                        colors={["#4F3BDB", "#2E266F"]}
-                        start={{x: 0, y: 0}}
-                        end={{x: 1, y: 1}}
-                        style={styles.quickStartCard}
+                columnWrapperStyle={{
+                    justifyContent: "space-between",
+                    marginBottom: GAP,
+                }}
+                renderItem={({ item }) => (
+                    <TouchableOpacity
+                        activeOpacity={0.85}
+                        style={{ width: ITEM_W }}
+                        onPress={() => console.log("Open playlist:", item.title)}
                     >
-                        <View style={styles.quickStartTopRow}>
-                            <Text style={styles.quickStartLabel}>Last Mood</Text>
-
-                            <View style={styles.quickStartLeftDown}>
-                                <View style={styles.moodAvatarCircle}>
-                                    {/* <Text style={{ color: "#1D1B20", fontWeight: "600" }}>😎</Text> */}
-                                    <Image source={require("../../assets/images/avatar.png")} style={styles.moodAvatarImg} />
-                                </View>
-
-                                <Text style={styles.moodNameText}>Chill</Text>
-                            </View>
+                        <View style={{ borderRadius: 16, overflow: "hidden" }}>
+                            <Image source={item.cover} resizeMode="cover" style={{ width: "100%", height: ITEM_W }} />
                         </View>
-                        
-                        <View style={styles.quickStartBottomRow}>
-                            <View style={styles.playOuterCircle}>
-                                <View style={styles.playInnerTriangle}>
-                                    <Ionicons name="play" size={24} color="#2E266F" />
-                                </View>
-                            </View>
-                        </View>
-                    </LinearGradient>
-                </View>
-
-                {/* RECENT PLAYLIST */}
-                <View style={{width: "100%", alignItems: "center"}}>
-                    <Text style={styles.sectionTitle}>RECENT PLAYLIST</Text>
-                </View>
-
-                <View style={styles.placeholderCard}>
-                    <Text style={{color: "white"}}>TODO: Playlist Grid</Text>
-                </View>
-            </ScrollView>
+                        <Text numberOfLines={1} style={styles.playlistTitle}>{item.title}</Text>
+                    </TouchableOpacity>
+                )}
+                ListFooterComponent={<View style={{ height: 12 }} />}
+            />
 
             <View style={styles.miniPlayerStub}>
-                <Text style={{color: "white", textAlign: "center"}}>
-                    TODO: Mini Player + Bottom Tabs
-                </Text>
+                <LinearGradient
+                    colors={["#580499E3", "#580499E3"]}
+                    start={{x: 0, y: 0}}
+                    end={{x: 1, y: 1}}
+                    style={styles.miniBg}
+                >
+                    <View style={styles.miniHeaderRow}>
+                        <Ionicons name="notifications-outline" size={34} color="white" />
+                        <View>
+                            <Text style={styles.miniTitle}>Shape of You</Text>
+                            <Text style={styles.miniSubtitle}>Ed Sherran - Happy Playlist</Text>
+                        </View>
+                        <Ionicons name="share-social-outline" size={34} color="white" />
+                    </View>
+
+                    <View style={styles.miniControlRow}>
+                        <TouchableOpacity style={styles.miniIconBtn}>
+                            <Ionicons name="play-skip-back" size={26} color="white" />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity 
+                            style={[styles.miniIconBtn, { marginHorizontal: 24 }]}
+                            onPress={() => setIsPlaying(p => !p)}
+                            accessibilityRole="button"
+                            accessibilityLabel={isPlaying ? "Pause" : "play"}
+                        >
+                            <Ionicons name={isPlaying ? "pause" : "play"} size={28} color="white" />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.miniIconBtn}>
+                            <Ionicons name="play-skip-forward" size={26} color="white" />
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.miniProgressRow}>
+                        <View style={styles.progressTrack}>
+                            <View style={[styles.progressFill, { width: "100%" }]} />
+                        </View>
+
+                        <View style={styles.miniDivider} />
+
+                        <View style={styles.progressTrack}>
+                            <View style={[styles.progressFill, { width: "0%" }]} />
+                        </View>
+                    </View>
+                    
+                    <BottomBar
+                        active="home"
+                        onPress={(k) => {
+                            console.log("press:", k);
+                        }}
+                    />
+                </LinearGradient>
             </View>
         </View>
     );
