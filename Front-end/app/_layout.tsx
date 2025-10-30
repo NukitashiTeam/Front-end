@@ -3,11 +3,11 @@ import NowPlayingScreen from "./NowPlayingScreen";
 
 export default function RootLayout() {
 	return (
-		// <Stack 
-		// 	screenOptions={{
-		// 		headerShown: false,
-		// 	}}
-		// />
-		<NowPlayingScreen />
+		<Stack 
+			screenOptions={{
+				headerShown: false,
+			}}
+		/>
+		// <NowPlayingScreen />
 	);
 }

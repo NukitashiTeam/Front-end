@@ -112,6 +112,35 @@ const styles = StyleSheet.create({
         color: "#FFFFFF",
         fontFamily: "Montserrat_700Bold",
     },
+    miniSliderContainer: {
+        flex: 1,
+        height: 30,
+        justifyContent: 'center',
+        marginHorizontal: 8,
+    },
+    miniSliderTrack: {
+        height: 8,
+        borderRadius: 4,
+        backgroundColor: '#E8DEF8',
+    },
+    miniSliderMinTrack: {
+        height: 8,
+        borderRadius: 4,
+        backgroundColor: '#6750A4',
+    },
+    miniSliderThumb: {
+        width: 14,
+        height: 14,
+        borderRadius: 7,
+        backgroundColor: '#FFFFFF',
+    },
+    miniTimeText: {
+        color: 'rgba(255, 255, 255, 0.9)',
+        fontSize: 12,
+        fontFamily: "Montserrat_400Regular",
+        width: 40,
+        textAlign: 'center',
+    },
 
     /* PLACEHOLDERS */
     placeholderCard: {
@@ -188,6 +217,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
+        paddingHorizontal: 8,
+        marginTop: 4,
     },
     progressTrack: {
         flex: 1,

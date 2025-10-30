@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from '@expo/vector-icons';
+import { Slider } from "@miblanchard/react-native-slider";
 import styles from "./styles/HomeStyles";
 import { useFonts as useIrishGrover, IrishGrover_400Regular} from '@expo-google-fonts/irish-grover';
 import { useFonts as useMontserrat, Montserrat_400Regular, Montserrat_700Bold } from "@expo-google-fonts/montserrat";
@@ -36,6 +37,7 @@ export default function HomeScreen() {
     const fontsLoaded = fontsIrishGroverLoaded && fontsMontserratLoaded;
     const [isModEnabled, setIsModEnabled] = useState(true);
     const [isPlaying, setIsPlaying] = useState(true);
+    const [progress, setProgress] = useState(0.25);
     
     const RECENT_PLAYLISTS = [
         {id: "1", title: "Wibu Songs", cover: require("../assets/images/weebooSong.jpg")},
@@ -176,15 +178,18 @@ export default function HomeScreen() {
                     </View>
 
                     <View style={styles.miniProgressRow}>
-                        <View style={styles.progressTrack}>
-                            <View style={[styles.progressFill, { width: "100%" }]} />
-                        </View>
-
-                        <View style={styles.miniDivider} />
-
-                        <View style={styles.progressTrack}>
-                            <View style={[styles.progressFill, { width: "0%" }]} />
-                        </View>
+                        <Text style={styles.miniTimeText}>1:02</Text>
+                        <Slider
+                            containerStyle={styles.miniSliderContainer}
+                            trackStyle={styles.miniSliderTrack}
+                            minimumTrackStyle={styles.miniSliderMinTrack}
+                            thumbStyle={styles.miniSliderThumb}
+                            value={progress}
+                            onValueChange={(value) => setProgress(value[0])}
+                            minimumValue={0}
+                            maximumValue={1}
+                        />
+                        <Text style={styles.miniTimeText}>4:08</Text>
                     </View>
                     
                     <BottomBar
