@@ -163,6 +163,26 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 30,
     },
+    sliderContainer: {
+        flex: 1,
+        height: 30, 
+    },
+    sliderTrack: {
+        height: 8,
+        borderRadius: 4,
+        backgroundColor: '#E8DEF8',
+    },
+    sliderMinTrack: {
+        height: 8,
+        borderRadius: 4,
+        backgroundColor: '#6750A4',
+    },
+    sliderThumb: {
+        width: 16,
+        height: 16,
+        borderRadius: 8,
+        backgroundColor: '#FFFFFF',
+    },
     timeRow: {
         flexDirection: "row",
         justifyContent: "space-between",

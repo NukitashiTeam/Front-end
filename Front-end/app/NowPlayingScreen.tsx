@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Slider from '@react-native-community/slider';
+import { Slider } from "@miblanchard/react-native-slider";
 import styles from "./styles/NowPlayingScreenStyles";
 import Header from "./components/Header";
 import BottomBar from "./components/BottomBar";
@@ -108,14 +108,14 @@ export default function NowPlayingScreen() {
                 <View style={styles.slidersBlock}>
                     <View style={styles.progressSliderContainer}>
                         <Slider
-                            style={styles.slider}
+                            containerStyle={styles.sliderContainer}
+                            trackStyle={styles.sliderTrack}
+                            minimumTrackStyle={styles.sliderMinTrack}
+                            thumbStyle={styles.sliderThumb}
                             value={progress}
-                            onValueChange={setProgress}
+                            onValueChange={(value) => setProgress(value[0])} 
                             minimumValue={0}
                             maximumValue={1}
-                            minimumTrackTintColor="#6750A4"
-                            maximumTrackTintColor="#E8DEF8"
-                            thumbTintColor="#FFFFFF"
                         />
                         <View style={styles.timeRow}>
                             <Text style={styles.timeText}>1:02</Text> 
@@ -144,21 +144,21 @@ export default function NowPlayingScreen() {
                         </TouchableOpacity>
 
                         <Slider
-                            style={styles.slider}
+                            containerStyle={styles.slider}
+                            trackStyle={styles.sliderTrack}
+                            minimumTrackStyle={styles.sliderMinTrack}
+                            thumbStyle={styles.sliderThumb}
                             value={volume}
-                            onValueChange={setVolume}
+                            onValueChange={(value) => setVolume(value[0])} 
                             minimumValue={0}
                             maximumValue={1}
-                            minimumTrackTintColor="#EADDFF"
-                            maximumTrackTintColor="rgba(255, 255, 255, 0.25)"
-                            thumbTintColor="#FFFFFF"
                         />
                         <Ionicons name="volume-high-outline" size={20} color="#EADDFF" />
                     </View>
                 </View>
             </View>
 
-            <View style={{width: "100%", marginBottom: "20%"}}>
+            <View style={{width: "100%", marginBottom: "10%"}}>
                 <BottomBar
                     active="home"
                     onPress={(k) => {
