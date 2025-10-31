@@ -23,6 +23,7 @@ import { useFonts as useMontserrat, Montserrat_400Regular, Montserrat_700Bold } 
 import * as SplashScreen from 'expo-splash-screen';
 import Header from "./components/Header";
 import BottomBar from "./components/BottomBar";
+import GestureHandle from "./components/GestureHandle";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -168,6 +169,8 @@ export default function HomeScreen() {
                             end={{x: 1, y: 1}}
                             style={styles.miniBg}
                         >
+                            <GestureHandle />
+
                             <View style={styles.miniHeaderRow}>
                                 <Ionicons name="notifications-outline" size={34} color="white" />
                                 <View>
