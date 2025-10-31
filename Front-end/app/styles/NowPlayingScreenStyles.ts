@@ -137,6 +137,8 @@ const styles = StyleSheet.create({
     },
     progressSliderContainer: {
         marginBottom: 12, 
+        display: "flex",
+        flexDirection: "row",
     },
     volumeIconContainer: {
         width: 20,
@@ -165,7 +167,7 @@ const styles = StyleSheet.create({
     },
     sliderContainer: {
         flex: 1,
-        height: 30, 
+        height: 30,
     },
     sliderTrack: {
         height: 8,
@@ -178,7 +180,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#6750A4',
     },
     sliderThumb: {
-        width: 16,
+        width: 6,
         height: 16,
         borderRadius: 8,
         backgroundColor: '#FFFFFF',
@@ -191,6 +193,8 @@ const styles = StyleSheet.create({
     timeText: {
         color: "rgba(255, 255, 255, 0.7)",
         fontSize: 12,
+        width: "8%",
+        textAlignVertical: "center",
     },
 });
 

@@ -11,6 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Slider } from "@miblanchard/react-native-slider";
+import { useRouter } from "expo-router";
 import styles from "./styles/NowPlayingScreenStyles";
 import Header from "./components/Header";
 import BottomBar from "./components/BottomBar";
@@ -24,6 +25,8 @@ export default function NowPlayingScreen() {
     const [volume, setVolume] = useState(0.8);
     const muteAnim = useRef(new Animated.Value(volume > 0 ? 0 : 1)).current;
     const oldVolume = useRef(volume);
+    const router = useRouter();
+    const normalize = (v: number | number[]) => (Array.isArray(v) ? v[0] : v);
 
     useEffect(() => {
         Animated.timing(muteAnim, {
@@ -107,20 +110,18 @@ export default function NowPlayingScreen() {
                 {/* Progress + Volume bars (fake sliders) */}
                 <View style={styles.slidersBlock}>
                     <View style={styles.progressSliderContainer}>
+                        <Text style={[styles.timeText, { textAlign: "left" }]}>1:02</Text> 
                         <Slider
                             containerStyle={styles.sliderContainer}
                             trackStyle={styles.sliderTrack}
                             minimumTrackStyle={styles.sliderMinTrack}
                             thumbStyle={styles.sliderThumb}
                             value={progress}
-                            onValueChange={(value) => setProgress(value[0])} 
+                            onValueChange={(value) => setProgress(normalize(value))} 
                             minimumValue={0}
                             maximumValue={1}
                         />
-                        <View style={styles.timeRow}>
-                            <Text style={styles.timeText}>1:02</Text> 
-                            <Text style={styles.timeText}>4:08</Text>
-                        </View>
+                        <Text style={[styles.timeText, { textAlign: "right" }]}>4:08</Text>
                     </View>
                     
                     <View style={styles.volumeSliderContainer}>
@@ -149,7 +150,7 @@ export default function NowPlayingScreen() {
                             minimumTrackStyle={styles.sliderMinTrack}
                             thumbStyle={styles.sliderThumb}
                             value={volume}
-                            onValueChange={(value) => setVolume(value[0])} 
+                            onValueChange={(value) => setVolume(normalize(value))} 
                             minimumValue={0}
                             maximumValue={1}
                         />
