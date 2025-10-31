@@ -11,7 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Slider } from "@miblanchard/react-native-slider";
-import { useRouter } from "expo-router";
+import { useRouter, usePathname, Href } from "expo-router";
 import styles from "./styles/NowPlayingScreenStyles";
 import Header from "./components/Header";
 import BottomBar from "./components/BottomBar";
@@ -26,7 +26,14 @@ export default function NowPlayingScreen() {
     const muteAnim = useRef(new Animated.Value(volume > 0 ? 0 : 1)).current;
     const oldVolume = useRef(volume);
     const router = useRouter();
+    const pathname = usePathname();
     const normalize = (v: number | number[]) => (Array.isArray(v) ? v[0] : v);
+
+    const goLink = (path: Href) => {
+        if(pathname != path) {
+            router.replace(path);
+        }
+    };
 
     useEffect(() => {
         Animated.timing(muteAnim, {
@@ -161,9 +168,11 @@ export default function NowPlayingScreen() {
 
             <View style={{width: "100%", marginBottom: "10%"}}>
                 <BottomBar
-                    active="home"
+                    active="radio"
                     onPress={(k) => {
                         console.log("press:", k);
+                        if(k === "home") goLink("/");
+                        else if(k === "radio") goLink("/NowPlayingScreen");
                     }}
                 />
             </View>

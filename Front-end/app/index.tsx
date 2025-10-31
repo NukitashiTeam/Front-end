@@ -16,7 +16,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from '@expo/vector-icons';
 import { Slider } from "@miblanchard/react-native-slider";
 import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
-import { useRouter } from "expo-router";
+import { useRouter, usePathname, Href } from "expo-router";
 import styles from "./styles/HomeStyles";
 import { useFonts as useIrishGrover, IrishGrover_400Regular} from '@expo-google-fonts/irish-grover';
 import { useFonts as useMontserrat, Montserrat_400Regular, Montserrat_700Bold } from "@expo-google-fonts/montserrat";
@@ -42,6 +42,7 @@ export default function HomeScreen() {
     const [isPlaying, setIsPlaying] = useState(true);
     const [progress, setProgress] = useState(0.25);
     const router = useRouter();
+    const pathname = usePathname();
     
     const panGesture = Gesture.Pan().onEnd((e) => {
         if(e.translationY < -50) {
@@ -63,6 +64,12 @@ export default function HomeScreen() {
         {id: "3", title: "Lonely Songs", cover: require("../assets/images/lonelySong.jpg")},
         {id: "4", title: "Allegory of the cave Songs", cover: require("../assets/images/allegoryOfTheCaveSong.jpg")},
     ];
+
+    const goLink = (path: Href) => {
+        if(pathname != path) {
+            router.replace(path);
+        }
+    };
 
     const NUM_COLS = 2;
     const H_PADDING = 20;
@@ -161,68 +168,68 @@ export default function HomeScreen() {
                     ListFooterComponent={<View style={{ height: 12 }} />}
                 />
 
-                <GestureDetector gesture={combinedGesture}>
-                    <View style={styles.miniPlayerStub}>
-                        <LinearGradient
-                            colors={["#580499E3", "#580499E3"]}
-                            start={{x: 0, y: 0}}
-                            end={{x: 1, y: 1}}
-                            style={styles.miniBg}
-                        >
-                            <GestureHandle />
+                <View style={styles.miniPlayerStub}>
+                    <LinearGradient
+                        colors={["#580499E3", "#580499E3"]}
+                        start={{x: 0, y: 0}}
+                        end={{x: 1, y: 1}}
+                        style={styles.miniBg}
+                    >
+                        <GestureHandle />
 
-                            <View style={styles.miniHeaderRow}>
-                                <Ionicons name="notifications-outline" size={34} color="white" />
-                                <View>
-                                    <Text style={styles.miniTitle}>Shape of You</Text>
-                                    <Text style={styles.miniSubtitle}>Ed Sherran - Happy Playlist</Text>
-                                </View>
-                                <Ionicons name="share-social-outline" size={34} color="white" />
+                        <View style={styles.miniHeaderRow}>
+                            <Ionicons name="notifications-outline" size={34} color="white" />
+                            <View>
+                                <Text style={styles.miniTitle}>Shape of You</Text>
+                                <Text style={styles.miniSubtitle}>Ed Sherran - Happy Playlist</Text>
                             </View>
+                            <Ionicons name="share-social-outline" size={34} color="white" />
+                        </View>
 
-                            <View style={styles.miniControlRow}>
-                                <TouchableOpacity style={styles.miniIconBtn}>
-                                    <Ionicons name="play-skip-back" size={26} color="white" />
-                                </TouchableOpacity>
+                        <View style={styles.miniControlRow}>
+                            <TouchableOpacity style={styles.miniIconBtn}>
+                                <Ionicons name="play-skip-back" size={26} color="white" />
+                            </TouchableOpacity>
 
-                                <TouchableOpacity 
-                                    style={[styles.miniIconBtn, { marginHorizontal: 24 }]}
-                                    onPress={() => setIsPlaying(p => !p)}
-                                    accessibilityRole="button"
-                                    accessibilityLabel={isPlaying ? "Pause" : "play"}
-                                >
-                                    <Ionicons name={isPlaying ? "pause" : "play"} size={28} color="white" />
-                                </TouchableOpacity>
+                            <TouchableOpacity 
+                                style={[styles.miniIconBtn, { marginHorizontal: 24 }]}
+                                onPress={() => setIsPlaying(p => !p)}
+                                accessibilityRole="button"
+                                accessibilityLabel={isPlaying ? "Pause" : "play"}
+                            >
+                                <Ionicons name={isPlaying ? "pause" : "play"} size={28} color="white" />
+                            </TouchableOpacity>
 
-                                <TouchableOpacity style={styles.miniIconBtn}>
-                                    <Ionicons name="play-skip-forward" size={26} color="white" />
-                                </TouchableOpacity>
-                            </View>
+                            <TouchableOpacity style={styles.miniIconBtn}>
+                                <Ionicons name="play-skip-forward" size={26} color="white" />
+                            </TouchableOpacity>
+                        </View>
 
-                            <View style={styles.miniProgressRow}>
-                                <Text style={styles.miniTimeText}>1:02</Text>
-                                <Slider
-                                    containerStyle={styles.miniSliderContainer}
-                                    trackStyle={styles.miniSliderTrack}
-                                    minimumTrackStyle={styles.miniSliderMinTrack}
-                                    thumbStyle={styles.miniSliderThumb}
-                                    value={progress}
-                                    onValueChange={(value) => setProgress(value[0])}
-                                    minimumValue={0}
-                                    maximumValue={1}
-                                />
-                                <Text style={styles.miniTimeText}>4:08</Text>
-                            </View>
-                            
-                            <BottomBar
-                                active="home"
-                                onPress={(k) => {
-                                    console.log("press:", k);
-                                }}
+                        <View style={styles.miniProgressRow}>
+                            <Text style={styles.miniTimeText}>1:02</Text>
+                            <Slider
+                                containerStyle={styles.miniSliderContainer}
+                                trackStyle={styles.miniSliderTrack}
+                                minimumTrackStyle={styles.miniSliderMinTrack}
+                                thumbStyle={styles.miniSliderThumb}
+                                value={progress}
+                                onValueChange={(value) => setProgress(value[0])}
+                                minimumValue={0}
+                                maximumValue={1}
                             />
-                        </LinearGradient>
-                    </View>
-                </GestureDetector>
+                            <Text style={styles.miniTimeText}>4:08</Text>
+                        </View>
+                        
+                        <BottomBar
+                            active="home"
+                            onPress={(k) => {
+                                console.log("press:", k);
+                                if(k === "home") goLink("/");
+                                else if(k === "radio") goLink("/NowPlayingScreen");
+                            }}
+                        />
+                    </LinearGradient>
+                </View>
             </View>
         </GestureHandlerRootView>
     );
