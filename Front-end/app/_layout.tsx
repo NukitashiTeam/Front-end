@@ -8,13 +8,29 @@ export default function RootLayout() {
 		<Stack 
 			screenOptions={{
 				headerShown: false,
+				presentation: "modal",
+				animation: "fade",
+				animationDuration: 500,
+				gestureEnabled: true,
+				contentStyle: {
+					backgroundColor: "transparent"
+				},
 			}}
 		>
-            <Stack.Screen name="index" />
             <Stack.Screen 
-                name="now-playing" 
+				name="index" 
+				options={{
+					presentation: "modal",
+					// animation: "fade",
+					animationDuration: 100,
+				}}
+			/>
+            <Stack.Screen 
+                name="NowPlayingScreen" 
                 options={{
-                    presentation: 'modal',
+                    presentation: "modal",
+					animation: "fade",
+					animationDuration: 100,
                 }}
             />
 		</Stack>
