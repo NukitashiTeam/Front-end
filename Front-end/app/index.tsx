@@ -50,13 +50,6 @@ export default function HomeScreen() {
             router.push('/NowPlayingScreen');
         }
     });
-
-    const tapGesture = Gesture.Tap().onEnd(() => {
-        console.log("Nhấn -> Mở NowPlayingScreen");
-        router.push("/NowPlayingScreen");
-    });
-
-    const combinedGesture = Gesture.Race(panGesture, tapGesture);
     
     const RECENT_PLAYLISTS = [
         {id: "1", title: "Wibu Songs", cover: require("../assets/images/weebooSong.jpg")},
