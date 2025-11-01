@@ -110,30 +110,46 @@ export default function HomeScreen() {
                         </View>
                         
                         <View style={styles.quickStartWrapper}>
-                            <LinearGradient
-                                colors={["#4F3BDB", "#2E266F"]}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 1, y: 1 }}
-                                style={styles.quickStartCard}
+                            <Pressable
+                                onPress={() => router.push("/CreateMoodPlaylistScreen")}
+                                style={({ pressed }) => [{
+                                    opacity: pressed ? 0.96 : 1
+                                }]}
                             >
-                                <View style={styles.quickStartTopRow}>
-                                    <Text style={styles.quickStartLabel}>Last Mood</Text>
-                                    <View style={styles.quickStartLeftDown}>
-                                        <View style={styles.moodAvatarCircle}>
-                                            <Image source={require("../assets/images/avatar.png")} style={styles.moodAvatarImg} />
+                                <LinearGradient
+                                    colors={["#4F3BDB", "#2E266F"]}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 1 }}
+                                    style={styles.quickStartCard}
+                                >
+                                    <View style={styles.quickStartTopRow}>
+                                        <Text style={styles.quickStartLabel}>Last Mood</Text>
+                                        <View style={styles.quickStartLeftDown}>
+                                            <View style={styles.moodAvatarCircle}>
+                                                <Image source={require("../assets/images/avatar.png")} style={styles.moodAvatarImg} />
+                                            </View>
+                                            <Text style={styles.moodNameText}>Chill</Text>
                                         </View>
-                                        <Text style={styles.moodNameText}>Chill</Text>
                                     </View>
-                                </View>
-                                
-                                <View style={styles.quickStartBottomRow}>
-                                    <View style={styles.playOuterCircle}>
-                                        <View style={styles.playInnerTriangle}>
-                                            <Ionicons name="play" size={24} color="#2E266F" />
-                                        </View>
+                                    
+                                    <View style={styles.quickStartBottomRow}>
+                                        <Pressable
+                                            onPress={() => {
+                                                console.log("Play!");
+                                            }}
+                                            accessibilityRole="button"
+                                            accessibilityLabel="Play"
+                                            hitSlop={8}
+                                        >
+                                            <View style={styles.playOuterCircle}>
+                                                <View style={styles.playInnerTriangle}>
+                                                    <Ionicons name="play" size={24} color="#2E266F" />
+                                                </View>
+                                            </View>
+                                        </Pressable>
                                     </View>
-                                </View>
-                            </LinearGradient>
+                                </LinearGradient>
+                            </Pressable>
                         </View>
 
                         {/* RECENT PLAYLIST title */}
