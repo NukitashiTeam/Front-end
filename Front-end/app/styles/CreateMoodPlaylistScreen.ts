@@ -5,7 +5,7 @@ const RADIUS = 18;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#6E5ED1"
+        backgroundColor: "#818BFF"
     },
     headerWrap: {
         paddingHorizontal: 16,
@@ -18,36 +18,55 @@ const styles = StyleSheet.create({
         backgroundColor: "transparent",
         marginLeft: "4%",
     },
-
     headerBlock: {
         paddingHorizontal: 16,
         paddingTop: 8,
         paddingBottom: 6,
     },
     sectionTitle: {
-        color: "#FFFFFF",
+        color: "#000000",
         fontSize: 18,
-        fontWeight: "700",
+        fontWeight: 700,
         marginBottom: 10,
+        fontFamily: "Montserrat_700Bold",
     },
-
+    playlistNameView: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 29,
+    },
     playlistHeaderRow: {
         flexDirection: "row",
         alignItems: "center",
+        width: "100%",
+        marginBottom: "1%",
+    },
+    playlistHeaderRowColumn1: {
+        width: "50%",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        gap: "10%",
+    },
+    playlistHeaderRowColumn2: {
+        width: "50%",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "flex-end",
     },
     ownerAvatar: {
-        width: 44,
-        height: 44,
+        width: 50,
+        height: 50,
         borderRadius: 22,
         marginRight: 12,
         backgroundColor: "rgba(255,255,255,0.35)",
     },
     ownerName: {
-        color: "#FFFFFF",
+        color: "#000000",
         fontSize: 16,
         fontWeight: "700",
     },
-
     iconCircle: {
         width: 34,
         height: 34,
@@ -65,7 +84,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         marginLeft: 12,
     },
-
     songRow: {
         flexDirection: "row",
         alignItems: "center",

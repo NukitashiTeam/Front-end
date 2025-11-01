@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, {
+    useEffect,
+    useState
+} from "react";
 import { 
     View,
     StyleSheet,
@@ -15,11 +18,25 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from '@expo/vector-icons';
 import { Slider } from "@miblanchard/react-native-slider";
-import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
-import { useRouter, usePathname, Href } from "expo-router";
+import { Gesture,
+    GestureDetector,
+    GestureHandlerRootView
+} from "react-native-gesture-handler";
+import {
+    useRouter,
+    usePathname,
+    Href
+} from "expo-router";
 import styles from "./styles/HomeStyles";
-import { useFonts as useIrishGrover, IrishGrover_400Regular} from '@expo-google-fonts/irish-grover';
-import { useFonts as useMontserrat, Montserrat_400Regular, Montserrat_700Bold } from "@expo-google-fonts/montserrat";
+import {
+    useFonts as useIrishGrover,
+    IrishGrover_400Regular
+} from '@expo-google-fonts/irish-grover';
+import {
+    useFonts as useMontserrat,
+    Montserrat_400Regular,
+    Montserrat_700Bold
+} from "@expo-google-fonts/montserrat";
 import * as SplashScreen from 'expo-splash-screen';
 import Header from "./components/Header";
 import BottomBar from "./components/BottomBar";

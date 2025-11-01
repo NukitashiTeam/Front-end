@@ -1,4 +1,8 @@
-import React, { useMemo, useState } from "react";
+import React, {
+    useMemo,
+    useState,
+    useEffect,
+} from "react";
 import {
     View,
     Text,
@@ -12,11 +16,23 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter, Href, usePathname } from "expo-router";
+import {
+    useRouter,
+    Href,
+    usePathname
+} from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styles from "./styles/CreateMoodPlaylistScreen";
 import Header from "./components/Header";
 import BottomBar from "./components/BottomBar";
+import {
+    useFonts as useMontserrat,
+    Montserrat_400Regular,
+    Montserrat_700Bold
+} from "@expo-google-fonts/montserrat";
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
 
 const WIDTH = Dimensions.get("window");
 
@@ -32,6 +48,25 @@ export default function CreateMoodPlaylistScreen() {
     const pathname = usePathname();
     const [isModEnabled, setIsModEnabled] = useState(false);
     const insets = useSafeAreaInsets();
+
+    let [fontsMontserratLoaded] = useMontserrat({
+        Montserrat_400Regular,
+        Montserrat_700Bold,
+    });
+
+    useEffect(() => {
+        async function prepare() {
+            if(fontsMontserratLoaded) {
+                await SplashScreen.hideAsync();
+            }
+        }
+
+        prepare();
+    }, [fontsMontserratLoaded]);
+
+    if(!fontsMontserratLoaded) {
+        return null;
+    }
     
     const data: Song[] = [
         {
@@ -133,27 +168,30 @@ export default function CreateMoodPlaylistScreen() {
             
             <View style={styles.headerBlock}>
                 <Text style={styles.sectionTitle}>Created Mood Playlist</Text>
-                
-                <View style={styles.playlistHeaderRow}>
-                    <Image
-                        source={require("../assets/images/avatar.png")}
-                        style={styles.ownerAvatar}
-                    />
+
+                <View style={styles.playlistNameView}>
+                    <Image source={require("../assets/images/avatar.png")} style={styles.ownerAvatar} />
                     <View style={{ flex: 1 }}>
                         <Text style={styles.ownerName}>Chill</Text>
                     </View>
+                </View>
+                
+                <View style={styles.playlistHeaderRow}>
+                    <View style={styles.playlistHeaderRowColumn1}>
+                        <TouchableOpacity style={styles.iconCircle}>
+                            <Ionicons name="shuffle-outline" size={18} color="#fff" />
+                        </TouchableOpacity>
+                        
+                        <TouchableOpacity style={[styles.iconCircle, { marginLeft: 10 }]}>
+                            <Ionicons name="add-outline" size={22} color="#fff" />
+                        </TouchableOpacity>
+                    </View>
                     
-                    <TouchableOpacity style={styles.iconCircle}>
-                        <Ionicons name="shuffle-outline" size={18} color="#fff" />
-                    </TouchableOpacity>
-                    
-                    <TouchableOpacity style={[styles.iconCircle, { marginLeft: 10 }]}>
-                        <Ionicons name="add-outline" size={22} color="#fff" />
-                    </TouchableOpacity>
-                    
-                    <TouchableOpacity style={styles.playCircle}>
-                        <Ionicons name="play" size={22} color="#4A2F7C" />
-                    </TouchableOpacity>
+                    <View style={styles.playlistHeaderRowColumn2}>
+                        <TouchableOpacity style={styles.playCircle}>
+                            <Ionicons name="play" size={22} color="#4A2F7C" />
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
 
