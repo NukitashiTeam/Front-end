@@ -22,7 +22,7 @@ const WIDTH = Dimensions.get("window");
 
 type Song = {
     id: string;
-    cover: string;
+    cover: any;
     title: string;
     artist: string;
 };
@@ -33,15 +33,62 @@ export default function CreateMoodPlaylistScreen() {
     const [isModEnabled, setIsModEnabled] = useState(false);
     const insets = useSafeAreaInsets();
     
-    const data = useMemo<Song[]>(() =>
-        Array.from({ length: 16 }).map((_, i) => ({
-            id: `song-${i + 1}`,
-            cover:
-            "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=256&q=80&auto=format&fit=crop",
+    const data: Song[] = [
+        {
+            id: `song-1`,
+            cover: require("../assets/images/weebooSong.jpg"),
             title: "Name of the song",
             artist: "Artist Name",
-        })), []
-    );
+        },
+        {
+            id: `song-2`,
+            cover: require("../assets/images/lonelySong.jpg"),
+            title: "Name of the song",
+            artist: "Artist Name",
+        },
+        {
+            id: `song-3`,
+            cover: require("../assets/images/allegoryOfTheCaveSong.jpg"),
+            title: "Name of the song",
+            artist: "Artist Name",
+        },
+        {
+            id: `song-4`,
+            cover: require("../assets/images/song4.jpg"),
+            title: "Name of the song",
+            artist: "Artist Name",
+        },
+        {
+            id: `song-5`,
+            cover: require("../assets/images/song5.jpg"),
+            title: "Name of the song",
+            artist: "Artist Name",
+        },
+        {
+            id: `song-6`,
+            cover: require("../assets/images/song6.jpg"),
+            title: "Name of the song",
+            artist: "Artist Name",
+        },
+        {
+            id: `song-7`,
+            cover: require("../assets/images/sadSong.jpg"),
+            title: "Name of the song",
+            artist: "Artist Name",
+        },
+        {
+            id: `song-8`,
+            cover: require("../assets/images/song7.jpg"),
+            title: "Name of the song",
+            artist: "Artist Name",
+        },
+        {
+            id: `song-9`,
+            cover: require("../assets/images/artNowPlayingMusic.jpg"),
+            title: "Name of the song",
+            artist: "Artist Name",
+        },
+    ];
 
     const goLink = (k: "home" | "search" | "radio" | "music") => {
         if (k === "home") router.push("/");
@@ -50,7 +97,7 @@ export default function CreateMoodPlaylistScreen() {
 
     const renderSong = ({ item }: { item: Song }) => (
         <View style={styles.songRow}>
-            <Image source={{ uri: item.cover }} style={styles.songCover} />
+            <Image source={item.cover} style={styles.songCover} />
             <View style={styles.songMeta}>
                 <Text style={styles.songTitle} numberOfLines={1}>{item.title}</Text>
                 <Text style={styles.songArtist} numberOfLines={1}>{item.artist}</Text>
