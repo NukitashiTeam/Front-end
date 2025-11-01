@@ -81,7 +81,7 @@ export default function CreateMoodPlaylistScreen() {
                 onPress={() => router.back()}
                 style={styles.backBtn}
             >
-                <Ionicons name="chevron-back" size={26} color="#fff" />
+                <Ionicons name="chevron-back" size={30} color="#fff" />
             </TouchableOpacity>
             
             <View style={styles.headerBlock}>

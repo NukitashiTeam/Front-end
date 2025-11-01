@@ -12,15 +12,11 @@ const styles = StyleSheet.create({
         paddingTop: 8
     },
     backBtn: {
-        position: "absolute",
-        top: 72,
-        left: 12,
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        alignItems: "center",
+        display: "flex",
+        alignItems: "flex-start",
         justifyContent: "center",
-        backgroundColor: "rgba(255,255,255,0.15)",
+        backgroundColor: "transparent",
+        marginLeft: "4%",
     },
 
     headerBlock: {
@@ -99,8 +95,8 @@ const styles = StyleSheet.create({
         marginTop: 2
     },
     bottomWrap: {
-        position: "absolute",
-        bottom: 14,
+        position: "fixed",
+        bottom: "1%",
         left: 0,
         right: 0,
         paddingHorizontal: 12,
