@@ -50,12 +50,12 @@ const onboarding = () => {
       }
       setIndex(nextIndex);
     } else {
-      router.push('/');
+      router.push('/Homepage');
     }
   }
 
   const skipOnboarding = () => {
-    router.push('/');
+    router.push('/Homepage');
   }
 
   const renderPage = ({item} : {item: typeof onboardingData[0]}) => {
@@ -107,11 +107,13 @@ const onboarding = () => {
             Next
           </Text>
         </TouchableOpacity>
+
         <TouchableOpacity onPress={skipOnboarding}>
           <Text style={{fontSize: 13, marginTop: 15, fontWeight: '400'}}>
             Skip!
           </Text>
         </TouchableOpacity>
+
       </View>
       
     </BackgroundLayer>
