@@ -1,32 +1,33 @@
-import { StyleSheet, Text, View, Image, Dimensions} from 'react-native'
+import 'react-native-gesture-handler';
+import { StyleSheet, Text, View, Image, Dimensions, FlatList, Animated, TouchableOpacity} from 'react-native'
 import React, { useRef, useState }  from 'react'
 import { useRouter } from "expo-router";
-import { FlatList } from 'react-native-gesture-handler';
+import Paginator from '@/Components-Khanh/Paginator';
 import BackgroundLayer from '@/Components-Khanh/BackgroundLayer';
 
 const { width, height} = Dimensions.get("window");
 
 const onboardingData = [
   {
-    id: 1,
+    id: 0,
     image: require('../assets/images/onboarding1.png'),
     title: "Welcome to MoodyBlue!",
     description: "Nghe nhạc theo tâm trạng hiện tại của bạn mọi lúc mọi nơi",
   },
   {
-    id: 2,
+    id: 1,
     image: require('../assets/images/onboarding2.png'),
     title: "Discover & Save Easily",
     description: "Tìm kiếm mọi loại nhạc phù hợp với tâm trạng của bạn và lưu lại một cách đơn giản và nhanh chóng",
   },
   {
-    id: 3,
+    id: 2,
     image: require('../assets/images/onboarding3.png'),
     title: "Relax & Enjoy",
     description: "Sau khi đã lưu lại bạn chỉ cần trải nghiệm, thư giãn và tận hưởng; chúng tôi sẽ mang đến cho bạn khoảng thời gian tuyệt vời",
   },
   {
-    id: 4,
+    id: 3,
     image: require('../assets/images/onboarding4.png'),
     title: "Your Style, One App",
     description: "Lên mood – lên nhạc – lên năng lượng",
@@ -37,63 +38,132 @@ const onboardingData = [
 const onboarding = () => {
   const router = useRouter();
   const [index, setIndex] = useState(0);
-  const flatListRef = useRef(null);
+  const flatListRef = useRef<FlatList<any>>(null);
 
-  
-  return (
-    <BackgroundLayer>
-      
+  const scrollX = useRef(new Animated.Value(0)).current;
+
+  const handleNextPage = () => {
+    if (index < onboardingData.length - 1) {
+      const nextIndex = index + 1;
+      if (flatListRef.current) {
+        flatListRef.current.scrollToIndex({ index: nextIndex });
+      }
+      setIndex(nextIndex);
+    } else {
+      router.push('/');
+    }
+  }
+
+  const skipOnboarding = () => {
+    router.push('/');
+  }
+
+  const renderPage = ({item} : {item: typeof onboardingData[0]}) => {
+    return (
       <View style={styles.container}>
-        
+  
         <Image
           source={require('../assets/images/MoodyBlue.png')}
           style={styles.logo}
-
         />
+
         <Image
-          source={onboardingData[3].image}
+          source={item.image}
           style={styles.image}
         />
         
-        <Text style={styles.title}>{onboardingData[0].title}</Text>
-        <View style={{width: width*0.75}}>
-          <Text style={styles.description}>{onboardingData[0].description}</Text>
+        <Text style={styles.title}>{item.title}</Text>
+        <View style={{width: width*0.7}}>
+          <Text style={styles.description}>{item.description}</Text>
         </View>
       </View>
+    );
+  }
+
+  return (
+    <BackgroundLayer >
+        <FlatList style={{flex: 0}}
+        ref={flatListRef}
+        data={onboardingData}
+        horizontal
+        bounces={false}
+        pagingEnabled
+        showsHorizontalScrollIndicator={true}
+        scrollEnabled={false} 
+        renderItem={renderPage}
+        keyExtractor={(item) => item.id.toString()}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={32}
+      />
+      
+      <Paginator data={onboardingData} scrollX={scrollX} index={index}/>
+  
+        <View style={{alignItems: 'center', marginBottom: 20}}>
+        <TouchableOpacity style={styles.button} onPress={handleNextPage}>
+          <Text style={styles.buttonText}>
+            Next
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={skipOnboarding}>
+          <Text style={{fontSize: 13, marginTop: 15, fontWeight: '400'}}>
+            Skip!
+          </Text>
+        </TouchableOpacity>
+      </View>
+      
     </BackgroundLayer>
   )
 }
+
 
 export default onboarding
 
 const styles = StyleSheet.create({
   container: {
     zIndex: 2,
+    width: width,
     alignItems: "center",
   },
   logo: {
     marginTop: 60,
   },
   image: {
-    width: '100%',
+    width: width,
     height:height*0.4,
     marginTop: 10,
+    resizeMode: 'contain',
   },
   title: {
     fontFamily:'Inter-Bold',
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: 'black',
     textAlign: 'center',
     marginTop: 25,
   },
   description: {
-    fontSize: 17,
+    fontSize: 20,
     color: '#ddd',
     textAlign: 'center',
     marginTop: 10,
     lineHeight: 25,
     fontWeight: '400',
   },
+  button:{
+    backgroundColor: '#8400FF',
+    paddingVertical: 20,
+    paddingHorizontal: 48,
+    gap: 34,
+    borderRadius: 12,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 21,
+    fontWeight: '700',
+  },
+ 
   
 })
