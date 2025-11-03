@@ -12,7 +12,7 @@ const style = StyleSheet.create({
   },
 });
 
-
+import LoginScreen from "./src/Login";
 export default function Index() {
   const router = useRouter();
 
@@ -32,4 +32,5 @@ export default function Index() {
       </View>
     </BackgroundLayer>
   );
+  return <LoginScreen />;
 }
