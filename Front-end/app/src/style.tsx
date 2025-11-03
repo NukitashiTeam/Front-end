@@ -120,5 +120,71 @@ export const styles = StyleSheet.create({
     fontSize: 24,
     marginHorizontal: 5,
   },
+  otpsubtitle:{
+    fontSize: 16,
+    fontWeight:"600",
+    marginBottom: 40,
+
+    width: "70%",
+    textAlign: "center",
+  },
+  otpbutton:{
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
+    borderRadius: 25,
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    justifyContent: "center",
+    width:"70%",
+    marginBottom:10,
+  },
+  optionTypeContainer: {
+    width: "50%",
+    marginVertical: 5,
+  },
+  optionTypebutton:{
+    backgroundColor: '#007BFF',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    width: '85%',
+    marginVertical: 10,
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  radioCircle: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  radioActive: {
+    borderColor: '#fff',
+    backgroundColor: 'rgba(255,255,255,0.2)',
+  },
+  radioDot: {
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    backgroundColor: 'white',
+  },
+  optionText: {
+    color: 'white',
+    fontSize: 15,
+    fontWeight: '600',
+    width: '100%',
+  },
+    row: {
+    justifyContent: 'space-between',
+    width: '90%',
+    marginLeft: "5%"
+  },
 })
 export default styles;

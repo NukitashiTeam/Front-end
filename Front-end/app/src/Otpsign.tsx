@@ -1,9 +1,8 @@
 import React,{useState, useRef} from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import styles from './style';
 import { useRouter } from 'expo-router';
 import Background from './component/background';
-import NextBackButton from './component/NextBackButton';
 const Otpsign = () =>{
     const router = useRouter();
     const [otp,setOtp] = useState<string[]>(['', '', '', '']);
@@ -26,12 +25,14 @@ const Otpsign = () =>{
     const handleNext = () => {
         const code = otp.join('');
         console.log('OTP:', code);
+        router.push('/src/Typesong');
         // Navigate to next screen or verify OTP
         // router.push('/next-screen');
     };
     const handleResend = () => {
         console.log('Resend SMS');
         // Logic to resend OTP
+
     };
 
     return(
@@ -51,7 +52,22 @@ const Otpsign = () =>{
             />
           ))}
         </View>
-        <NextBackButton onNextPage={handleNext} onBackPage ={() => router.back()}/>
+        <Text style={styles.otpsubtitle}> We sent an SMS with a 4-digit Code to your phone number</Text>
+        <TouchableOpacity onPress={handleNext} style={styles.otpbutton}>
+          <Text style={styles.buttonText}>Next</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleResend} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
+          <View>
+            <Image source={require('../../assets/images/mingcute_message-4-line.png')} style={styles.icon} />
+          </View>
+          <Text style={{fontWeight: "600"}}>Resend OTP</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=>router.back()} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
+          <View>
+            <Image source={require('../../assets/images/Vector.png')} style={styles.icon} />
+          </View>
+          <Text style={{fontWeight: "600"}}>Edit Phone Number</Text>
+        </TouchableOpacity>
         </Background>
     )   
 }

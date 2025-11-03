@@ -20,7 +20,7 @@ const PhoneScreen = () =>{
             }}
             value={phoneNumber} onChangeText={setPhoneNumber}/>
             <Text style={styles.termtext}>By creating an account, you agree to the Terms and Privacy Policy</Text>
-            <NextBackButton onNextPage={()=>router.push("/src/Otpsign")} onBackPage ={() => router.push("/src/Login")}/>
+            <NextBackButton onNextPage={()=>router.push("/src/Otpsign")} onBackPage ={() => router.back()}/>
         </Background>
     )
 }
