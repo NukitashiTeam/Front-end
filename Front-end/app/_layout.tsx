@@ -28,7 +28,7 @@ export default function RootLayout() {
                 options={{
                     presentation: "modal",
 					animation: "fade",
-					animationDuration: 100,
+					gestureEnabled: true,
                 }}
             />
 			<Stack.Screen 

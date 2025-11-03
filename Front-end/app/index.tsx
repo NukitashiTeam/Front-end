@@ -14,10 +14,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from '@expo/vector-icons';
-import {
-    Gesture,
-    GestureHandlerRootView
-} from "react-native-gesture-handler";
+import { GestureHandlerRootView} from "react-native-gesture-handler";
 import { useRouter } from "expo-router";
 import styles from "./styles/HomeStyles";
 import {
@@ -48,13 +45,6 @@ export default function HomeScreen() {
     const fontsLoaded = fontsIrishGroverLoaded && fontsMontserratLoaded;
     const [isModEnabled, setIsModEnabled] = useState(true);
     const router = useRouter();
-    
-    const panGesture = Gesture.Pan().onEnd((e) => {
-        if(e.translationY < -50) {
-            console.log("Vuốt lên -> Mở NowPlayingScreen");
-            router.push('/NowPlayingScreen');
-        }
-    });
     
     const RECENT_PLAYLISTS = [
         {id: "1", title: "Wibu Songs", cover: require("../assets/images/weebooSong.jpg")},
