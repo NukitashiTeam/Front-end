@@ -17,9 +17,9 @@ import {
     usePathname,
     Href
 } from "expo-router";
+import { runOnJS } from "react-native-reanimated";
 import BottomBar from "./BottomBar";
 import styles from "./styles/MiniPlayerStyles";
-import { PanGesture } from "react-native-gesture-handler/lib/typescript/handlers/gestures/panGesture";
 
 export default function MiniPlayer() {
     const router = useRouter();
@@ -33,10 +33,14 @@ export default function MiniPlayer() {
         }
     };
 
-    const panGesture = Gesture.Pan().onEnd((e) => {
+    const openNowPlaying = () => {
+        router.push("/NowPlayingScreen");
+    };
+
+    const panGesture = Gesture.Pan().activeOffsetY(-10).failOffsetY(10).onEnd((e) => {
         if(e.translationY < -50) {
             console.log("Vuốt lên -> Mở NowPlayingScreen");
-            router.push('/NowPlayingScreen');
+            runOnJS(openNowPlaying)();
         }
     });
 
