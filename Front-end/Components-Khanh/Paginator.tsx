@@ -1,11 +1,11 @@
 import { Animated, StyleSheet, Text, View, Dimensions} from 'react-native'
 import React from 'react'
 
-const { width } = Dimensions.get("window");
+const { width, height} = Dimensions.get("window");
 
 const Paginator = ({data, scrollX, index}: {data: any[], scrollX: Animated.Value, index: number}) => {
   return (
-    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: 120}}>
+    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: height*0.15}}>
        {data.map((_, i) => {
 
           const dotStyle = scrollX.interpolate({
