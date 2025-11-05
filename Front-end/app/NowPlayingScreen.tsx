@@ -20,7 +20,6 @@ import { Slider } from "@miblanchard/react-native-slider";
 import { useRouter, usePathname, Href } from "expo-router";
 import styles from "./styles/NowPlayingScreenStyles";
 import Header from "./components/Header";
-import BottomBar from "./components/BottomBar";
 
 export type NowPlayingPreviewProps = {
     progressSV: SharedValue<number>;
@@ -202,17 +201,6 @@ export function NowPlayingPreview({
                             <Ionicons name="volume-high-outline" size={20} color="#EADDFF" />
                         </View>
                     </View>
-                </View>
-
-                <View style={{ width: "100%", marginBottom: "10%" }}>
-                    <BottomBar
-                        active="radio"
-                        onPress={(k) => {
-                            console.log("press:", k);
-                            if (k === "home") goLink("/HomeScreen");
-                            else if (k === "radio") goLink("/NowPlayingScreen");
-                        }}
-                    />
                 </View>
             </View>
         </Animated.View>

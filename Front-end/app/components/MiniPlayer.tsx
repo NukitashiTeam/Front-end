@@ -5,7 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import GestureHandle from "./GestureHandle";
 import { Slider } from "@miblanchard/react-native-slider";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { useRouter, usePathname, Href } from "expo-router";
+import { useRouter, usePathname } from "expo-router";
 import Animated, {
     runOnJS,
     Extrapolation,
@@ -14,7 +14,6 @@ import Animated, {
     withTiming,
     interpolate,
 } from "react-native-reanimated";
-import BottomBar from "./BottomBar";
 import styles from "./styles/MiniPlayerStyles";
 import { NowPlayingPreview } from "../NowPlayingScreen";
 
@@ -38,12 +37,6 @@ export default function MiniPlayer() {
 
     const recalcStartTop = () => {
         startTop.value = SCREEN_H - miniH.value + handleY.value;
-    };
-
-    const goLink = (path: Href) => {
-        if (pathname != path) {
-            router.replace(path);
-        }
     };
 
     const openFull = () => {
