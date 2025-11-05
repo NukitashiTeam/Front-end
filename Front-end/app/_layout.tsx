@@ -10,6 +10,7 @@ import {
 import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import BottomBar from "./components/BottomBar";
+import MiniPlayer from "./components/MiniPlayer";
 
 export default function RootLayout() {
 	const router = useRouter();
@@ -43,6 +44,8 @@ export default function RootLayout() {
 			</Stack>
 
 			<View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+				{/* <MiniPlayer /> */}
+
 				<View
 					pointerEvents="box-none"
 					style={{
