@@ -1,8 +1,12 @@
-import { StyleSheet } from "react-native";
+import {
+    StyleSheet,
+    Dimensions,
+} from "react-native";
 
 const PURPLE = "#4A2F7C";
 const PURPLE_DARK = "#3A2366";
 const LAVENDER = "#EADDFF";
+const SCREEN_HEIGHT = Dimensions.get('screen').height;
 
 const styles = StyleSheet.create({
     container: {
@@ -47,7 +51,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         overflow: "hidden",
         backgroundColor: "#111",
-        height: "60%",
+        height: 0.5 * SCREEN_HEIGHT,
         marginBottom: 16,
     },
     artImage: {

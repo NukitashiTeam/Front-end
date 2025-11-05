@@ -37,7 +37,7 @@ export function NowPlayingPreview({
     const containerStyle = useAnimatedStyle(() => {
         const dy = progressSV.value;
         const start = startTopSV.value;
-        const top = - dy;
+        const top = -dy;
         const p = start > 0 ? dy / start : 0;
 
         return {
@@ -58,12 +58,6 @@ export function NowPlayingPreview({
     const router = useRouter();
     const pathname = usePathname();
     const normalize = (v: number | number[]) => (Array.isArray(v) ? v[0] : v);
-
-    const goLink = (path: Href) => {
-        if (pathname != path) {
-            router.replace(path);
-        }
-    };
 
     useEffect(() => {
         RNAnimated.timing(muteAnim, {
