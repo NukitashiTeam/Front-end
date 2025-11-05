@@ -24,7 +24,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styles from "./styles/CreateMoodPlaylistScreen";
 import Header from "./components/Header";
-import BottomBar from "./components/BottomBar";
 import {
     useFonts as useMontserrat,
     Montserrat_400Regular,
@@ -126,7 +125,7 @@ export default function CreateMoodPlaylistScreen() {
     ];
 
     const goLink = (k: "home" | "search" | "radio" | "music") => {
-        if (k === "home") router.push("/");
+        if (k === "home") router.push("/HomeScreen");
         if (k === "radio") router.push("/NowPlayingScreen");
     };
 
@@ -202,16 +201,6 @@ export default function CreateMoodPlaylistScreen() {
                 contentContainerStyle={{ paddingBottom: 96 }}
                 showsVerticalScrollIndicator={false}
             />
-
-            <View style={styles.bottomWrap}>
-                <BottomBar
-                    active="home"
-                    onPress={(k) => {
-                        console.log("press:", k);
-                        goLink(k);
-                    }}
-                />
-            </View>
         </View>
     );
 }
