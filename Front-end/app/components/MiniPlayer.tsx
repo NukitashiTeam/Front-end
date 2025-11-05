@@ -1,4 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, {
+    useRef,
+    useState,
+    useEffect,
+} from "react";
 import {
     View,
     TouchableOpacity,
@@ -70,6 +74,14 @@ export default function MiniPlayer() {
         });
     });
 
+    useEffect(() => {
+        const isHome = pathname === "/" || pathname === "/HomeScreen";
+        if (isHome) {
+            naviagtingRef.current = false;
+            progress.value = withTiming(0, { duration: 0 });
+        }
+    }, [pathname]);
+
     const miniStyle = useAnimatedStyle(() => {
         const translateY = -interpolate(
             progress.value,
@@ -106,7 +118,7 @@ export default function MiniPlayer() {
 
     return (
         <View style={styles.miniPlayerStub}>
-            <Animated.View 
+            {/* <Animated.View 
                 pointerEvents="none"
                 style={[{
                     position: "absolute",
@@ -153,7 +165,7 @@ export default function MiniPlayer() {
                         <Ionicons name="play-skip-forward" size={24} color="#fff" />
                     </View>
                 </LinearGradient>
-            </Animated.View>
+            </Animated.View> */}
 
             <GestureDetector gesture={pan}>
                 <Animated.View style={miniStyle}>
