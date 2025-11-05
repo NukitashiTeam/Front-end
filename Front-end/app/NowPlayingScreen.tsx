@@ -8,7 +8,8 @@ import {
     Platform,
     Animated as RNAnimated,
     Dimensions,
-    StyleSheet
+    StyleSheet,
+    BackHandler,
 } from "react-native";
 import Animated, {
     useAnimatedStyle,
@@ -246,7 +247,13 @@ export default function NowPlayingScreen() {
         };
         });
 
-    const goBack = () => router.back();
+    const safeBack = () => {
+        if (router.canGoBack?.()) {
+            router.back();
+        } else {
+            router.replace("/HomeScreen");
+        }
+    };
 
     const pan = Gesture.Pan().onChange((e) => {
         const y = Math.max(0, e.translationY);
@@ -255,7 +262,7 @@ export default function NowPlayingScreen() {
         const shouldClose = e.velocityY > 1200 || dragY.value > Math.min(0.35 * SCREEN_H, 320);
         if (shouldClose) {
             dragY.value = withTiming(SCREEN_H, { duration: 220 }, (done) => {
-                if (done) runOnJS(goBack)();
+                if (done) runOnJS(safeBack)();
             });
         } else {
             dragY.value = withTiming(0, { duration: 180 });
@@ -269,6 +276,14 @@ export default function NowPlayingScreen() {
             useNativeDriver: true,
         }).start();
     }, [volume]);
+
+    useEffect(() => {
+        const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+            safeBack();
+            return true;
+        });
+        return () => sub.remove();
+    }, []);
 
     return (
         <GestureDetector gesture={pan}>
