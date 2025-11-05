@@ -1,3 +1,4 @@
+console.log("✅ NowPlayingScreen loaded");
 import React, { useState, useRef, useEffect } from "react";
 import {
     View,
@@ -251,7 +252,7 @@ export default function NowPlayingScreen() {
         if (router.canGoBack?.()) {
             router.back();
         } else {
-            router.replace("/HomeScreen");
+            router.replace("/Homepage");
         }
     };
 

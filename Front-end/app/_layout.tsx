@@ -1,20 +1,35 @@
 import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
 
-import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-
-import onboarding from "./onboarding";
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  return <Stack 
+
+  useEffect(() => {
+    // giả sử bạn có font, hoặc animation, ... thì khi xong mới hide
+    const timeout = setTimeout(() => {
+      SplashScreen.hideAsync();
+    }, 1200);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  return (
+    <Stack 
     screenOptions={{ headerShown: false, 
     contentStyle: {
       backgroundColor: "#818BFF",
       flex: 1,
     }
   }}
-  />;
+  >
+  <Stack.Screen name="Homepage" />
+  <Stack.Screen name="CreateMoodPlaylistScreen" />
+  <Stack.Screen name="NowPlayingScreen" />
+</Stack>
+);
 }
+
 // import {
 // 	StyleSheet,
 // 	View,

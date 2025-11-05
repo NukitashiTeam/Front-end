@@ -1,7 +1,10 @@
+console.log("✅ CreateMoodPlaylistScreen loaded");
+
 import React, {
     useMemo,
     useState,
     useEffect,
+    useCallback
 } from "react";
 import {
     View,
@@ -31,7 +34,7 @@ import {
 } from "@expo-google-fonts/montserrat";
 import * as SplashScreen from 'expo-splash-screen';
 
-SplashScreen.preventAutoHideAsync();
+// SplashScreen.preventAutoHideAsync();
 
 const WIDTH = Dimensions.get("window");
 
@@ -53,15 +56,15 @@ export default function CreateMoodPlaylistScreen() {
         Montserrat_700Bold,
     });
 
-    useEffect(() => {
-        async function prepare() {
-            if(fontsMontserratLoaded) {
-                await SplashScreen.hideAsync();
-            }
-        }
+//    useEffect(() => {
+//     async function prepare() {
+//       if (fontsMontserratLoaded) {
+//         await SplashScreen.hideAsync();
+//       }
+//     }
+//     prepare();
+//   }, [fontsMontserratLoaded]);
 
-        prepare();
-    }, [fontsMontserratLoaded]);
 
     if(!fontsMontserratLoaded) {
         return null;
@@ -125,7 +128,7 @@ export default function CreateMoodPlaylistScreen() {
     ];
 
     const goLink = (k: "home" | "search" | "radio" | "music") => {
-        if (k === "home") router.push("/HomeScreen");
+        if (k === "home") router.push("/Homepage");
         if (k === "radio") router.push("/NowPlayingScreen");
     };
 
@@ -203,4 +206,5 @@ export default function CreateMoodPlaylistScreen() {
             />
         </View>
     );
+   
 }

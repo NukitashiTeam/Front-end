@@ -50,7 +50,7 @@ const onboarding = () => {
       }
       setIndex(nextIndex);
     } else {
-      router.push('/Homepage');
+      router.push('./Homepage');
     }
   }
 

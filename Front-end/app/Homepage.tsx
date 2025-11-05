@@ -1,3 +1,4 @@
+console.log("✅ Homepage loaded");
 
 import React, {
     useEffect,
@@ -27,13 +28,13 @@ import {
     Montserrat_400Regular,
     Montserrat_700Bold
 } from "@expo-google-fonts/montserrat";
-// import * as SplashScreen from 'expo-splash-screen';
+import * as SplashScreen from 'expo-splash-screen';
 import Header from "./components/Header";
 import MiniPlayer from "./components/MiniPlayer";
 
 // SplashScreen.preventAutoHideAsync();
 
-export default function HomeScreen() {
+export default function Homepage() {
     let [fontsIrishGroverLoaded] = useIrishGrover({
         IrishGrover_400Regular,
     });
@@ -59,15 +60,15 @@ export default function HomeScreen() {
     const GAP = 16;
     const ITEM_W = Math.floor((Dimensions.get("window").width - H_PADDING * 2 - GAP) / NUM_COLS);
 
-    useEffect(() => {
-        // async function prepare() {
-        //     if(fontsIrishGroverLoaded && fontsMontserratLoaded) {
-        //         await SplashScreen.hideAsync();
-        //     }
-        // }
+    // useEffect(() => {
+    //     async function prepare() {
+    //         if(fontsIrishGroverLoaded && fontsMontserratLoaded) {
+    //             await SplashScreen.hideAsync();
+    //         }
+    //     }
 
-        // prepare();
-    }, [fontsLoaded]);
+    //     prepare();
+    // }, [fontsLoaded]);
 
     if(!fontsLoaded) {
         return null;
@@ -101,7 +102,7 @@ export default function HomeScreen() {
                         
                         <View style={styles.quickStartWrapper}>
                             <Pressable
-                                onPress={() => router.push("/CreateMoodPlaylistScreen")}
+                                onPress={() => router.push("./CreateMoodPlaylistScreen")}
                                 style={({ pressed }) => [{
                                     opacity: pressed ? 0.96 : 1
                                 }]}
@@ -172,3 +173,6 @@ export default function HomeScreen() {
         </GestureHandlerRootView>
     );
 }
+
+
+
