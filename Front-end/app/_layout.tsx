@@ -1,5 +1,4 @@
 import {
-	Dimensions,
 	StyleSheet,
 	View,
 } from "react-native";
