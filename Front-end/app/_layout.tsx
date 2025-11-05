@@ -17,6 +17,7 @@ export default function RootLayout() {
 					options={{
 						presentation: "modal",
 						gestureEnabled: true,
+						animation: "fade_from_bottom",
 					}}
 				/>
 

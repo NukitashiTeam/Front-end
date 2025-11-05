@@ -29,9 +29,11 @@ import Animated, {
     useSharedValue,
     withTiming,
     interpolate,
+    useAnimatedReaction,
 } from "react-native-reanimated";
 import BottomBar from "./BottomBar";
 import styles from "./styles/MiniPlayerStyles";
+import { NowPlayingPreview } from "../NowPlayingScreen";
 
 const { height: SCREEN_H } = Dimensions.get("window");
 const EXPAND_DISTANCE = SCREEN_H * 0.7;
@@ -46,6 +48,12 @@ export default function MiniPlayer() {
     const progress = useSharedValue(0);
     const startProgress = useSharedValue(0);
     const naviagtingRef = useRef(false);
+    const [previewP, setPreviewP] = useState(0);
+
+    useAnimatedReaction(
+        () => progress.value,
+        (p) => { runOnJS(setPreviewP)(p); }
+    );
 
     const goLink = (path: Href) => {
         if(pathname != path) {
@@ -99,73 +107,23 @@ export default function MiniPlayer() {
         }
     });
 
-    const fullPreviewStyle = useAnimatedStyle(() => {
-        const translateY = interpolate(
-            progress.value, 
-            [0, 1],
-            [SCREEN_H * 0.35, 0],
-            Extrapolation.CLAMP,
-        );
-
-        const opacity = interpolate(progress.value, [0, 1], [1, 0]);
-        return {
-            transform: [{
-                translateY
-            }],
-            opacity,
-        }
+    const scrimStyle = useAnimatedStyle(() => {
+        const opacity = interpolate(progress.value, [0, 1], [0, 0.35], Extrapolation.CLAMP);
+        return { opacity };
     });
 
     return (
         <View style={styles.miniPlayerStub}>
-            {/* <Animated.View 
+            <Animated.View
                 pointerEvents="none"
                 style={[{
                     position: "absolute",
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    bottom: 0,
-                }, fullPreviewStyle]}
-            >
-                <LinearGradient
-                    colors={["#4A2F7C", "#1C1340"]}
-                    start={{ x: 0, y: 0}}
-                    end={{ x: 1, y: 1}}
-                    style={{
-                        flex: 1,
-                        paddingTop: 32,
-                        paddingHorizontal: 20,
-                    }}
-                >
-                    <Text
-                        style={{
-                            color: "#EADDFF",
-                            fontSize: 18,
-                            marginBottom: 14,
-                        }}
-                    >
-                        Now Playing
-                    </Text>
+                    left: 0, right: 0, top: 0, bottom: 0,
+                    backgroundColor: "#000",
+                }, scrimStyle]}
+            />
 
-                    <View style={{ flexDirection: "row", gap: 24, alignItems: "center" }}>
-                        <Ionicons name="play-skip-back" size={24} color="#fff" />
-                        <View
-                        style={{
-                            width: 64,
-                            height: 64,
-                            backgroundColor: "white",
-                            borderRadius: 32,
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
-                        >
-                        <Ionicons name="pause" size={28} color="#4A2F7C" />
-                        </View>
-                        <Ionicons name="play-skip-forward" size={24} color="#fff" />
-                    </View>
-                </LinearGradient>
-            </Animated.View> */}
+            <NowPlayingPreview progress={previewP} pointerEvents="none" />
 
             <GestureDetector gesture={pan}>
                 <Animated.View style={miniStyle}>
