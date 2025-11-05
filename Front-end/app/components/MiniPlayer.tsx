@@ -97,7 +97,7 @@ export default function MiniPlayer({ hidden = false }: { hidden?: boolean }) {
     });
 
     return (
-        <View style={[styles.miniPlayerStub, hidden && { opacity: 0 }]}>
+        <View style={[styles.miniPlayerStub, hidden && { display: "none" }]}>
             <Animated.View
                 pointerEvents={hidden ? "none" : "auto"}
                 style={[{
