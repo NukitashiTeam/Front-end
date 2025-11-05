@@ -38,6 +38,7 @@ export default function MiniPlayer({ hidden = false }: { hidden?: boolean }) {
     const layoutReady = useSharedValue(0);
 
     const naviagtingRef = useRef(false);
+    const isNowPlaying = pathname === "/NowPlayingScreen";
 
     const recalcStartTop = () => {
         if (hasMiniH.value && hasHandleY.value) {
@@ -53,7 +54,7 @@ export default function MiniPlayer({ hidden = false }: { hidden?: boolean }) {
     };
 
     const pan = Gesture.Pan().onChange((e) => {
-        if (!layoutReady.value) return;
+        if(!layoutReady.value || naviagtingRef.current) return;
         const dyUp = -e.translationY;
         progress.value = Math.min(Math.max(dyUp, 0), startTop.value);
     }).onEnd((e) => {
@@ -77,8 +78,18 @@ export default function MiniPlayer({ hidden = false }: { hidden?: boolean }) {
     }, [pathname]);
 
     useEffect(() => {
+        if (!isNowPlaying) {
+            naviagtingRef.current = false;
+            progress.value = withTiming(0, { duration: 0 });
+        } else {
+            progress.value = withTiming(0, { duration: 0 });
+        }
+    }, [isNowPlaying]);
+    
+    useEffect(() => {
         if (hidden) {
-            progress.value = 0;
+        naviagtingRef.current = false;  // 👈 thêm
+        progress.value = 0;
         }
     }, [hidden]);
 
