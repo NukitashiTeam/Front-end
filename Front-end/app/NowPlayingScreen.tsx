@@ -11,8 +11,6 @@ import {
 import Animated, {
     type SharedValue,
     useAnimatedStyle,
-    interpolate,
-    Extrapolation,
 } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -37,15 +35,17 @@ export function NowPlayingPreview({
     const insets = useSafeAreaInsets();
 
     const containerStyle = useAnimatedStyle(() => {
-        const p = progressSV.value;
+        const dy = progressSV.value;
+        const start = startTopSV.value;
+        const top = - dy;
+        const p = start > 0 ? dy / start : 0;
+
         return {
             position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            top: interpolate(p, [0, 1], [startTopSV.value, 0], Extrapolation.CLAMP),
+            left: 0, right: 0, 
+            top: top,
             transform: [{ scale: 0.96 + 0.04 * p }],
-            opacity: p,
+            opacity: 0.03 + 0.97 * p,
         };
     });
 

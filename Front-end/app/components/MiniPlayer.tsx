@@ -33,10 +33,17 @@ export default function MiniPlayer() {
     const handleY = useSharedValue(0);
     const startTop = useSharedValue(SCREEN_H);
 
+    const hasMiniH   = useSharedValue(0);
+    const hasHandleY = useSharedValue(0);
+    const layoutReady = useSharedValue(0);
+
     const naviagtingRef = useRef(false);
 
     const recalcStartTop = () => {
-        startTop.value = SCREEN_H - miniH.value + handleY.value;
+        if (hasMiniH.value && hasHandleY.value) {
+            startTop.value = SCREEN_H - miniH.value + handleY.value;
+            layoutReady.value = 1;
+        }
     };
 
     const openFull = () => {
@@ -45,22 +52,21 @@ export default function MiniPlayer() {
         router.push("/NowPlayingScreen");
     };
 
-    const pan = Gesture.Pan()
-        .onChange((e) => {
-            const dy = -e.translationY;
-            const p = Math.min(Math.max(dy / EXPAND_DISTANCE, 0), 1);
-            progress.value = p;
-        })
-        .onEnd((e) => {
-            const flickUp = -e.velocityY > VELOCITY_OPEN;
-            const passedDistance = progress.value > DISTANCE_OPEN;
-            const shouldOpen = flickUp || passedDistance;
-            progress.value = withTiming(shouldOpen ? 1 : 0, { duration: 180 }, (finished) => {
-                if (shouldOpen && finished) {
-                    runOnJS(openFull)();
-                }
-            });
+    const pan = Gesture.Pan().onChange((e) => {
+        if (!layoutReady.value) return;
+        const dyUp = -e.translationY;
+        progress.value = Math.min(Math.max(dyUp, 0), startTop.value);
+    }).onEnd((e) => {
+        if (!layoutReady.value) return;
+        const flickUp = -e.velocityY > VELOCITY_OPEN;
+        const passed = progress.value > startTop.value * 0.35;
+        const open = flickUp || passed;
+        progress.value = withTiming(open ? startTop.value : 0, { duration: 180 }, (done) => {
+            if (open && done) {
+                runOnJS(openFull)();
+            }
         });
+    });
 
     useEffect(() => {
         const isHome = pathname === "/" || pathname === "/HomeScreen";
@@ -71,18 +77,16 @@ export default function MiniPlayer() {
     }, [pathname]);
 
     const miniStyle = useAnimatedStyle(() => {
-        const translateY = -interpolate(
-            progress.value,
-            [0, 1],
-            [0, EXPAND_DISTANCE],
-            Extrapolation.CLAMP
-        );
-        const opacity = interpolate(progress.value, [0, 1], [1, 0]);
-        return { transform: [{ translateY }], opacity };
+        const p = startTop.value > 0 ? progress.value / startTop.value : 0;
+        return {
+            transform: [{ translateY: -progress.value }],
+            opacity: 1 - p,
+        };
     });
 
     const scrimStyle = useAnimatedStyle(() => {
-        const opacity = interpolate(progress.value, [0, 1], [0, 0.35], Extrapolation.CLAMP);
+        const p = startTop.value > 0 ? progress.value / startTop.value : 0;
+        const opacity = interpolate(p, [0, 1], [0, 0.35], Extrapolation.CLAMP);
         return { opacity };
     });
 
@@ -107,6 +111,7 @@ export default function MiniPlayer() {
                     style={miniStyle}
                     onLayout={(e) => {
                         miniH.value = e.nativeEvent.layout.height;
+                        hasMiniH.value = 1;
                         recalcStartTop();
                     }}
                 >
@@ -119,6 +124,7 @@ export default function MiniPlayer() {
                         <GestureHandle
                             onLayout={(e: any) => {
                                 handleY.value = e.nativeEvent.layout.y;
+                                hasHandleY.value = 1;
                                 recalcStartTop();
                             }}
                         />
