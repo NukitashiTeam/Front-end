@@ -1,27 +1,11 @@
-import React, {
-    useRef,
-    useState,
-    useEffect,
-} from "react";
-import {
-    View,
-    TouchableOpacity,
-    Text,
-    Dimensions,
-} from "react-native";
-import { Ionicons } from '@expo/vector-icons';
+import React, { useRef, useState, useEffect } from "react";
+import { View, TouchableOpacity, Text, Dimensions } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import GestureHandle from "./GestureHandle";
 import { Slider } from "@miblanchard/react-native-slider";
-import {
-    Gesture,
-    GestureDetector,
-} from "react-native-gesture-handler";
-import {
-    useRouter,
-    usePathname,
-    Href
-} from "expo-router";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { useRouter, usePathname, Href } from "expo-router";
 import Animated, {
     runOnJS,
     Extrapolation,
@@ -29,7 +13,6 @@ import Animated, {
     useSharedValue,
     withTiming,
     interpolate,
-    useAnimatedReaction,
 } from "react-native-reanimated";
 import BottomBar from "./BottomBar";
 import styles from "./styles/MiniPlayerStyles";
@@ -45,42 +28,46 @@ export default function MiniPlayer() {
     const pathname = usePathname();
     const [isPlaying, setIsPlaying] = useState(true);
     const [progressVal, setProgressVal] = useState(0.25);
+    
     const progress = useSharedValue(0);
-    const startProgress = useSharedValue(0);
-    const naviagtingRef = useRef(false);
-    const [previewP, setPreviewP] = useState(0);
+    const miniH = useSharedValue(0);
+    const handleY = useSharedValue(0);
+    const startTop = useSharedValue(SCREEN_H);
 
-    useAnimatedReaction(
-        () => progress.value,
-        (p) => { runOnJS(setPreviewP)(p); }
-    );
+    const naviagtingRef = useRef(false);
+
+    const recalcStartTop = () => {
+        startTop.value = SCREEN_H - miniH.value + handleY.value;
+    };
 
     const goLink = (path: Href) => {
-        if(pathname != path) {
+        if (pathname != path) {
             router.replace(path);
         }
     };
 
     const openFull = () => {
-        if(naviagtingRef.current) return;
+        if (naviagtingRef.current) return;
         naviagtingRef.current = true;
         router.push("/NowPlayingScreen");
     };
 
-    const pan = Gesture.Pan().onChange((e) => {
-        const dy = -e.translationY;
-        const p = Math.min(Math.max(dy / EXPAND_DISTANCE, 0), 1);
-        progress.value = p;
-    }).onEnd((e) => {
-        const flickUp = -e.velocityY > VELOCITY_OPEN;
-        const passedDistance = progress.value > DISTANCE_OPEN;
-        const shouldOpen = flickUp || passedDistance;
-        progress.value = withTiming(shouldOpen ? 1 : 0, { duration: 180 }, (finished) => {
-            if (shouldOpen && finished) {
-                runOnJS(openFull)();
-            }
+    const pan = Gesture.Pan()
+        .onChange((e) => {
+            const dy = -e.translationY;
+            const p = Math.min(Math.max(dy / EXPAND_DISTANCE, 0), 1);
+            progress.value = p;
+        })
+        .onEnd((e) => {
+            const flickUp = -e.velocityY > VELOCITY_OPEN;
+            const passedDistance = progress.value > DISTANCE_OPEN;
+            const shouldOpen = flickUp || passedDistance;
+            progress.value = withTiming(shouldOpen ? 1 : 0, { duration: 180 }, (finished) => {
+                if (shouldOpen && finished) {
+                    runOnJS(openFull)();
+                }
+            });
         });
-    });
 
     useEffect(() => {
         const isHome = pathname === "/" || pathname === "/HomeScreen";
@@ -95,16 +82,10 @@ export default function MiniPlayer() {
             progress.value,
             [0, 1],
             [0, EXPAND_DISTANCE],
-            Extrapolation.CLAMP,
+            Extrapolation.CLAMP
         );
-
         const opacity = interpolate(progress.value, [0, 1], [1, 0]);
-        return {
-            transform: [{
-                translateY
-            }],
-            opacity,
-        }
+        return { transform: [{ translateY }], opacity };
     });
 
     const scrimStyle = useAnimatedStyle(() => {
@@ -116,24 +97,41 @@ export default function MiniPlayer() {
         <View style={styles.miniPlayerStub}>
             <Animated.View
                 pointerEvents="none"
-                style={[{
-                    position: "absolute",
-                    left: 0, right: 0, top: 0, bottom: 0,
-                    backgroundColor: "#000",
-                }, scrimStyle]}
+                style={[
+                    {
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                        backgroundColor: "#000",
+                    },
+                    scrimStyle,
+                ]}
             />
 
-            <NowPlayingPreview progress={previewP} pointerEvents="none" />
+            <NowPlayingPreview progressSV={progress} startTopSV={startTop} pointerEvents="none" />
 
             <GestureDetector gesture={pan}>
-                <Animated.View style={miniStyle}>
+                <Animated.View
+                    style={miniStyle}
+                    onLayout={(e) => {
+                        miniH.value = e.nativeEvent.layout.height;
+                        recalcStartTop();
+                    }}
+                >
                     <LinearGradient
                         colors={["#580499E3", "#580499E3"]}
-                        start={{x: 0, y: 0}}
-                        end={{x: 1, y: 1}}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
                         style={styles.miniBg}
                     >
-                        <GestureHandle />
+                        <GestureHandle
+                            onLayout={(e: any) => {
+                                handleY.value = e.nativeEvent.layout.y;
+                                recalcStartTop();
+                            }}
+                        />
 
                         <View style={styles.miniHeaderRow}>
                             <Ionicons name="notifications-outline" size={34} color="white" />
@@ -149,9 +147,9 @@ export default function MiniPlayer() {
                                 <Ionicons name="play-skip-back" size={26} color="white" />
                             </TouchableOpacity>
 
-                            <TouchableOpacity 
+                            <TouchableOpacity
                                 style={[styles.miniIconBtn, { marginHorizontal: 24 }]}
-                                onPress={() => setIsPlaying(p => !p)}
+                                onPress={() => setIsPlaying((p) => !p)}
                                 accessibilityRole="button"
                                 accessibilityLabel={isPlaying ? "Pause" : "play"}
                             >
@@ -177,13 +175,13 @@ export default function MiniPlayer() {
                             />
                             <Text style={styles.miniTimeText}>4:08</Text>
                         </View>
-                        
+
                         <BottomBar
                             active="home"
                             onPress={(k) => {
                                 console.log("press:", k);
-                                if(k === "home") goLink("/");
-                                else if(k === "radio") goLink("/NowPlayingScreen");
+                                if (k === "home") goLink("/");
+                                else if (k === "radio") goLink("/NowPlayingScreen");
                             }}
                         />
                     </LinearGradient>
