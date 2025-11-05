@@ -9,9 +9,9 @@ const styles = StyleSheet.create({
         bottom: 0,
     },
     miniBg: {
-        paddingTop: 10,
-        paddingBottom: 22,
-        paddingHorizontal: 20,
+        paddingTop: "2%",
+        paddingBottom: "20%",
+        paddingHorizontal: "4%",
         borderTopLeftRadius: 28,
         borderTopRightRadius: 28,
         overflow: "hidden",

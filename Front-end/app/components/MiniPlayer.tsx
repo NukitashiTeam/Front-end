@@ -97,17 +97,14 @@ export default function MiniPlayer() {
         <View style={styles.miniPlayerStub}>
             <Animated.View
                 pointerEvents="none"
-                style={[
-                    {
-                        position: "absolute",
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        bottom: 0,
-                        backgroundColor: "#000",
-                    },
-                    scrimStyle,
-                ]}
+                style={[{
+                    position: "absolute",
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: 0,
+                    backgroundColor: "#000",
+                }, scrimStyle]}
             />
 
             <NowPlayingPreview progressSV={progress} startTopSV={startTop} pointerEvents="none" />
@@ -175,15 +172,6 @@ export default function MiniPlayer() {
                             />
                             <Text style={styles.miniTimeText}>4:08</Text>
                         </View>
-
-                        <BottomBar
-                            active="home"
-                            onPress={(k) => {
-                                console.log("press:", k);
-                                if (k === "home") goLink("/");
-                                else if (k === "radio") goLink("/NowPlayingScreen");
-                            }}
-                        />
                     </LinearGradient>
                 </Animated.View>
             </GestureDetector>

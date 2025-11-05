@@ -1,8 +1,22 @@
-import { Stack } from "expo-router";
+import {
+	Dimensions,
+	StyleSheet,
+	View,
+	useWindowDimensions,
+} from "react-native";
+import {
+	Stack,
+	useRouter,
+} from "expo-router";
 import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import BottomBar from "./components/BottomBar";
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function RootLayout() {
+	const router = useRouter();
+
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
 			<Stack 
@@ -23,6 +37,29 @@ export default function RootLayout() {
 
 				<Stack.Screen name="CreateMoodPlaylistScreen" />
 			</Stack>
+
+			<View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+				<View
+					pointerEvents="box-none"
+					style={{
+						position: "absolute",
+						left: 0,
+						right: 0,
+						bottom: "2%",
+						zIndex: 9999,
+						elevation: 9999,
+						alignItems: "center",
+					}}
+				>
+					<BottomBar
+						active="radio"
+						onPress={(k) => {
+							if (k === "home") router.replace("/HomeScreen");
+							else if (k === "radio") router.replace("/NowPlayingScreen");
+						}}
+					/>
+				</View>
+			</View>
 		</GestureHandlerRootView>
 	);
 }

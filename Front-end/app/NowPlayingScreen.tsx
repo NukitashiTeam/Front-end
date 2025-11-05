@@ -366,17 +366,6 @@ export default function NowPlayingScreen() {
                     </View>
                 </View>
             </View>
-
-            <View style={{width: "100%", marginBottom: "10%"}}>
-                <BottomBar
-                    active="radio"
-                    onPress={(k) => {
-                        console.log("press:", k);
-                        if (k === "home") router.replace("/HomeScreen");
-                        else if (k === "radio") router.replace("/NowPlayingScreen");
-                    }}
-                />
-            </View>
         </View>
     );
 }
