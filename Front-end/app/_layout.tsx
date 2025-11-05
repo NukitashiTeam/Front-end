@@ -2,20 +2,25 @@ import {
 	Dimensions,
 	StyleSheet,
 	View,
-	useWindowDimensions,
 } from "react-native";
 import {
 	Stack,
 	useRouter,
+	usePathname,
 } from "expo-router";
 import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import BottomBar from "./components/BottomBar";
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-
 export default function RootLayout() {
 	const router = useRouter();
+	const pathname = usePathname();
+
+	const activeTab = pathname === "/" || pathname.startsWith("/HomeScreen")
+		? "home"
+		: pathname.startsWith("/NowPlayingScreen")
+		? "radio"
+		: "home";
 
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
@@ -52,7 +57,7 @@ export default function RootLayout() {
 					}}
 				>
 					<BottomBar
-						active="radio"
+						active={activeTab as any}
 						onPress={(k) => {
 							if (k === "home") router.replace("/HomeScreen");
 							else if (k === "radio") router.replace("/NowPlayingScreen");
