@@ -28,6 +28,9 @@ export default function RootLayout() {
 			<Stack 
 				screenOptions={{
 					headerShown: false,
+					contentStyle: {
+						backgroundColor: "transparent"
+					},
 				}}
 			>
 				<Stack.Screen name="HomeScreen" />
@@ -35,7 +38,7 @@ export default function RootLayout() {
 				<Stack.Screen 
 					name="NowPlayingScreen" 
 					options={{
-						presentation: "modal",
+						presentation: "transparentModal",
 						gestureEnabled: true,
 						animation: "fade_from_bottom",
 					}}
