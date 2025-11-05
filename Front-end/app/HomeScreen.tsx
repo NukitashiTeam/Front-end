@@ -164,7 +164,7 @@ export default function HomeScreen() {
                 ListFooterComponent={<View style={{ height: 12 }} />}
             />
 
-            <MiniPlayer />
+            {/* <MiniPlayer /> */}
         </View>
     );
 }

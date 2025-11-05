@@ -22,7 +22,7 @@ const EXPAND_DISTANCE = SCREEN_H * 0.7;
 const VELOCITY_OPEN = 1200;
 const DISTANCE_OPEN = 0.35;
 
-export default function MiniPlayer() {
+export default function MiniPlayer({ hidden = false }: { hidden?: boolean }) {
     const router = useRouter();
     const pathname = usePathname();
     const [isPlaying, setIsPlaying] = useState(true);
@@ -76,6 +76,12 @@ export default function MiniPlayer() {
         }
     }, [pathname]);
 
+    useEffect(() => {
+        if (hidden) {
+            progress.value = 0;
+        }
+    }, [hidden]);
+
     const miniStyle = useAnimatedStyle(() => {
         const p = startTop.value > 0 ? progress.value / startTop.value : 0;
         return {
@@ -91,9 +97,9 @@ export default function MiniPlayer() {
     });
 
     return (
-        <View style={styles.miniPlayerStub}>
+        <View style={[styles.miniPlayerStub, hidden && { opacity: 0 }]}>
             <Animated.View
-                pointerEvents="none"
+                pointerEvents={hidden ? "none" : "auto"}
                 style={[{
                     position: "absolute",
                     left: 0,

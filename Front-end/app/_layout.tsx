@@ -21,6 +21,7 @@ export default function RootLayout() {
 		: pathname.startsWith("/NowPlayingScreen")
 		? "radio"
 		: "home";
+	const isNowPlaying = pathname.startsWith("/NowPlayingScreen");
 
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
@@ -44,7 +45,19 @@ export default function RootLayout() {
 			</Stack>
 
 			<View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
-				{/* <MiniPlayer /> */}
+				<View
+					pointerEvents="box-none"
+					style={{
+						position: "absolute",
+						left: 0,
+						right: 0,
+						bottom: 0,
+						zIndex: 8000,
+						elevation: 8000
+					}}
+				>
+					<MiniPlayer hidden={isNowPlaying} />
+				</View>
 
 				<View
 					pointerEvents="box-none"
