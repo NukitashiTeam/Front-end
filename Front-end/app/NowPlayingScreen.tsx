@@ -171,7 +171,7 @@ export default function NowPlayingScreen() {
                     active="radio"
                     onPress={(k) => {
                         console.log("press:", k);
-                        if(k === "home") goLink("/");
+                        if(k === "home") goLink("/HomeScreen");
                         else if(k === "radio") goLink("/NowPlayingScreen");
                     }}
                 />

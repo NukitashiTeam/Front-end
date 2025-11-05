@@ -126,7 +126,7 @@ export default function CreateMoodPlaylistScreen() {
     ];
 
     const goLink = (k: "home" | "search" | "radio" | "music") => {
-        if (k === "home") router.push("/");
+        if (k === "home") router.push("/HomeScreen");
         if (k === "radio") router.push("/NowPlayingScreen");
     };
 
