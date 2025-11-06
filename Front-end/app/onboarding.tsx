@@ -1,3 +1,5 @@
+console.log("✅ Onboarding component loaded");
+
 import 'react-native-gesture-handler';
 import { StyleSheet, Text, View, Image, Dimensions, FlatList, Animated, TouchableOpacity} from 'react-native'
 import React, { useRef, useState }  from 'react'
@@ -35,7 +37,7 @@ const onboardingData = [
 ];
 
 
-const onboarding = () => {
+function Onboarding() {
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const flatListRef = useRef<FlatList<any>>(null);
@@ -121,7 +123,7 @@ const onboarding = () => {
 }
 
 
-export default onboarding
+export default Onboarding;
 
 const styles = StyleSheet.create({
   container: {
