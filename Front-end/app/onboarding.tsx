@@ -1,13 +1,14 @@
 console.log("✅ Onboarding component loaded");
 
 import 'react-native-gesture-handler';
-import { StyleSheet, Text, View, Image, Dimensions, FlatList, Animated, TouchableOpacity} from 'react-native'
-import React, { useRef, useState }  from 'react'
+import { StyleSheet, Text, View, Image, Dimensions, FlatList, Animated, TouchableOpacity } from 'react-native';
+import React, { useRef, useState } from 'react';
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Paginator from '@/Components-Khanh/Paginator';
 import BackgroundLayer from '@/Components-Khanh/BackgroundLayer';
 
-const { width, height} = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 const onboardingData = [
   {
@@ -36,15 +37,13 @@ const onboardingData = [
   },
 ];
 
-
 function Onboarding() {
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const flatListRef = useRef<FlatList<any>>(null);
-
   const scrollX = useRef(new Animated.Value(0)).current;
 
-  const handleNextPage = () => {
+  const handleNextPage = async () => {
     if (index < onboardingData.length - 1) {
       const nextIndex = index + 1;
       if (flatListRef.current) {
@@ -52,18 +51,21 @@ function Onboarding() {
       }
       setIndex(nextIndex);
     } else {
-      router.push('./Homepage');
+      // ✅ Khi hoàn tất onboarding, lưu lại trạng thái đã xem
+      await AsyncStorage.setItem("hasSeenOnboarding", "true");
+      router.replace("/Homepage");
     }
-  }
+  };
 
-  const skipOnboarding = () => {
-    router.push('/Homepage');
-  }
+  const skipOnboarding = async () => {
+    // ✅ Khi người dùng bấm "Skip!", cũng lưu lại
+    await AsyncStorage.setItem("hasSeenOnboarding", "true");
+    router.replace("/Homepage");
+  };
 
-  const renderPage = ({item} : {item: typeof onboardingData[0]}) => {
+  const renderPage = ({ item }: { item: typeof onboardingData[0] }) => {
     return (
       <View style={styles.container}>
-  
         <Image
           source={require('../assets/images/MoodyBlue.png')}
           style={styles.logo}
@@ -73,25 +75,26 @@ function Onboarding() {
           source={item.image}
           style={styles.image}
         />
-        
+
         <Text style={styles.title}>{item.title}</Text>
-        <View style={{width: width*0.7}}>
+        <View style={{ width: width * 0.7 }}>
           <Text style={styles.description}>{item.description}</Text>
         </View>
       </View>
     );
-  }
+  };
 
   return (
-    <BackgroundLayer >
-        <FlatList style={{flex: 0}}
+    <BackgroundLayer>
+      <FlatList
+        style={{ flex: 0 }}
         ref={flatListRef}
         data={onboardingData}
         horizontal
         bounces={false}
         pagingEnabled
         showsHorizontalScrollIndicator={true}
-        scrollEnabled={false} 
+        scrollEnabled={false}
         renderItem={renderPage}
         keyExtractor={(item) => item.id.toString()}
         onScroll={Animated.event(
@@ -100,28 +103,25 @@ function Onboarding() {
         )}
         scrollEventThrottle={32}
       />
-      
-      <Paginator data={onboardingData} scrollX={scrollX} index={index}/>
-  
-        <View style={{alignItems: 'center', marginBottom: 20}}>
+
+      <Paginator data={onboardingData} scrollX={scrollX} index={index} />
+
+      <View style={{ alignItems: 'center', marginBottom: 20 }}>
         <TouchableOpacity style={styles.button} onPress={handleNextPage}>
           <Text style={styles.buttonText}>
-            Next
+            {index === onboardingData.length - 1 ? "Get Started" : "Next"}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={skipOnboarding}>
-          <Text style={{fontSize: 13, marginTop: 15, fontWeight: '400'}}>
+          <Text style={{ fontSize: 13, marginTop: 15, fontWeight: '400' }}>
             Skip!
           </Text>
         </TouchableOpacity>
-
       </View>
-      
     </BackgroundLayer>
-  )
+  );
 }
-
 
 export default Onboarding;
 
@@ -136,12 +136,12 @@ const styles = StyleSheet.create({
   },
   image: {
     width: width,
-    height:height*0.4,
+    height: height * 0.4,
     marginTop: 10,
     resizeMode: 'contain',
   },
   title: {
-    fontFamily:'Inter-Bold',
+    fontFamily: 'Inter-Bold',
     fontSize: 28,
     fontWeight: '700',
     color: 'black',
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     lineHeight: 25,
     fontWeight: '400',
   },
-  button:{
+  button: {
     backgroundColor: '#8400FF',
     paddingVertical: 20,
     paddingHorizontal: 48,
@@ -168,6 +168,4 @@ const styles = StyleSheet.create({
     fontSize: 21,
     fontWeight: '700',
   },
- 
-  
-})
+});

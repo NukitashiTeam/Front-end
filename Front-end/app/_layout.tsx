@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 
@@ -7,6 +7,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
 
   useEffect(() => {
+    
     // giả sử bạn có font, hoặc animation, ... thì khi xong mới hide
     const timeout = setTimeout(() => {
       SplashScreen.hideAsync();
