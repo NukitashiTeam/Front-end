@@ -1,5 +1,3 @@
-console.log("✅ CreateMoodPlaylistScreen loaded");
-
 import React, {
     useMemo,
     useState,
