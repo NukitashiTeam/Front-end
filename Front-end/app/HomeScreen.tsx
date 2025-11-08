@@ -58,14 +58,11 @@ export default function HomeScreen() {
     const ITEM_W = Math.floor((Dimensions.get("window").width - H_PADDING * 2 - GAP) / NUM_COLS);
 
     useEffect(() => {
-        async function prepare() {
-            if(fontsIrishGroverLoaded && fontsMontserratLoaded) {
-                await SplashScreen.hideAsync();
-            }
-        }
-
-        prepare();
-    }, [fontsLoaded]);
+        if (!fontsLoaded) return;
+        (async () => {
+          await SplashScreen.hideAsync();
+        })();
+      }, [fontsLoaded]);
 
     if(!fontsLoaded) {
         return null;
