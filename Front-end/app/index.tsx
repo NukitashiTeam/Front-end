@@ -36,7 +36,7 @@ export default function Index() {
   //     router.replace("/onboarding");
   //   }
   //   else{
-  //     router.replace("/Homepage");
+  //     router.replace("/HomeScreen");
   //   }
   // }, []);
 
@@ -47,7 +47,7 @@ export default function Index() {
     if (hasSeen !== "true") {
       router.replace("/onboarding");
     } else {
-      router.replace("/Homepage");
+      router.replace("/HomeScreen");
     }
   }, [])
 

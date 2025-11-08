@@ -1,5 +1,3 @@
-console.log("✅ Onboarding component loaded");
-
 import 'react-native-gesture-handler';
 import { StyleSheet, Text, View, Image, Dimensions, FlatList, Animated, TouchableOpacity } from 'react-native';
 import React, { useRef, useState } from 'react';
@@ -53,14 +51,14 @@ function Onboarding() {
     } else {
       // ✅ Khi hoàn tất onboarding, lưu lại trạng thái đã xem
       await AsyncStorage.setItem("hasSeenOnboarding", "true");
-      router.replace("/Homepage");
+      router.replace("/HomeScreen");
     }
   };
 
   const skipOnboarding = async () => {
     // ✅ Khi người dùng bấm "Skip!", cũng lưu lại
     await AsyncStorage.setItem("hasSeenOnboarding", "true");
-    router.replace("/Homepage");
+    router.replace("/HomeScreen");
   };
 
   const renderPage = ({ item }: { item: typeof onboardingData[0] }) => {

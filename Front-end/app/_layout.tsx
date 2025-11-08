@@ -26,7 +26,7 @@ export default function RootLayout() {
   >
     <Stack.Screen name="index" />
   <Stack.Screen name="onboarding" />
-  <Stack.Screen name="Homepage" />
+  <Stack.Screen name="HomeScreen" />
   <Stack.Screen name="CreateMoodPlaylistScreen" />
   <Stack.Screen name="NowPlayingScreen" />
 </Stack>
