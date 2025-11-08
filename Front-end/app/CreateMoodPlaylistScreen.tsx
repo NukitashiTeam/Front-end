@@ -23,7 +23,7 @@ import {
     usePathname
 } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import styles from "./styles/CreateMoodPlaylistScreen";
+import styles from "./styles/CreateMoodPlaylistScreenStyles";
 import Header from "./components/Header";
 import {
     useFonts as useMontserrat,
