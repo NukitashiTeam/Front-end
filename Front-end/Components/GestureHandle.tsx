@@ -5,7 +5,7 @@ import {
     ViewStyle,
     ViewProps
 } from "react-native";
-import styles from "./styles/GestureHandleStyles";
+import styles from "../styles/GestureHandleStyles";
 
 interface GestureHandleProps extends ViewProps {
     style?: StyleProp<ViewStyle>;

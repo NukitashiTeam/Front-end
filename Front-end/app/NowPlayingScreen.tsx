@@ -1,4 +1,3 @@
-console.log("✅ NowPlayingScreen loaded");
 import React, { useState, useRef, useEffect } from "react";
 import {
     View,
@@ -25,8 +24,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Slider } from "@miblanchard/react-native-slider";
 import { useRouter, usePathname, Href } from "expo-router";
-import styles from "./styles/NowPlayingScreenStyles";
-import Header from "./components/Header";
+import styles from "../styles/NowPlayingScreenStyles";
+import Header from "../Components/Header";
 
 const { height: SCREEN_H } = Dimensions.get("window");
 
@@ -252,7 +251,7 @@ export default function NowPlayingScreen() {
         if (router.canGoBack?.()) {
             router.back();
         } else {
-            router.replace("/Homepage");
+            router.replace("/HomeScreen");
         }
     };
 

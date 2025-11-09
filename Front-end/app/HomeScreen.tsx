@@ -15,7 +15,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
-import styles from "./styles/HomeStyles";
+import styles from "../styles/HomeStyles";
 import {
     useFonts as useIrishGrover,
     IrishGrover_400Regular
@@ -26,8 +26,8 @@ import {
     Montserrat_700Bold
 } from "@expo-google-fonts/montserrat";
 import * as SplashScreen from 'expo-splash-screen';
-import Header from "./components/Header";
-import MiniPlayer from "./components/MiniPlayer";
+import Header from "../Components/Header";
+import MiniPlayer from "../Components/MiniPlayer";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -58,14 +58,11 @@ export default function HomeScreen() {
     const ITEM_W = Math.floor((Dimensions.get("window").width - H_PADDING * 2 - GAP) / NUM_COLS);
 
     useEffect(() => {
-        async function prepare() {
-            if(fontsIrishGroverLoaded && fontsMontserratLoaded) {
-                await SplashScreen.hideAsync();
-            }
-        }
-
-        prepare();
-    }, [fontsLoaded]);
+        if (!fontsLoaded) return;
+        (async () => {
+          await SplashScreen.hideAsync();
+        })();
+      }, [fontsLoaded]);
 
     if(!fontsLoaded) {
         return null;

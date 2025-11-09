@@ -1,5 +1,3 @@
-console.log("✅ CreateMoodPlaylistScreen loaded");
-
 import React, {
     useMemo,
     useState,
@@ -25,8 +23,8 @@ import {
     usePathname
 } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import styles from "./styles/CreateMoodPlaylistScreen";
-import Header from "./components/Header";
+import styles from "../styles/CreateMoodPlaylistScreenStyles";
+import Header from "../Components/Header";
 import {
     useFonts as useMontserrat,
     Montserrat_400Regular,
@@ -128,7 +126,7 @@ export default function CreateMoodPlaylistScreen() {
     ];
 
     const goLink = (k: "home" | "search" | "radio" | "music") => {
-        if (k === "home") router.push("/Homepage");
+        if (k === "home") router.push("/HomeScreen");
         if (k === "radio") router.push("/NowPlayingScreen");
     };
 

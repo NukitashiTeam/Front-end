@@ -1,12 +1,10 @@
-console.log("✅ Onboarding component loaded");
-
 import 'react-native-gesture-handler';
 import { StyleSheet, Text, View, Image, Dimensions, FlatList, Animated, TouchableOpacity } from 'react-native';
 import React, { useRef, useState } from 'react';
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Paginator from '@/Components-Khanh/Paginator';
-import BackgroundLayer from '@/Components-Khanh/BackgroundLayer';
+import Paginator from '@/Components/Paginator';
+import BackgroundLayer from '@/Components/BackgroundLayer';
 
 const { width, height } = Dimensions.get("window");
 
@@ -53,14 +51,14 @@ function Onboarding() {
     } else {
       // ✅ Khi hoàn tất onboarding, lưu lại trạng thái đã xem
       await AsyncStorage.setItem("hasSeenOnboarding", "true");
-      router.replace("/Homepage");
+      router.replace("/src/signin/Login");
     }
   };
 
   const skipOnboarding = async () => {
     // ✅ Khi người dùng bấm "Skip!", cũng lưu lại
     await AsyncStorage.setItem("hasSeenOnboarding", "true");
-    router.replace("/Homepage");
+    router.replace("/HomeScreen");
   };
 
   const renderPage = ({ item }: { item: typeof onboardingData[0] }) => {

@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, Image, Dimensions, TouchableOpacity } from "react-native";
-import BackgroundLayer from "@/Components-Khanh/BackgroundLayer";
+import BackgroundLayer from "@/Components/BackgroundLayer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useState, useEffect, useCallback } from "react";
@@ -36,24 +36,24 @@ export default function Index() {
   //     router.replace("/onboarding");
   //   }
   //   else{
-  //     router.replace("/Homepage");
+  //     router.replace("/HomeScreen");
   //   }
   // }, []);
 
   // // ⏳ Có thể hiển thị splash hoặc loading tạm
 
-  const checkOpen = useCallback (async () => {
-    const hasSeen = await AsyncStorage.getItem("hasSeenOnboarding");
-    if (hasSeen !== "true") {
-      router.replace("/onboarding");
-    } else {
-      router.replace("/Homepage");
-    }
-  }, [])
+  // const checkOpen = useCallback (async () => {
+  //   const hasSeen = await AsyncStorage.getItem("hasSeenOnboarding");
+  //   if (hasSeen !== "true") {
+  //     router.replace("/onboarding");
+  //   } else {
+  //     router.replace("/HomeScreen");
+  //   }
+  // }, [])
 
-  useEffect(() => {
-    checkOpen();
-  }, []);
+  // useEffect(() => {
+  //   checkOpen();
+  // }, []);
 
   return (
     <BackgroundLayer>

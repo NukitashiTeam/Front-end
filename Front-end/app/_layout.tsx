@@ -1,36 +1,90 @@
-import { router, Stack } from "expo-router";
+import { useRouter, Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { StyleSheet, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import MiniPlayer from "../Components/MiniPlayer";
+import BottomBar from "../Components/BottomBar";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-
-  useEffect(() => {
+    const router = useRouter();
+    const pathname = usePathname();
     
-    // giả sử bạn có font, hoặc animation, ... thì khi xong mới hide
-    const timeout = setTimeout(() => {
-      SplashScreen.hideAsync();
-    }, 1200);
-    return () => clearTimeout(timeout);
-  }, []);
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            SplashScreen.hideAsync();
+        }, 1200);
+        return () => clearTimeout(timeout);
+    }, []);
 
-  return (
-    <Stack 
-    screenOptions={{ headerShown: false, 
-    contentStyle: {
-      backgroundColor: "#818BFF",
-      flex: 1,
-    }
-  }}
-  >
-    <Stack.Screen name="index" />
-  <Stack.Screen name="onboarding" />
-  <Stack.Screen name="Homepage" />
-  <Stack.Screen name="CreateMoodPlaylistScreen" />
-  <Stack.Screen name="NowPlayingScreen" />
-</Stack>
-);
+	const activeTab = pathname.startsWith("/HomeScreen")
+		? "home"
+		: pathname.startsWith("/NowPlayingScreen")
+		? "radio"
+		: "home";
+	const isNowPlaying = pathname.startsWith("/NowPlayingScreen");
+    const appearBottomBar = pathname.startsWith("/HomeScreen") || isNowPlaying;
+
+    return (
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <Stack 
+                screenOptions={{
+                    headerShown: false, 
+                    contentStyle: {
+                        backgroundColor: "#818BFF",
+                        flex: 1,
+                    }
+                }}
+            >
+                <Stack.Screen name="index" />
+                <Stack.Screen name="onboarding" />
+                <Stack.Screen name="HomeScreen" />
+                <Stack.Screen name="CreateMoodPlaylistScreen" />
+                <Stack.Screen name="NowPlayingScreen" />
+            </Stack>
+
+            {appearBottomBar && (
+                <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+                    <View
+                        pointerEvents="box-none"
+                        style={{
+                            position: "absolute",
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            zIndex: 8000,
+                            elevation: 8000,
+                        }}
+                    >
+                        <MiniPlayer hidden={isNowPlaying} />
+                    </View>
+
+                    <View
+                        pointerEvents="box-none"
+                        style={{
+                            position: "absolute",
+                            left: 0,
+                            right: 0,
+                            bottom: "2%",
+                            zIndex: 9999,
+                            elevation: 9999,
+                            alignItems: "center",
+                        }}
+                    >
+                        <BottomBar
+                            active={activeTab as any}
+                            onPress={(k) => {
+                                if (k === "home") router.replace("/HomeScreen");
+                                else if (k === "radio") router.replace("/NowPlayingScreen");
+                            }}
+                        />
+                    </View>
+                </View>
+            )}
+        </GestureHandlerRootView>
+    );
 }
 
 // import {
