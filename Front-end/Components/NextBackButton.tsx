@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import styles from '../style';
+import styles from '../styles/style';
 interface Props{
     onNextPage: ()  =>void;
     onBackPage: () =>void;

@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, Image, Dimensions, TouchableOpacity } from "react-native";
-import BackgroundLayer from "@/Components-Khanh/BackgroundLayer";
+import BackgroundLayer from "@/Components/BackgroundLayer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useState, useEffect, useCallback } from "react";

@@ -1,8 +1,8 @@
 import React,{useState, useRef} from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
-import styles from './style';
+import styles from '../../../styles/style';
 import { useRouter } from 'expo-router';
-import Background from './component/background';
+import Background from '../../../Components/background';
 const Otpsign = () =>{
     const router = useRouter();
     const [otp,setOtp] = useState<string[]>(['', '', '', '']);
@@ -25,7 +25,7 @@ const Otpsign = () =>{
     const handleNext = () => {
         const code = otp.join('');
         console.log('OTP:', code);
-        router.push('/src/Typesong');
+        router.push("/src/signin/Typesong");
         // Navigate to next screen or verify OTP
         // router.push('/next-screen');
     };
@@ -58,13 +58,13 @@ const Otpsign = () =>{
         </TouchableOpacity>
         <TouchableOpacity onPress={handleResend} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
           <View>
-            <Image source={require('../../assets/images/mingcute_message-4-line.png')} style={styles.icon} />
+            <Image source={require("../../../assets/images/mingcute_message-4-line.png")} style={styles.icon} />
           </View>
           <Text style={{fontWeight: "600"}}>Resend OTP</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={()=>router.back()} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
           <View>
-            <Image source={require('../../assets/images/Vector.png')} style={styles.icon} />
+            <Image source={require("../../../assets/images/Vector.png")} style={styles.icon} />
           </View>
           <Text style={{fontWeight: "600"}}>Edit Phone Number</Text>
         </TouchableOpacity>

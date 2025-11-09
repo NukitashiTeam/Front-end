@@ -3,8 +3,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import MiniPlayer from "./components/MiniPlayer";
-import BottomBar from "./components/BottomBar";
+import MiniPlayer from "../Components/MiniPlayer";
+import BottomBar from "../Components/BottomBar";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -19,12 +19,13 @@ export default function RootLayout() {
         return () => clearTimeout(timeout);
     }, []);
 
-	const activeTab = pathname === "/" || pathname.startsWith("/HomeScreen")
+	const activeTab = pathname.startsWith("/HomeScreen")
 		? "home"
 		: pathname.startsWith("/NowPlayingScreen")
 		? "radio"
 		: "home";
 	const isNowPlaying = pathname.startsWith("/NowPlayingScreen");
+    const appearBottomBar = pathname.startsWith("/HomeScreen") || isNowPlaying;
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
@@ -44,42 +45,44 @@ export default function RootLayout() {
                 <Stack.Screen name="NowPlayingScreen" />
             </Stack>
 
-            <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
-                <View
-                    pointerEvents="box-none"
-                    style={{
-                        position: "absolute",
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        zIndex: 8000,
-                        elevation: 8000
-                    }}
-                >
-                    <MiniPlayer hidden={isNowPlaying} />
-                </View>
-
-                <View
-                    pointerEvents="box-none"
-                    style={{
-                        position: "absolute",
-                        left: 0,
-                        right: 0,
-                        bottom: "2%",
-                        zIndex: 9999,
-                        elevation: 9999,
-                        alignItems: "center",
-                    }}
-                >
-                    <BottomBar
-                        active={activeTab as any}
-                        onPress={(k) => {
-                            if (k === "home") router.replace("/HomeScreen");
-                            else if (k === "radio") router.replace("/NowPlayingScreen");
+            {appearBottomBar && (
+                <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+                    <View
+                        pointerEvents="box-none"
+                        style={{
+                            position: "absolute",
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            zIndex: 8000,
+                            elevation: 8000,
                         }}
-                    />
+                    >
+                        <MiniPlayer hidden={isNowPlaying} />
+                    </View>
+
+                    <View
+                        pointerEvents="box-none"
+                        style={{
+                            position: "absolute",
+                            left: 0,
+                            right: 0,
+                            bottom: "2%",
+                            zIndex: 9999,
+                            elevation: 9999,
+                            alignItems: "center",
+                        }}
+                    >
+                        <BottomBar
+                            active={activeTab as any}
+                            onPress={(k) => {
+                                if (k === "home") router.replace("/HomeScreen");
+                                else if (k === "radio") router.replace("/NowPlayingScreen");
+                            }}
+                        />
+                    </View>
                 </View>
-            </View>
+            )}
         </GestureHandlerRootView>
     );
 }

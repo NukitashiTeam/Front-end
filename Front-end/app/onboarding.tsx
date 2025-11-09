@@ -3,8 +3,8 @@ import { StyleSheet, Text, View, Image, Dimensions, FlatList, Animated, Touchabl
 import React, { useRef, useState } from 'react';
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Paginator from '@/Components-Khanh/Paginator';
-import BackgroundLayer from '@/Components-Khanh/BackgroundLayer';
+import Paginator from '@/Components/Paginator';
+import BackgroundLayer from '@/Components/BackgroundLayer';
 
 const { width, height } = Dimensions.get("window");
 
@@ -51,7 +51,7 @@ function Onboarding() {
     } else {
       // ✅ Khi hoàn tất onboarding, lưu lại trạng thái đã xem
       await AsyncStorage.setItem("hasSeenOnboarding", "true");
-      router.replace("/HomeScreen");
+      router.replace("/src/signin/Login");
     }
   };
 

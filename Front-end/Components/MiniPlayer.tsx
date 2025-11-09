@@ -14,8 +14,8 @@ import Animated, {
     withTiming,
     interpolate,
 } from "react-native-reanimated";
-import styles from "./styles/MiniPlayerStyles";
-import { NowPlayingPreview } from "../NowPlayingScreen";
+import styles from "../styles/MiniPlayerStyles";
+import { NowPlayingPreview } from "../app/NowPlayingScreen";
 
 const { height: SCREEN_H } = Dimensions.get("window");
 const EXPAND_DISTANCE = SCREEN_H * 0.7;

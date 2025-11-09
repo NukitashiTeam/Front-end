@@ -4,7 +4,7 @@ import { useFonts, IrishGrover_400Regular } from "@expo-google-fonts/irish-grove
 import { Montserrat_600SemiBold } from "@expo-google-fonts/montserrat"
 import { StyleSheet } from "react-native";
 
-import style from "../style";
+import style from "../styles/style";
 interface Props {
   children: ReactNode;
 }

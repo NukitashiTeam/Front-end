@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Switch, TouchableOpacity, Modal } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import styles from "./styles/HeaderStyles";
+import styles from "../styles/HeaderStyles";
 import UserOptionsSheet from "./UserOptionsSheet";
 
 type HeaderProps = {

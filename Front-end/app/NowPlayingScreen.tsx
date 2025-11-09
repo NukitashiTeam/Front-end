@@ -24,8 +24,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Slider } from "@miblanchard/react-native-slider";
 import { useRouter, usePathname, Href } from "expo-router";
-import styles from "./styles/NowPlayingScreenStyles";
-import Header from "./components/Header";
+import styles from "../styles/NowPlayingScreenStyles";
+import Header from "../Components/Header";
 
 const { height: SCREEN_H } = Dimensions.get("window");
 

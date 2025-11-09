@@ -3,8 +3,8 @@ import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import Background from "./component/background";
-import styles from "./style";
+import Background from "../../../Components/background";
+import styles from "../../../styles/style";
 
 const TypeSong = () => {
   const router = useRouter();
@@ -62,7 +62,7 @@ const TypeSong = () => {
           showsVerticalScrollIndicator={false}
         />
         </View>
-        <TouchableOpacity style={{...styles.otpbutton, marginBottom: "15%", marginTop: "5%"}} activeOpacity={0.8}>
+        <TouchableOpacity style={{...styles.otpbutton, marginBottom: "15%", marginTop: "5%"}} activeOpacity={0.8} onPress={() => router.push('/HomeScreen')}>
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
 
