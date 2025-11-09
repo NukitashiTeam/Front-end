@@ -42,18 +42,18 @@ export default function Index() {
 
   // // ⏳ Có thể hiển thị splash hoặc loading tạm
 
-  // const checkOpen = useCallback (async () => {
-  //   const hasSeen = await AsyncStorage.getItem("hasSeenOnboarding");
-  //   if (hasSeen !== "true") {
-  //     router.replace("/onboarding");
-  //   } else {
-  //     router.replace("/HomeScreen");
-  //   }
-  // }, [])
+  const checkOpen = useCallback (async () => {
+    const hasSeen = await AsyncStorage.getItem("hasSeenOnboarding");
+    if (hasSeen !== "true") {
+      router.replace("/onboarding");
+    } else {
+      router.replace("/HomeScreen");
+    }
+  }, [])
 
-  // useEffect(() => {
-  //   checkOpen();
-  // }, []);
+  useEffect(() => {
+    checkOpen();
+  }, []);
 
   return (
     <BackgroundLayer>
