@@ -5,15 +5,13 @@ import {
     Image,
     StyleSheet,
     FlatList,
-    TouchableOpacity,
     StatusBar,
     Platform,
+    Pressable,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import styles from "../styles/CreateMoodPlaylistScreenStyles";
+import styles from "../styles/SearchScreenStyles";
 import Header from "../Components/Header";
 import {
     useFonts as useMontserrat,
@@ -28,8 +26,12 @@ type Song = {
     artist: string;
 };
 
-export default function CreateMoodPlaylistScreen() {
-    const router = useRouter();
+type SuggestionsMoodItem = {
+    moodName: string;
+    imgPath: any;
+};
+
+export default function SearchScreen() {
     const [isModEnabled, setIsModEnabled] = useState(false);
     const insets = useSafeAreaInsets();
 
@@ -99,6 +101,29 @@ export default function CreateMoodPlaylistScreen() {
         },
     ];
 
+    const suggestionsMoodPlaylist: SuggestionsMoodItem[] = [
+        {
+            moodName: "Chill",
+            imgPath: require("../assets/images/avatar.png")
+        },
+        {
+            moodName: "Travel",
+            imgPath: require("../assets/images/avatar2.png")
+        },
+        {
+            moodName: "Exhausted",
+            imgPath: require("../assets/images/avatar3.png")
+        },
+        {
+            moodName: "Educational",
+            imgPath: require("../assets/images/avatar4.png")
+        },
+        {
+            moodName: "Deadline",
+            imgPath: require("../assets/images/avatar5.png")
+        },
+    ];
+
     const renderSong = ({ item }: { item: Song }) => (
         <View style={styles.songRow}>
             <Image source={item.cover} style={styles.songCover} />
@@ -108,6 +133,17 @@ export default function CreateMoodPlaylistScreen() {
             </View>
         </View>
     );
+
+    const renderSuggestionMoodItem = (({ item }: {item: SuggestionsMoodItem}) => (
+        <View style={styles.quickStartTopRow}>
+            <View style={styles.quickStartLeftDown}>
+                <View style={styles.moodAvatarCircle}>
+                    <Image source={item.imgPath} style={styles.moodAvatarImg} />
+                </View>
+                <Text style={styles.moodNameText}>{item.moodName}</Text>
+            </View>
+        </View>
+    ));
 
     return (
         <View style={[styles.container, {
@@ -127,41 +163,36 @@ export default function CreateMoodPlaylistScreen() {
                 <Header isModEnabled={isModEnabled} onToggleMod={setIsModEnabled} />
             </View>
             
-            <TouchableOpacity
-                accessibilityRole="button"
-                onPress={() => router.back()}
-                style={styles.backBtn}
-            >
-                <Ionicons name="chevron-back" size={30} color="#fff" />
-            </TouchableOpacity>
-            
             <View style={styles.headerBlock}>
-                <Text style={styles.sectionTitle}>Created Mood Playlist</Text>
+                <View style={styles.suggestionsMoodPlaylistTextBlock}>
+                    <Text style={styles.sectionTitle}>Suggestions Mood Playlist</Text>
+                    <Text style={styles.showMoreText}>Show more</Text>
+                </View>
 
-                <View style={styles.playlistNameView}>
-                    <Image source={require("../assets/images/avatar.png")} style={styles.ownerAvatar} />
-                    <View style={{ flex: 1 }}>
-                        <Text style={styles.ownerName}>Chill</Text>
-                    </View>
+                <View style={styles.quickStartWrapper}>
+                    <Pressable
+                        style={({ pressed }) => [{
+                            opacity: pressed ? 0.96 : 1
+                        }]}
+                    >
+                        <LinearGradient
+                            colors={["#4F3BDB", "#2E266F"]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            style={styles.quickStartCard}
+                        >
+                            <FlatList 
+                                data={suggestionsMoodPlaylist}
+                                keyExtractor={(it) => it.moodName}
+                                renderItem={renderSuggestionMoodItem}
+                                showsVerticalScrollIndicator={false}
+                                contentContainerStyle={styles.suggestionsMoodPlaylistFlatList}
+                            />
+                        </LinearGradient>
+                    </Pressable>
                 </View>
-                
-                <View style={styles.playlistHeaderRow}>
-                    <View style={styles.playlistHeaderRowColumn1}>
-                        <TouchableOpacity style={styles.iconCircle}>
-                            <Ionicons name="shuffle-outline" size={18} color="#fff" />
-                        </TouchableOpacity>
-                        
-                        <TouchableOpacity style={[styles.iconCircle, { marginLeft: 10 }]}>
-                            <Ionicons name="add-outline" size={22} color="#fff" />
-                        </TouchableOpacity>
-                    </View>
-                    
-                    <View style={styles.playlistHeaderRowColumn2}>
-                        <TouchableOpacity style={styles.playCircle}>
-                            <Ionicons name="play" size={22} color="#4A2F7C" />
-                        </TouchableOpacity>
-                    </View>
-                </View>
+
+                <Text style={styles.ownerName}>Recent Playlist&apos;s Song</Text>
             </View>
 
             <FlatList

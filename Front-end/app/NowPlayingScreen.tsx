@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
     View,
     Text,
@@ -23,7 +23,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Slider } from "@miblanchard/react-native-slider";
-import { useRouter, usePathname, Href } from "expo-router";
+import { useRouter } from "expo-router";
 import styles from "../styles/NowPlayingScreenStyles";
 import Header from "../Components/Header";
 import {usePlayer} from "./PlayerContext";
@@ -72,7 +72,7 @@ export function NowPlayingPreview({
             duration: 200,
             useNativeDriver: true,
         }).start();
-    }, [volume]);
+    }, [volume, muteAnim]);
 
     return (
         <Animated.View
@@ -217,7 +217,6 @@ export default function NowPlayingScreen() {
     const muteAnim = useRef(new RNAnimated.Value(volume > 0 ? 0 : 1)).current;
     const oldVolume = useRef(volume);
     const router = useRouter();
-    const pathname = usePathname();
     const normalize = (v: number | number[]) => (Array.isArray(v) ? v[0] : v);
 
     const dragY = useSharedValue(0);
@@ -246,13 +245,13 @@ export default function NowPlayingScreen() {
         };
         });
 
-    const safeBack = () => {
+    const safeBack = useCallback(() => {
         if (router.canGoBack?.()) {
             router.back();
         } else {
             router.replace("/HomeScreen");
         }
-    };
+    }, [router]);
 
     const pan = Gesture.Pan().onChange((e) => {
         const y = Math.max(0, e.translationY);
@@ -274,7 +273,7 @@ export default function NowPlayingScreen() {
             duration: 200,
             useNativeDriver: true,
         }).start();
-    }, [volume]);
+    }, [volume, muteAnim]);
 
     useEffect(() => {
         const sub = BackHandler.addEventListener("hardwareBackPress", () => {
@@ -282,7 +281,7 @@ export default function NowPlayingScreen() {
             return true;
         });
         return () => sub.remove();
-    }, []);
+    }, [safeBack]);
 
     return (
         <GestureDetector gesture={pan}>

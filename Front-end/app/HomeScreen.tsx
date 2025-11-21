@@ -27,7 +27,6 @@ import {
 } from "@expo-google-fonts/montserrat";
 import * as SplashScreen from 'expo-splash-screen';
 import Header from "../Components/Header";
-import MiniPlayer from "../Components/MiniPlayer";
 
 SplashScreen.preventAutoHideAsync();
 

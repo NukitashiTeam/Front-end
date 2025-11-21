@@ -23,9 +23,16 @@ export default function RootLayout() {
 		? "home"
 		: pathname.startsWith("/NowPlayingScreen")
 		? "radio"
+        : pathname.startsWith("/SearchScreen")
+        ? "search"
 		: "home";
 	const isNowPlaying = pathname.startsWith("/NowPlayingScreen");
-    const appearBottomBar = pathname.startsWith("/HomeScreen") || isNowPlaying || pathname.startsWith("/CreateMoodPlaylistScreen");
+    const appearBottomBar = (
+        pathname.startsWith("/HomeScreen") || 
+        isNowPlaying || 
+        pathname.startsWith("/CreateMoodPlaylistScreen") ||
+        pathname.startsWith("/SearchScreen")
+    );
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
@@ -43,6 +50,7 @@ export default function RootLayout() {
                 <Stack.Screen name="onboarding" />
                 <Stack.Screen name="HomeScreen" />
                 <Stack.Screen name="CreateMoodPlaylistScreen" />
+                <Stack.Screen name="SearchScreen" />
                 <Stack.Screen 
                     name="NowPlayingScreen" 
                     options={{
@@ -85,8 +93,9 @@ export default function RootLayout() {
                         <BottomBar
                             active={activeTab as any}
                             onPress={(k) => {
-                                if (k === "home") router.replace("/HomeScreen");
-                                else if (k === "radio") router.replace("/NowPlayingScreen");
+                                if (k === "home") router.navigate("/HomeScreen");
+                                else if (k === "radio") router.navigate("/NowPlayingScreen");
+                                else if (k === "search") router.navigate("/SearchScreen");
                             }}
                         />
                     </View>
