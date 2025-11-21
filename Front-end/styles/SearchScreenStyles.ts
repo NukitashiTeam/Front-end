@@ -1,5 +1,7 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 
+const { width } = Dimensions.get("window");
+const PAD_H = width * 0.03;
 const RADIUS = 18;
 
 const styles = StyleSheet.create({
@@ -8,11 +10,11 @@ const styles = StyleSheet.create({
         backgroundColor: "#818BFF"
     },
     headerWrap: {
-        paddingHorizontal: 16,
+        paddingHorizontal: "3%",
         paddingTop: 8
     },
     headerBlock: {
-        paddingHorizontal: 16,
+        paddingHorizontal: "3%",
         paddingTop: 8,
         paddingBottom: 18,
     },
@@ -127,6 +129,43 @@ const styles = StyleSheet.create({
         width: "100%",
         flexDirection: "row",
         justifyContent: "space-between",
+    },
+    contextCard: {
+        width: 110,
+        height: 110,
+        borderRadius: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    contextIconContainer: {
+        marginBottom: 8,
+        position: 'relative',
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    contextTitle: {
+        fontFamily: 'Montserrat_700Bold',
+        fontSize: 14,
+        textAlign: 'center',
+        color: "#000080",
+    },
+    contextSection: {
+        marginTop: 14,
+        marginBottom: 16,
+        marginHorizontal: -PAD_H,
+    },
+    contextImage: {
+        width: "100%",
+        height: "100%",
+        resizeMode: "cover",
     },
 });
 

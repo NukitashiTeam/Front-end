@@ -8,7 +8,16 @@ import {
     StatusBar,
     Platform,
     Pressable,
+    Dimensions,
 } from "react-native";
+import Animated, { 
+    useAnimatedScrollHandler, 
+    useSharedValue, 
+    useAnimatedStyle, 
+    interpolate, 
+    Extrapolation,
+    SharedValue 
+} from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styles from "../styles/SearchScreenStyles";
@@ -18,6 +27,11 @@ import {
     Montserrat_400Regular,
     Montserrat_700Bold
 } from "@expo-google-fonts/montserrat";
+
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const CONTEXT_ITEM_WIDTH = SCREEN_WIDTH * 0.3;
+const CONTEXT_ITEM_SIZE = CONTEXT_ITEM_WIDTH;
+const SPACER = (SCREEN_WIDTH - CONTEXT_ITEM_SIZE) / 2;
 
 type Song = {
     id: string;
@@ -31,6 +45,13 @@ type SuggestionsMoodItem = {
     imgPath: any;
 };
 
+type ContextItem = {
+    id: string;
+    title: string;
+    bgColor: string;
+    imgPath: any;
+};
+
 export default function SearchScreen() {
     const [isModEnabled, setIsModEnabled] = useState(false);
     const insets = useSafeAreaInsets();
@@ -39,10 +60,6 @@ export default function SearchScreen() {
         Montserrat_400Regular,
         Montserrat_700Bold,
     });
-
-    if(!fontsMontserratLoaded) {
-        return null;
-    }
     
     const data: Song[] = [
         {
@@ -102,27 +119,28 @@ export default function SearchScreen() {
     ];
 
     const suggestionsMoodPlaylist: SuggestionsMoodItem[] = [
-        {
-            moodName: "Chill",
-            imgPath: require("../assets/images/avatar.png")
-        },
-        {
-            moodName: "Travel",
-            imgPath: require("../assets/images/avatar2.png")
-        },
-        {
-            moodName: "Exhausted",
-            imgPath: require("../assets/images/avatar3.png")
-        },
-        {
-            moodName: "Educational",
-            imgPath: require("../assets/images/avatar4.png")
-        },
-        {
-            moodName: "Deadline",
-            imgPath: require("../assets/images/avatar5.png")
-        },
+        { moodName: "Chill", imgPath: require("../assets/images/avatar.png") },
+        { moodName: "Travel", imgPath: require("../assets/images/avatar2.png") },
+        { moodName: "Exhausted", imgPath: require("../assets/images/avatar3.png") },
+        { moodName: "Educational", imgPath: require("../assets/images/avatar4.png") },
+        { moodName: "Deadline", imgPath: require("../assets/images/avatar5.png") },
     ];
+
+    const contextData: ContextItem[] = [
+        { id: '1', title: 'Studying', bgColor: '#F0E5C3', imgPath: require("../assets/images/book.png")},
+        { id: '2', title: 'Studying', bgColor: '#FBA7C0', imgPath: require("../assets/images/book.png")}, 
+        { id: '3', title: 'Studying', bgColor: '#72A8FF', imgPath: require("../assets/images/book.png")}, 
+        { id: '4', title: 'Studying', bgColor: '#FACA9A', imgPath: require("../assets/images/book.png")}, 
+        { id: '5', title: 'Studying', bgColor: '#8CFAC5', imgPath: require("../assets/images/book.png")}, 
+    ];
+
+    const infiniteContextData = React.useMemo(() => {
+        let data: any[] = [];
+        for (let i = 0; i < 100; i++) {
+            data = [...data, ...contextData];
+        }
+        return data.map((item, index) => ({ ...item, uniqueKey: `${item.id}_${index}` }));
+    }, []);
 
     const renderSong = ({ item }: { item: Song }) => (
         <View style={styles.songRow}>
@@ -134,7 +152,7 @@ export default function SearchScreen() {
         </View>
     );
 
-    const renderSuggestionMoodItem = (({ item }: {item: SuggestionsMoodItem}) => (
+    const renderSuggestionMoodItem = ({ item }: {item: SuggestionsMoodItem}) => (
         <View style={styles.quickStartTopRow}>
             <View style={styles.quickStartLeftDown}>
                 <View style={styles.moodAvatarCircle}>
@@ -143,7 +161,67 @@ export default function SearchScreen() {
                 <Text style={styles.moodNameText}>{item.moodName}</Text>
             </View>
         </View>
-    ));
+    );
+
+    const AnimatedContextItem = ({ item, index, scrollX }: {
+        item: ContextItem,
+        index: number,
+        scrollX: SharedValue<number>
+    }) => {
+        const animatedStyle = useAnimatedStyle(() => {
+            const inputRange = [
+                (index - 1) * CONTEXT_ITEM_SIZE,
+                index * CONTEXT_ITEM_SIZE,
+                (index + 1) * CONTEXT_ITEM_SIZE,
+            ];
+            
+            const scale = interpolate(
+                scrollX.value,
+                inputRange,
+                [0.75, 1.15, 0.75], 
+                Extrapolation.CLAMP
+            );
+            
+            const opacity = interpolate(
+                scrollX.value,
+                inputRange,
+                [0.5, 1, 0.5],
+                Extrapolation.CLAMP
+            );
+
+            return {
+                transform: [{ scale }],
+                opacity: opacity,
+                zIndex: index === Math.round(scrollX.value / CONTEXT_ITEM_SIZE) ? 10 : 1,
+            };
+        });
+
+        return (
+            <Animated.View style={[{
+                width: CONTEXT_ITEM_WIDTH,
+                alignItems: 'center',
+                justifyContent: 'center',
+            }, animatedStyle ]}>
+                <View style={[styles.contextCard, { 
+                    backgroundColor: item.bgColor,
+                    width: "100%",
+                    aspectRatio: 1, 
+                }]}>
+                    <Image source={item.imgPath} style={styles.contextImage} />
+                    <Text style={[styles.contextTitle]}>{item.title}</Text>
+                </View>
+            </Animated.View>
+        );
+    };
+
+    const scrollX = useSharedValue(0);
+    const onScroll = useAnimatedScrollHandler((event) => {
+        scrollX.value = event.contentOffset.x;
+    });
+
+    if(!fontsMontserratLoaded) {
+        return null;
+    }
 
     return (
         <View style={[styles.container, {
@@ -190,6 +268,39 @@ export default function SearchScreen() {
                             />
                         </LinearGradient>
                     </Pressable>
+                </View>
+
+                <Text style={styles.sectionTitle}>Context Playlist</Text>
+
+                <View style={styles.contextSection}>
+                    <Animated.FlatList
+                        data={infiniteContextData}
+                        keyExtractor={(item) => item.uniqueKey}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        snapToInterval={CONTEXT_ITEM_SIZE} 
+                        decelerationRate="fast"
+                        contentContainerStyle={{
+                            paddingHorizontal: SPACER,
+                            paddingVertical: 10, 
+                            alignItems: 'center'
+                        }}
+                        onScroll={onScroll}
+                        scrollEventThrottle={16}
+                        renderItem={({ item, index }) => (
+                            <AnimatedContextItem 
+                                item={item} 
+                                index={index} 
+                                scrollX={scrollX} 
+                            />
+                        )}
+                        getItemLayout={(data, index) => ({
+                            length: CONTEXT_ITEM_SIZE,
+                            offset: CONTEXT_ITEM_SIZE * index,
+                            index,
+                        })}
+                        initialScrollIndex={contextData.length * 50} 
+                    />
                 </View>
 
                 <Text style={styles.ownerName}>Recent Playlist&apos;s Song</Text>
