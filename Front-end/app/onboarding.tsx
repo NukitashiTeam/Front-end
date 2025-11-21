@@ -104,7 +104,7 @@ function Onboarding() {
 
       <Paginator data={onboardingData} scrollX={scrollX} index={index} />
 
-      <View style={{ alignItems: 'center', marginBottom: 20 }}>
+      <View style={{ alignItems: 'center', marginTop: -20}}>
         <TouchableOpacity style={styles.button} onPress={handleNextPage}>
           <Text style={styles.buttonText}>
             {index === onboardingData.length - 1 ? "Get Started" : "Next"}

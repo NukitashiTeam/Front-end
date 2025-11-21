@@ -16,7 +16,7 @@ import Animated, {
 } from "react-native-reanimated";
 import styles from "../styles/MiniPlayerStyles";
 import { NowPlayingPreview } from "../app/NowPlayingScreen";
-
+import { usePlayer } from "../app/PlayerContext";
 const { height: SCREEN_H } = Dimensions.get("window");
 const EXPAND_DISTANCE = SCREEN_H * 0.7;
 const VELOCITY_OPEN = 1200;
@@ -25,8 +25,7 @@ const DISTANCE_OPEN = 0.35;
 export default function MiniPlayer({ hidden = false }: { hidden?: boolean }) {
     const router = useRouter();
     const pathname = usePathname();
-    const [isPlaying, setIsPlaying] = useState(true);
-    const [progressVal, setProgressVal] = useState(0.25);
+    const { isPlaying, setIsPlaying, progressVal: progressVal, setProgress: setProgressVal } = usePlayer();
     
     const progress = useSharedValue(0);
     const miniH = useSharedValue(0);
@@ -50,7 +49,7 @@ export default function MiniPlayer({ hidden = false }: { hidden?: boolean }) {
     const openFull = () => {
         if (naviagtingRef.current) return;
         naviagtingRef.current = true;
-        router.push("/NowPlayingScreen");
+        router.navigate("/NowPlayingScreen");
     };
 
     const pan = Gesture.Pan().onChange((e) => {
@@ -100,7 +99,12 @@ export default function MiniPlayer({ hidden = false }: { hidden?: boolean }) {
             opacity: 1 - p,
         };
     });
-
+    useEffect(() => {
+    if (hidden || !isNowPlaying) {
+        naviagtingRef.current = false;
+        progress.value = withTiming(0, { duration: 0 });
+    }
+}, [hidden, isNowPlaying]);
     const scrimStyle = useAnimatedStyle(() => {
         const p = startTop.value > 0 ? progress.value / startTop.value : 0;
         const opacity = interpolate(p, [0, 1], [0, 0.35], Extrapolation.CLAMP);

@@ -5,7 +5,7 @@ import { StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MiniPlayer from "../Components/MiniPlayer";
 import BottomBar from "../Components/BottomBar";
-
+import { PlayerProvider } from "./PlayerContext";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -25,10 +25,11 @@ export default function RootLayout() {
 		? "radio"
 		: "home";
 	const isNowPlaying = pathname.startsWith("/NowPlayingScreen");
-    const appearBottomBar = pathname.startsWith("/HomeScreen") || isNowPlaying;
+    const appearBottomBar = pathname.startsWith("/HomeScreen") || isNowPlaying || pathname.startsWith("/CreateMoodPlaylistScreen");
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
+            <PlayerProvider>
             <Stack 
                 screenOptions={{
                     headerShown: false, 
@@ -42,7 +43,15 @@ export default function RootLayout() {
                 <Stack.Screen name="onboarding" />
                 <Stack.Screen name="HomeScreen" />
                 <Stack.Screen name="CreateMoodPlaylistScreen" />
-                <Stack.Screen name="NowPlayingScreen" />
+                <Stack.Screen 
+                    name="NowPlayingScreen" 
+                    options={{
+                        presentation: "transparentModal",  // Overlay lên screen trước, không replace
+                        gestureEnabled: true,              // Cho phép gesture swipe down để back (đã có pan gesture trong NowPlayingScreen)
+                        animation: "none",                 // Bỏ animation default để seamless với gesture của MiniPlayer
+                        contentStyle: { backgroundColor: 'transparent' },
+                    }}
+                />
             </Stack>
 
             {appearBottomBar && (
@@ -83,6 +92,7 @@ export default function RootLayout() {
                     </View>
                 </View>
             )}
+            </PlayerProvider>
         </GestureHandlerRootView>
     );
 }

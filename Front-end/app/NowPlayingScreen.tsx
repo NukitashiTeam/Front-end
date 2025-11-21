@@ -26,7 +26,7 @@ import { Slider } from "@miblanchard/react-native-slider";
 import { useRouter, usePathname, Href } from "expo-router";
 import styles from "../styles/NowPlayingScreenStyles";
 import Header from "../Components/Header";
-
+import {usePlayer} from "./PlayerContext";
 const { height: SCREEN_H } = Dimensions.get("window");
 
 export type NowPlayingPreviewProps = {
@@ -59,9 +59,8 @@ export function NowPlayingPreview({
         };
     });
 
-    const [isPlaying, setIsPlaying] = useState(true);
+    const { isPlaying, setIsPlaying, progressVal: progress, setProgress } = usePlayer();
     const [isModEnabled, setIsModEnabled] = useState(true);
-    const [progress, setProgress] = useState(0.25);
     const [volume, setVolume] = useState(0.8);
     const muteAnim = useRef(new RNAnimated.Value(volume > 0 ? 0 : 1)).current;
     const oldVolume = useRef(volume);
