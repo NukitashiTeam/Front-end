@@ -170,22 +170,24 @@ export default function SearchScreen() {
     }) => {
         const animatedStyle = useAnimatedStyle(() => {
             const inputRange = [
+                (index - 2) * CONTEXT_ITEM_SIZE,
                 (index - 1) * CONTEXT_ITEM_SIZE,
                 index * CONTEXT_ITEM_SIZE,
                 (index + 1) * CONTEXT_ITEM_SIZE,
+                (index + 2) * CONTEXT_ITEM_SIZE,
             ];
             
             const scale = interpolate(
                 scrollX.value,
                 inputRange,
-                [0.75, 1.15, 0.75], 
+                [0.9, 0.95, 1.1, 0.95, 0.9],
                 Extrapolation.CLAMP
             );
             
             const opacity = interpolate(
                 scrollX.value,
                 inputRange,
-                [0.5, 1, 0.5],
+                [0.3, 0.6, 1, 0.6, 0.3], 
                 Extrapolation.CLAMP
             );
 
@@ -201,11 +203,20 @@ export default function SearchScreen() {
                 width: CONTEXT_ITEM_WIDTH,
                 alignItems: 'center',
                 justifyContent: 'center',
+                paddingHorizontal: 10, 
             }, animatedStyle ]}>
                 <View style={[styles.contextCard, { 
                     backgroundColor: item.bgColor,
                     width: "100%",
                     aspectRatio: 1, 
+                    shadowColor: "#000",
+                    shadowOffset: {
+                        width: 0,
+                        height: 4
+                    },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                    elevation: 6,
                 }]}>
                     <Image source={item.imgPath} style={styles.contextImage} />
                     <Text style={[styles.contextTitle]}>{item.title}</Text>
