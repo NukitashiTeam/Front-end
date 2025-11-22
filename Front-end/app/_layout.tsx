@@ -31,7 +31,8 @@ export default function RootLayout() {
         pathname.startsWith("/HomeScreen") || 
         isNowPlaying || 
         pathname.startsWith("/CreateMoodPlaylistScreen") ||
-        pathname.startsWith("/SearchScreen")
+        pathname.startsWith("/SearchScreen") ||
+        pathname.startsWith("/ChoosingMoodPlayScreen")
     );
 
     return (
@@ -51,6 +52,7 @@ export default function RootLayout() {
                 <Stack.Screen name="HomeScreen" />
                 <Stack.Screen name="CreateMoodPlaylistScreen" />
                 <Stack.Screen name="SearchScreen" />
+                <Stack.Screen name="ChoosingMoodPlayScreen" />
                 <Stack.Screen 
                     name="NowPlayingScreen" 
                     options={{

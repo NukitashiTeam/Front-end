@@ -10,6 +10,7 @@ import {
     Pressable,
     Dimensions,
     TextInput,
+    TouchableOpacity,
 } from "react-native";
 import Animated, { 
     useAnimatedScrollHandler, 
@@ -19,6 +20,7 @@ import Animated, {
     Extrapolation,
     SharedValue 
 } from "react-native-reanimated";
+import { useRouter } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -55,6 +57,7 @@ type ContextItem = {
 };
 
 export default function SearchScreen() {
+    const router = useRouter();
     const [isModEnabled, setIsModEnabled] = useState(false);
     const insets = useSafeAreaInsets();
 
@@ -267,7 +270,9 @@ export default function SearchScreen() {
 
                 <View style={styles.suggestionsMoodPlaylistTextBlock}>
                     <Text style={styles.sectionTitle}>Suggestions Mood Playlist</Text>
-                    <Text style={styles.showMoreText}>Show more</Text>
+                    <TouchableOpacity onPress={() => router.navigate("/ChoosingMoodPlayScreen")}>
+                        <Text style={styles.showMoreText}>Show more</Text>
+                    </TouchableOpacity>
                 </View>
 
                 <View style={styles.quickStartWrapper}>
@@ -338,5 +343,4 @@ export default function SearchScreen() {
             />
         </View>
     );
-   
 }
