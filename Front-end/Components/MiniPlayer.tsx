@@ -13,6 +13,7 @@ import Animated, {
     interpolate,
     withSpring,
     runOnJS,
+    Easing,
 } from "react-native-reanimated";
 import styles from "../styles/MiniPlayerStyles";
 import NowPlayingScreen from "../app/NowPlayingScreen";
@@ -20,10 +21,13 @@ import { usePlayer } from "../app/PlayerContext";
 
 const { height: SCREEN_H } = Dimensions.get("window");
 const MINI_HEIGHT = 80;
+const PEEK_OFFSET = 170;
+const ANIM_CONFIG = { duration: 300, easing: Easing.out(Easing.quad) };
 
 export type MiniPlayerRef = {
     expand: () => void;
     collapse: () => void;
+    peek?: () => void;
 };
 
 type MiniPlayerProps = {
@@ -46,11 +50,15 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({ hidden = false,
     useImperativeHandle(ref, () => ({
         expand: () => {
             'worklet';
-            expandProgress.value = withSpring(1, { damping: 18, stiffness: 100 });
+            expandProgress.value = withTiming(1, ANIM_CONFIG);
             runOnJS(notifyStateChange)(true);
         },
         collapse: () => {
-            expandProgress.value = withTiming(0, { duration: 250 });
+            expandProgress.value = withTiming(0, ANIM_CONFIG);
+            runOnJS(notifyStateChange)(false);
+        },
+        peek: () => {
+            expandProgress.value = withTiming(-1, ANIM_CONFIG);
             runOnJS(notifyStateChange)(false);
         }
     }));
@@ -58,7 +66,7 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({ hidden = false,
     useEffect(() => {
         const backAction = () => {
             if (expandProgress.value > 0.5) {
-                expandProgress.value = withSpring(0, { damping: 15 });
+                expandProgress.value = withTiming(0, ANIM_CONFIG);
                 return true;
             }
             return false;
@@ -71,14 +79,35 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({ hidden = false,
         context.value = expandProgress.value;
     }).onChange((e) => {
         const change = -e.translationY / (SCREEN_H - MINI_HEIGHT);
-        expandProgress.value = Math.min(Math.max(context.value + change, 0), 1);
+        expandProgress.value = Math.min(Math.max(context.value + change, -1), 1);
     }).onEnd((e) => {
-        if (e.velocityY < -500 || expandProgress.value > 0.3) {
-            expandProgress.value = withSpring(1, { damping: 18, stiffness: 100 });
-            runOnJS(notifyStateChange)(true);
+        if (e.velocityY < -500) {
+            if (expandProgress.value < -0.5) {
+                expandProgress.value = withTiming(0, ANIM_CONFIG);
+                runOnJS(notifyStateChange)(false);
+            } else {
+                expandProgress.value = withTiming(1, ANIM_CONFIG);
+                runOnJS(notifyStateChange)(true);
+            }
+        } else if (e.velocityY > 500) {
+             if (expandProgress.value > 0.5) {
+                expandProgress.value = withTiming(0, ANIM_CONFIG);
+                runOnJS(notifyStateChange)(false);
+            } else {
+                expandProgress.value = withTiming(-1, ANIM_CONFIG);
+                runOnJS(notifyStateChange)(false);
+            }
         } else {
-            expandProgress.value = withTiming(0, { duration: 200 });
-            runOnJS(notifyStateChange)(false);
+            if (expandProgress.value > 0.3) {
+                expandProgress.value = withTiming(1, ANIM_CONFIG);
+                runOnJS(notifyStateChange)(true);
+            } else if (expandProgress.value < -0.2) {
+                expandProgress.value = withTiming(-1, ANIM_CONFIG);
+                runOnJS(notifyStateChange)(false);
+            } else {
+                expandProgress.value = withTiming(0, ANIM_CONFIG);
+                runOnJS(notifyStateChange)(false);
+            }
         }
     });
 
@@ -91,10 +120,10 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({ hidden = false,
         }
     }).onEnd((e) => {
         if (e.velocityY > 500 || expandProgress.value < 0.8) {
-            expandProgress.value = withTiming(0, { duration: 250 });
+            expandProgress.value = withTiming(0, ANIM_CONFIG);
             runOnJS(notifyStateChange)(false);
         } else {
-            expandProgress.value = withSpring(1, { damping: 18, stiffness: 100 });
+            expandProgress.value = withTiming(1, ANIM_CONFIG);
             runOnJS(notifyStateChange)(true);
         }
     });
@@ -120,12 +149,25 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({ hidden = false,
 
     const miniPlayerStyle = useAnimatedStyle(() => {
         return {
-            opacity: interpolate(expandProgress.value, [0, 0.2], [1, 0], Extrapolation.CLAMP),
             transform: [
-                { translateY: interpolate(expandProgress.value, [0, 1], [0, -MINI_HEIGHT], Extrapolation.CLAMP) }
+                { 
+                    translateY: interpolate(
+                        expandProgress.value, 
+                        [-1, 0, 1], 
+                        [PEEK_OFFSET, 0, -MINI_HEIGHT], 
+                        Extrapolation.CLAMP
+                    ) 
+                }
             ],
+            opacity: interpolate(expandProgress.value, [0, 0.5], [1, 0], Extrapolation.CLAMP),
             zIndex: 5,
         };
+    });
+
+    const miniContentOpacity = useAnimatedStyle(() => {
+        return {
+            opacity: interpolate(expandProgress.value, [-0.5, 0], [0, 1], Extrapolation.CLAMP)
+        }
     });
 
     const backdropStyle = useAnimatedStyle(() => {
@@ -169,58 +211,54 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({ hidden = false,
                         end={{ x: 1, y: 1 }}
                         style={styles.miniBg}
                     >
-                        <GestureHandle
-                            onLayout={(e: any) => {
-                                // handleY.value = e.nativeEvent.layout.y;
-                                // hasHandleY.value = 1;
-                                // recalcStartTop();
-                            }}
-                        />
-
-                        <View style={{display: "flex", flexDirection: 'column', alignItems: 'center', flex: 1}}>
-                            <View style={styles.miniHeaderRow}>
-                                <Ionicons name="notifications-outline" size={34} color="white" />
-                                <View>
-                                    <Text style={styles.miniTitle}>Shape of You</Text>
-                                    <Text style={styles.miniSubtitle}>Ed Sherran - Happy Playlist</Text>
+                        <GestureHandle />
+                        
+                        <Animated.View style={[{flex: 1, width: '100%'}, miniContentOpacity]}>
+                            <View style={{display: "flex", flexDirection: 'column', alignItems: 'center', flex: 1}}>
+                                <View style={styles.miniHeaderRow}>
+                                    <Ionicons name="notifications-outline" size={34} color="white" />
+                                    <View>
+                                        <Text style={styles.miniTitle}>Shape of You</Text>
+                                        <Text style={styles.miniSubtitle}>Ed Sherran - Happy Playlist</Text>
+                                    </View>
+                                    <Ionicons name="share-social-outline" size={34} color="white" />
                                 </View>
-                                <Ionicons name="share-social-outline" size={34} color="white" />
+
+                                <View style={styles.miniControlRow}>
+                                    <TouchableOpacity style={styles.miniIconBtn}>
+                                        <Ionicons name="play-skip-back" size={26} color="white" />
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        style={[styles.miniIconBtn, { marginHorizontal: 24 }]}
+                                        onPress={() => setIsPlaying((p) => !p)}
+                                        accessibilityRole="button"
+                                        accessibilityLabel={isPlaying ? "Pause" : "play"}
+                                    >
+                                        <Ionicons name={isPlaying ? "pause" : "play"} size={28} color="white" />
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity style={styles.miniIconBtn}>
+                                        <Ionicons name="play-skip-forward" size={26} color="white" />
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View style={styles.miniProgressRow}>
+                                    <Text style={styles.miniTimeText}>1:02</Text>
+                                    <Slider
+                                        containerStyle={styles.miniSliderContainer}
+                                        trackStyle={styles.miniSliderTrack}
+                                        minimumTrackStyle={styles.miniSliderMinTrack}
+                                        thumbStyle={styles.miniSliderThumb}
+                                        value={progressVal}
+                                        onValueChange={(v) => setProgressVal(Array.isArray(v) ? v[0] : v)}
+                                        minimumValue={0}
+                                        maximumValue={1}
+                                    />
+                                    <Text style={styles.miniTimeText}>4:08</Text>
+                                </View>
                             </View>
-
-                            <View style={styles.miniControlRow}>
-                                <TouchableOpacity style={styles.miniIconBtn}>
-                                    <Ionicons name="play-skip-back" size={26} color="white" />
-                                </TouchableOpacity>
-
-                                <TouchableOpacity
-                                    style={[styles.miniIconBtn, { marginHorizontal: 24 }]}
-                                    onPress={() => setIsPlaying((p) => !p)}
-                                    accessibilityRole="button"
-                                    accessibilityLabel={isPlaying ? "Pause" : "play"}
-                                >
-                                    <Ionicons name={isPlaying ? "pause" : "play"} size={28} color="white" />
-                                </TouchableOpacity>
-
-                                <TouchableOpacity style={styles.miniIconBtn}>
-                                    <Ionicons name="play-skip-forward" size={26} color="white" />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-                        <View style={styles.miniProgressRow}>
-                            <Text style={styles.miniTimeText}>1:02</Text>
-                            <Slider
-                                containerStyle={styles.miniSliderContainer}
-                                trackStyle={styles.miniSliderTrack}
-                                minimumTrackStyle={styles.miniSliderMinTrack}
-                                thumbStyle={styles.miniSliderThumb}
-                                value={progressVal}
-                                onValueChange={(v) => setProgressVal(Array.isArray(v) ? v[0] : v)}
-                                minimumValue={0}
-                                maximumValue={1}
-                            />
-                            <Text style={styles.miniTimeText}>4:08</Text>
-                        </View>
+                        </Animated.View>
                     </LinearGradient>
                 </Animated.View>
             </GestureDetector>
