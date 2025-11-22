@@ -167,6 +167,30 @@ const styles = StyleSheet.create({
         height: "100%",
         resizeMode: "cover",
     },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#FFFFFF',
+        borderRadius: 16,
+        paddingHorizontal: "4%",
+        paddingVertical: "1%",
+        marginBottom: 24,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    searchInput: {
+        flex: 1,
+        fontSize: 14,
+        fontFamily: "Montserrat_400Regular",
+        color: "#000000",
+        height: '100%',
+    },
 });
 
 export default styles;

@@ -9,6 +9,7 @@ import {
     Platform,
     Pressable,
     Dimensions,
+    TextInput,
 } from "react-native";
 import Animated, { 
     useAnimatedScrollHandler, 
@@ -18,6 +19,7 @@ import Animated, {
     Extrapolation,
     SharedValue 
 } from "react-native-reanimated";
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styles from "../styles/SearchScreenStyles";
@@ -253,6 +255,16 @@ export default function SearchScreen() {
             </View>
             
             <View style={styles.headerBlock}>
+                <View style={styles.searchContainer}>
+                    <Ionicons name="search-outline" size={22} color="#8E8E93" style={{ marginRight: 10 }} />
+                    <TextInput
+                        placeholder="Find By Name, Artists or Mood"
+                        placeholderTextColor="#8E8E93"
+                        style={styles.searchInput}
+                    />
+                    <Ionicons name="mic-outline" size={22} color="#555555" />
+                </View>
+
                 <View style={styles.suggestionsMoodPlaylistTextBlock}>
                     <Text style={styles.sectionTitle}>Suggestions Mood Playlist</Text>
                     <Text style={styles.showMoreText}>Show more</Text>
