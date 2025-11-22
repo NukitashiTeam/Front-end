@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { View, TouchableOpacity, Text, Dimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -13,24 +13,25 @@ import Animated, {
     useSharedValue,
     withTiming,
     interpolate,
+    Easing,
 } from "react-native-reanimated";
 import styles from "../styles/MiniPlayerStyles";
 import { NowPlayingPreview } from "../app/NowPlayingScreen";
 import { usePlayer } from "../app/PlayerContext";
+
 const { height: SCREEN_H } = Dimensions.get("window");
-const EXPAND_DISTANCE = SCREEN_H * 0.7;
-const VELOCITY_OPEN = 1200;
-const DISTANCE_OPEN = 0.35;
+const VELOCITY_OPEN = 600;
 
 export default function MiniPlayer({ hidden = false }: { hidden?: boolean }) {
     const router = useRouter();
     const pathname = usePathname();
-    const { isPlaying, setIsPlaying, progressVal: progressVal, setProgress: setProgressVal } = usePlayer();
+    const { isPlaying, setIsPlaying, progressVal, setProgress: setProgressVal } = usePlayer();
     
     const progress = useSharedValue(0);
     const miniH = useSharedValue(0);
     const handleY = useSharedValue(0);
     const startTop = useSharedValue(SCREEN_H);
+    const savedOffset = useSharedValue(0); 
 
     const hasMiniH   = useSharedValue(0);
     const hasHandleY = useSharedValue(0);
@@ -50,45 +51,57 @@ export default function MiniPlayer({ hidden = false }: { hidden?: boolean }) {
         if (naviagtingRef.current) return;
         naviagtingRef.current = true;
         router.navigate("/NowPlayingScreen");
+        savedOffset.value = 0; 
     };
 
-    const pan = Gesture.Pan().onChange((e) => {
+    const pan = Gesture.Pan().onStart(() => {}).onChange((e) => {
         if(!layoutReady.value || naviagtingRef.current) return;
-        const dyUp = -e.translationY;
-        progress.value = Math.min(Math.max(dyUp, 0), startTop.value);
+        const newProgress = savedOffset.value - e.translationY;
+        const maxDown = -(miniH.value - 50);
+        progress.value = Math.min(Math.max(newProgress, maxDown), startTop.value);
     }).onEnd((e) => {
         if (!layoutReady.value) return;
         const flickUp = -e.velocityY > VELOCITY_OPEN;
-        const passed = progress.value > startTop.value * 0.35;
-        const open = flickUp || passed;
-        progress.value = withTiming(open ? startTop.value : 0, { duration: 180 }, (done) => {
-            if (open && done) {
-                runOnJS(openFull)();
-            }
-        });
+        const passedUpThreshold = progress.value > startTop.value * 0.35;
+        if (progress.value > 0 && (flickUp || passedUpThreshold)) {
+            progress.value = withTiming(startTop.value, { duration: 250, easing: Easing.out(Easing.cubic) }, (done) => {
+                if (done) runOnJS(openFull)();
+            });
+            return;
+        }
+
+        const flickDown = e.velocityY > VELOCITY_OPEN;
+        const passedDownThreshold = progress.value < -10; 
+        const minimizedVal = -(miniH.value - 90);
+        if (progress.value < 0 && (flickDown || passedDownThreshold) && !flickUp) { 
+            progress.value = withTiming(minimizedVal, { 
+                duration: 300, 
+                easing: Easing.out(Easing.cubic) 
+            });
+            savedOffset.value = minimizedVal; 
+        } else {
+            progress.value = withTiming(0, { 
+                duration: 300, 
+                easing: Easing.out(Easing.cubic) 
+            });
+            savedOffset.value = 0;
+        }
     });
 
     useEffect(() => {
         const isHome = pathname === "/" || pathname === "/HomeScreen";
         if (isHome) {
             naviagtingRef.current = false;
-            progress.value = withTiming(0, { duration: 0 });
+            progress.value = withTiming(0, { duration: 300 });
+            savedOffset.value = 0;
         }
     }, [pathname]);
 
     useEffect(() => {
-        if (!isNowPlaying) {
-            naviagtingRef.current = false;
-            progress.value = withTiming(0, { duration: 0 });
-        } else {
-            progress.value = withTiming(0, { duration: 0 });
-        }
-    }, [isNowPlaying]);
-    
-    useEffect(() => {
         if (hidden) {
-        naviagtingRef.current = false;  // 👈 thêm
-        progress.value = 0;
+            naviagtingRef.current = false;
+            progress.value = 0;
+            savedOffset.value = 0;
         }
     }, [hidden]);
 
@@ -99,12 +112,13 @@ export default function MiniPlayer({ hidden = false }: { hidden?: boolean }) {
             opacity: 1 - p,
         };
     });
-    useEffect(() => {
-    if (hidden || !isNowPlaying) {
-        naviagtingRef.current = false;
-        progress.value = withTiming(0, { duration: 0 });
-    }
-}, [hidden, isNowPlaying]);
+
+    const contentOpacityStyle = useAnimatedStyle(() => {
+        return {
+            opacity: interpolate(progress.value, [-50, 0], [0, 1], Extrapolation.CLAMP),
+        };
+    });
+
     const scrimStyle = useAnimatedStyle(() => {
         const p = startTop.value > 0 ? progress.value / startTop.value : 0;
         const opacity = interpolate(p, [0, 1], [0, 0.35], Extrapolation.CLAMP);
@@ -150,48 +164,50 @@ export default function MiniPlayer({ hidden = false }: { hidden?: boolean }) {
                             }}
                         />
 
-                        <View style={styles.miniHeaderRow}>
-                            <Ionicons name="notifications-outline" size={34} color="white" />
-                            <View>
-                                <Text style={styles.miniTitle}>Shape of You</Text>
-                                <Text style={styles.miniSubtitle}>Ed Sherran - Happy Playlist</Text>
+                        <Animated.View style={contentOpacityStyle}>
+                            <View style={styles.miniHeaderRow}>
+                                <Ionicons name="notifications-outline" size={34} color="white" />
+                                <View>
+                                    <Text style={styles.miniTitle}>Shape of You</Text>
+                                    <Text style={styles.miniSubtitle}>Ed Sherran - Happy Playlist</Text>
+                                </View>
+                                <Ionicons name="share-social-outline" size={34} color="white" />
                             </View>
-                            <Ionicons name="share-social-outline" size={34} color="white" />
-                        </View>
 
-                        <View style={styles.miniControlRow}>
-                            <TouchableOpacity style={styles.miniIconBtn}>
-                                <Ionicons name="play-skip-back" size={26} color="white" />
-                            </TouchableOpacity>
+                            <View style={styles.miniControlRow}>
+                                <TouchableOpacity style={styles.miniIconBtn}>
+                                    <Ionicons name="play-skip-back" size={26} color="white" />
+                                </TouchableOpacity>
 
-                            <TouchableOpacity
-                                style={[styles.miniIconBtn, { marginHorizontal: 24 }]}
-                                onPress={() => setIsPlaying((p) => !p)}
-                                accessibilityRole="button"
-                                accessibilityLabel={isPlaying ? "Pause" : "play"}
-                            >
-                                <Ionicons name={isPlaying ? "pause" : "play"} size={28} color="white" />
-                            </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={[styles.miniIconBtn, { marginHorizontal: 24 }]}
+                                    onPress={() => setIsPlaying((p) => !p)}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={isPlaying ? "Pause" : "play"}
+                                >
+                                    <Ionicons name={isPlaying ? "pause" : "play"} size={28} color="white" />
+                                </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.miniIconBtn}>
-                                <Ionicons name="play-skip-forward" size={26} color="white" />
-                            </TouchableOpacity>
-                        </View>
+                                <TouchableOpacity style={styles.miniIconBtn}>
+                                    <Ionicons name="play-skip-forward" size={26} color="white" />
+                                </TouchableOpacity>
+                            </View>
 
-                        <View style={styles.miniProgressRow}>
-                            <Text style={styles.miniTimeText}>1:02</Text>
-                            <Slider
-                                containerStyle={styles.miniSliderContainer}
-                                trackStyle={styles.miniSliderTrack}
-                                minimumTrackStyle={styles.miniSliderMinTrack}
-                                thumbStyle={styles.miniSliderThumb}
-                                value={progressVal}
-                                onValueChange={(v) => setProgressVal(Array.isArray(v) ? v[0] : v)}
-                                minimumValue={0}
-                                maximumValue={1}
-                            />
-                            <Text style={styles.miniTimeText}>4:08</Text>
-                        </View>
+                            <View style={styles.miniProgressRow}>
+                                <Text style={styles.miniTimeText}>1:02</Text>
+                                <Slider
+                                    containerStyle={styles.miniSliderContainer}
+                                    trackStyle={styles.miniSliderTrack}
+                                    minimumTrackStyle={styles.miniSliderMinTrack}
+                                    thumbStyle={styles.miniSliderThumb}
+                                    value={progressVal}
+                                    onValueChange={(v) => setProgressVal(Array.isArray(v) ? v[0] : v)}
+                                    minimumValue={0}
+                                    maximumValue={1}
+                                />
+                                <Text style={styles.miniTimeText}>4:08</Text>
+                            </View>
+                        </Animated.View>
                     </LinearGradient>
                 </Animated.View>
             </GestureDetector>
