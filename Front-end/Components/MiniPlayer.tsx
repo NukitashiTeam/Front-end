@@ -1,155 +1,168 @@
-import React, { useRef, useEffect } from "react";
-import { View, TouchableOpacity, Text, Dimensions } from "react-native";
+import React, { useEffect, useImperativeHandle, forwardRef } from "react";
+import { View, TouchableOpacity, Text, Dimensions, StyleSheet, BackHandler } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import GestureHandle from "./GestureHandle";
+import GestureHandle from "./GestureHandle"; 
 import { Slider } from "@miblanchard/react-native-slider";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { useRouter, usePathname } from "expo-router";
 import Animated, {
-    runOnJS,
     Extrapolation,
     useAnimatedStyle,
     useSharedValue,
     withTiming,
     interpolate,
-    Easing,
+    withSpring,
+    runOnJS,
 } from "react-native-reanimated";
 import styles from "../styles/MiniPlayerStyles";
-import { NowPlayingPreview } from "../app/NowPlayingScreen";
+import NowPlayingScreen from "../app/NowPlayingScreen";
 import { usePlayer } from "../app/PlayerContext";
 
 const { height: SCREEN_H } = Dimensions.get("window");
-const VELOCITY_OPEN = 600;
+const MINI_HEIGHT = 80;
 
-export default function MiniPlayer({ hidden = false }: { hidden?: boolean }) {
-    const router = useRouter();
-    const pathname = usePathname();
+export type MiniPlayerRef = {
+    expand: () => void;
+    collapse: () => void;
+};
+
+type MiniPlayerProps = {
+    hidden?: boolean;
+    onStateChange?: (isExpanded: boolean) => void;
+};
+
+const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({ hidden = false, onStateChange }, ref) => {
     const { isPlaying, setIsPlaying, progressVal, setProgress: setProgressVal } = usePlayer();
     
-    const progress = useSharedValue(0);
-    const miniH = useSharedValue(0);
-    const handleY = useSharedValue(0);
-    const startTop = useSharedValue(SCREEN_H);
-    const savedOffset = useSharedValue(0); 
+    const expandProgress = useSharedValue(0); 
+    const context = useSharedValue(0);
 
-    const hasMiniH   = useSharedValue(0);
-    const hasHandleY = useSharedValue(0);
-    const layoutReady = useSharedValue(0);
-
-    const naviagtingRef = useRef(false);
-    const isNowPlaying = pathname === "/NowPlayingScreen";
-
-    const recalcStartTop = () => {
-        if (hasMiniH.value && hasHandleY.value) {
-            startTop.value = SCREEN_H - miniH.value + handleY.value;
-            layoutReady.value = 1;
+    const notifyStateChange = (expanded: boolean) => {
+        if (onStateChange) {
+            onStateChange(expanded);
         }
     };
 
-    const openFull = () => {
-        if (naviagtingRef.current) return;
-        naviagtingRef.current = true;
-        router.navigate("/NowPlayingScreen");
-        savedOffset.value = 0; 
-    };
+    useImperativeHandle(ref, () => ({
+        expand: () => {
+            'worklet';
+            expandProgress.value = withSpring(1, { damping: 18, stiffness: 100 });
+            runOnJS(notifyStateChange)(true);
+        },
+        collapse: () => {
+            expandProgress.value = withTiming(0, { duration: 250 });
+            runOnJS(notifyStateChange)(false);
+        }
+    }));
 
-    const pan = Gesture.Pan().onStart(() => {}).onChange((e) => {
-        if(!layoutReady.value || naviagtingRef.current) return;
-        const newProgress = savedOffset.value - e.translationY;
-        const maxDown = -(miniH.value - 50);
-        progress.value = Math.min(Math.max(newProgress, maxDown), startTop.value);
+    useEffect(() => {
+        const backAction = () => {
+            if (expandProgress.value > 0.5) {
+                expandProgress.value = withSpring(0, { damping: 15 });
+                return true;
+            }
+            return false;
+        };
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+        return () => backHandler.remove();
+    }, []);
+    
+    const panUp = Gesture.Pan().onStart(() => {
+        context.value = expandProgress.value;
+    }).onChange((e) => {
+        const change = -e.translationY / (SCREEN_H - MINI_HEIGHT);
+        expandProgress.value = Math.min(Math.max(context.value + change, 0), 1);
     }).onEnd((e) => {
-        if (!layoutReady.value) return;
-        const flickUp = -e.velocityY > VELOCITY_OPEN;
-        const passedUpThreshold = progress.value > startTop.value * 0.35;
-        if (progress.value > 0 && (flickUp || passedUpThreshold)) {
-            progress.value = withTiming(startTop.value, { duration: 250, easing: Easing.out(Easing.cubic) }, (done) => {
-                if (done) runOnJS(openFull)();
-            });
-            return;
-        }
-
-        const flickDown = e.velocityY > VELOCITY_OPEN;
-        const passedDownThreshold = progress.value < -10; 
-        const minimizedVal = -(miniH.value - 90);
-        if (progress.value < 0 && (flickDown || passedDownThreshold) && !flickUp) { 
-            progress.value = withTiming(minimizedVal, { 
-                duration: 300, 
-                easing: Easing.out(Easing.cubic) 
-            });
-            savedOffset.value = minimizedVal; 
+        if (e.velocityY < -500 || expandProgress.value > 0.3) {
+            expandProgress.value = withSpring(1, { damping: 18, stiffness: 100 });
+            runOnJS(notifyStateChange)(true);
         } else {
-            progress.value = withTiming(0, { 
-                duration: 300, 
-                easing: Easing.out(Easing.cubic) 
-            });
-            savedOffset.value = 0;
+            expandProgress.value = withTiming(0, { duration: 200 });
+            runOnJS(notifyStateChange)(false);
         }
     });
 
-    useEffect(() => {
-        const isHome = pathname === "/" || pathname === "/HomeScreen";
-        if (isHome) {
-            naviagtingRef.current = false;
-            progress.value = withTiming(0, { duration: 300 });
-            savedOffset.value = 0;
+    const panDown = Gesture.Pan().onStart(() => {
+        context.value = expandProgress.value;
+    }).onChange((e) => {
+        if (e.translationY > 0) {
+            const change = e.translationY / SCREEN_H;
+            expandProgress.value = Math.max(context.value - change, 0);
         }
-    }, [pathname]);
-
-    useEffect(() => {
-        if (hidden) {
-            naviagtingRef.current = false;
-            progress.value = 0;
-            savedOffset.value = 0;
+    }).onEnd((e) => {
+        if (e.velocityY > 500 || expandProgress.value < 0.8) {
+            expandProgress.value = withTiming(0, { duration: 250 });
+            runOnJS(notifyStateChange)(false);
+        } else {
+            expandProgress.value = withSpring(1, { damping: 18, stiffness: 100 });
+            runOnJS(notifyStateChange)(true);
         }
-    }, [hidden]);
+    });
 
-    const miniStyle = useAnimatedStyle(() => {
-        const p = startTop.value > 0 ? progress.value / startTop.value : 0;
+    const closePlayer = () => {
+        expandProgress.value = withTiming(0, { duration: 250 });
+        runOnJS(notifyStateChange)(false);
+    };
+
+    const fullPlayerStyle = useAnimatedStyle(() => {
+        const translateY = interpolate(
+            expandProgress.value,
+            [0, 1],
+            [SCREEN_H, 0],
+            Extrapolation.CLAMP
+        );
         return {
-            transform: [{ translateY: -progress.value }],
-            opacity: 1 - p,
+            transform: [{ translateY }],
+            opacity: interpolate(expandProgress.value, [0, 0.01], [0, 1], Extrapolation.CLAMP),
+            zIndex: 10, 
         };
     });
 
-    const contentOpacityStyle = useAnimatedStyle(() => {
+    const miniPlayerStyle = useAnimatedStyle(() => {
         return {
-            opacity: interpolate(progress.value, [-50, 0], [0, 1], Extrapolation.CLAMP),
+            opacity: interpolate(expandProgress.value, [0, 0.2], [1, 0], Extrapolation.CLAMP),
+            transform: [
+                { translateY: interpolate(expandProgress.value, [0, 1], [0, -MINI_HEIGHT], Extrapolation.CLAMP) }
+            ],
+            zIndex: 5,
         };
     });
 
-    const scrimStyle = useAnimatedStyle(() => {
-        const p = startTop.value > 0 ? progress.value / startTop.value : 0;
-        const opacity = interpolate(p, [0, 1], [0, 0.35], Extrapolation.CLAMP);
-        return { opacity };
+    const backdropStyle = useAnimatedStyle(() => {
+        return {
+            opacity: interpolate(expandProgress.value, [0, 1], [0, 1], Extrapolation.CLAMP),
+            zIndex: 1, 
+        };
     });
+
+    if (hidden) return null;
 
     return (
-        <View style={[styles.miniPlayerStub, hidden && { display: "none" }]}>
-            <Animated.View
-                pointerEvents={hidden ? "none" : "auto"}
-                style={[{
-                    position: "absolute",
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    bottom: 0,
-                    backgroundColor: "#000",
-                }, scrimStyle]}
-            />
+        <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
+            <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: 'black' }, backdropStyle]} pointerEvents="none" />
 
-            <NowPlayingPreview progressSV={progress} startTopSV={startTop} pointerEvents="none" />
+            <Animated.View style={[StyleSheet.absoluteFill, fullPlayerStyle]}>
+                <GestureDetector gesture={panDown}>
+                    <Animated.View style={{ 
+                        height: 60,
+                        width: '100%', 
+                        position: 'absolute', 
+                        top: 0, 
+                        zIndex: 100,
+                        backgroundColor: 'transparent',
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        paddingBottom: 10
+                    }}>
+                        <GestureHandle /> 
+                    </Animated.View>
+                </GestureDetector>
 
-            <GestureDetector gesture={pan}>
-                <Animated.View
-                    style={miniStyle}
-                    onLayout={(e) => {
-                        miniH.value = e.nativeEvent.layout.height;
-                        hasMiniH.value = 1;
-                        recalcStartTop();
-                    }}
-                >
+                <NowPlayingScreen onClose={closePlayer} />
+            </Animated.View>
+
+            <GestureDetector gesture={panUp}>
+                <Animated.View style={[styles.miniPlayerStub, miniPlayerStyle]}>
                     <LinearGradient
                         colors={["#580499E3", "#580499E3"]}
                         start={{ x: 0, y: 0 }}
@@ -158,13 +171,13 @@ export default function MiniPlayer({ hidden = false }: { hidden?: boolean }) {
                     >
                         <GestureHandle
                             onLayout={(e: any) => {
-                                handleY.value = e.nativeEvent.layout.y;
-                                hasHandleY.value = 1;
-                                recalcStartTop();
+                                // handleY.value = e.nativeEvent.layout.y;
+                                // hasHandleY.value = 1;
+                                // recalcStartTop();
                             }}
                         />
 
-                        <Animated.View style={contentOpacityStyle}>
+                        <View style={{display: "flex", flexDirection: 'column', alignItems: 'center', flex: 1}}>
                             <View style={styles.miniHeaderRow}>
                                 <Ionicons name="notifications-outline" size={34} color="white" />
                                 <View>
@@ -192,25 +205,27 @@ export default function MiniPlayer({ hidden = false }: { hidden?: boolean }) {
                                     <Ionicons name="play-skip-forward" size={26} color="white" />
                                 </TouchableOpacity>
                             </View>
+                        </View>
 
-                            <View style={styles.miniProgressRow}>
-                                <Text style={styles.miniTimeText}>1:02</Text>
-                                <Slider
-                                    containerStyle={styles.miniSliderContainer}
-                                    trackStyle={styles.miniSliderTrack}
-                                    minimumTrackStyle={styles.miniSliderMinTrack}
-                                    thumbStyle={styles.miniSliderThumb}
-                                    value={progressVal}
-                                    onValueChange={(v) => setProgressVal(Array.isArray(v) ? v[0] : v)}
-                                    minimumValue={0}
-                                    maximumValue={1}
-                                />
-                                <Text style={styles.miniTimeText}>4:08</Text>
-                            </View>
-                        </Animated.View>
+                        <View style={styles.miniProgressRow}>
+                            <Text style={styles.miniTimeText}>1:02</Text>
+                            <Slider
+                                containerStyle={styles.miniSliderContainer}
+                                trackStyle={styles.miniSliderTrack}
+                                minimumTrackStyle={styles.miniSliderMinTrack}
+                                thumbStyle={styles.miniSliderThumb}
+                                value={progressVal}
+                                onValueChange={(v) => setProgressVal(Array.isArray(v) ? v[0] : v)}
+                                minimumValue={0}
+                                maximumValue={1}
+                            />
+                            <Text style={styles.miniTimeText}>4:08</Text>
+                        </View>
                     </LinearGradient>
                 </Animated.View>
             </GestureDetector>
         </View>
     );
-}
+});
+
+export default MiniPlayer;

@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         marginBottom: 6,
+        width: "100%",
     },
     miniTitle: {
         textAlign: "center",
