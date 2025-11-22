@@ -5,7 +5,7 @@ import { StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MiniPlayer from "../Components/MiniPlayer";
 import BottomBar from "../Components/BottomBar";
-import { PlayerProvider } from "./PlayerContext";
+import  PlayerProvider  from "./PlayerContext";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -25,13 +25,18 @@ export default function RootLayout() {
 		? "radio"
         : pathname.startsWith("/SearchScreen")
         ? "search"
-		: "home";
-	const isNowPlaying = pathname.startsWith("/NowPlayingScreen");
+		: pathname.startsWith("/MyMusic")
+        ? "music"
+        : "home";
+	const isNowPlaying = pathname.startsWith("/NowPlayingScreen")||pathname.startsWith("/MyMusic")||pathname.startsWith("/CreatePlaylist")||pathname.startsWith("/PlaylistSong");
     const appearBottomBar = (
         pathname.startsWith("/HomeScreen") || 
         isNowPlaying || 
         pathname.startsWith("/CreateMoodPlaylistScreen") ||
-        pathname.startsWith("/SearchScreen")
+        pathname.startsWith("/SearchScreen")||
+        pathname.startsWith("/MyMusic")||
+        pathname.startsWith("/CreatePlaylist")||
+        pathname.startsWith("/PlaylistSong")
     );
 
     return (
@@ -51,6 +56,7 @@ export default function RootLayout() {
                 <Stack.Screen name="HomeScreen" />
                 <Stack.Screen name="CreateMoodPlaylistScreen" />
                 <Stack.Screen name="SearchScreen" />
+                <Stack.Screen name="MyMusic" />
                 <Stack.Screen 
                     name="NowPlayingScreen" 
                     options={{
@@ -96,6 +102,7 @@ export default function RootLayout() {
                                 if (k === "home") router.navigate("/HomeScreen");
                                 else if (k === "radio") router.navigate("/NowPlayingScreen");
                                 else if (k === "search") router.navigate("/SearchScreen");
+                                else if (k === "music") router.navigate("/MyMusic");
                             }}
                         />
                     </View>

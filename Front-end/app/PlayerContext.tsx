@@ -11,7 +11,7 @@ interface PlayerState {
 
 const PlayerContext = createContext<PlayerState | undefined>(undefined);
 
-export function PlayerProvider({ children }: { children: React.ReactNode }) {
+export default function PlayerProvider({ children }: { children: React.ReactNode }) {
     const [isPlaying, setIsPlaying] = useState(true);
     const [progressVal, setProgress] = useState(0.25);
     return (
