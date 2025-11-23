@@ -6,6 +6,9 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  maincontainer:{
+    flex: 1,
+  },
   signinlogo: {
     fontSize: 48,
     fontWeight: "400",
@@ -186,5 +189,140 @@ export const styles = StyleSheet.create({
     width: '90%',
     marginLeft: "5%"
   },
+      headerWrap: {
+        paddingHorizontal: 16,
+        paddingTop: 8
+    },
+    
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    marginBottom: 16,
+    width: '90%',
+    marginLeft: "5%"
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#000',
+  },
+  playlistItem: {
+    width: '48%',
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  playlistImage: {
+    width: '100%',
+    height: 150,
+    borderRadius: 8,
+  },
+  playlistTitle: {
+    fontSize: 14,
+    color: '#fff',
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  listContent: {
+    paddingBottom: 80, // Space for the add button
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 20,
+    alignSelf: 'center',
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  playlistinput:{
+    borderBottomWidth: 2, 
+    borderBottomColor: 'white', 
+    color: 'white', 
+    paddingVertical: 8,
+    marginBottom: 32, 
+    fontSize: 18,
+    textAlign: 'center',
+    alignSelf: 'center',
+    width: '80%'
+  },
+
+  //CreatePlaylist 
+  backbutton:{
+    fontSize: 40,
+    color: "white",
+    marginBottom: 30,
+    marginLeft: 20,
+  },
+  modalBackground: { 
+    flex: 1, 
+    backgroundColor: 'rgba(0,0,0,0.4)', 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
+  popup: { 
+    backgroundColor: '#333', 
+    borderRadius: 16, 
+    padding: 24, 
+    alignItems: 'center', 
+    width: 300 
+  },
+  popupIcon: { 
+    fontSize: 32, 
+    marginBottom: 16 
+  },
+  popupText: { 
+    fontSize: 16, 
+    color: '#fff', 
+    marginBottom: 24, 
+    textAlign: 'center' 
+  },
+  popupButton: { 
+    marginVertical: 4 
+  },
+  popupButtonText: { 
+    fontSize: 16, 
+    color: '#fff' 
+  },
+
+
+  // Playlist Song
+  artistHeader: {
+        alignItems: 'center',
+        marginVertical: 16,
+    },
+    artistImage: {
+        width: 200,
+        height: 200,
+        borderRadius: 12,
+    },
+    artistName: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#fff',
+        marginTop: 8,
+    },
+    songItem: {
+        flexDirection: 'row',
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+    },
+    songImage: {
+        width: 50,
+        height: 50,
+        borderRadius: 4,
+        marginRight: 12,
+    },
+    songTitle: {
+        fontSize: 16,
+        color: '#fff',
+    },
+    songArtist: {
+        fontSize: 14,
+        color: '#888',
+    },
 })
 export default styles;
