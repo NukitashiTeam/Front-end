@@ -19,9 +19,13 @@ import styles from "../styles/MiniPlayerStyles";
 import NowPlayingScreen from "../app/NowPlayingScreen";
 import { usePlayer } from "../app/PlayerContext";
 
-const { height: SCREEN_H } = Dimensions.get("window");
-const MINI_HEIGHT = 80;
-const PEEK_OFFSET = 170;
+const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get("window");
+const GUIDELINE_BASE_HEIGHT = 812;
+const verticalScale = (size: number) => (SCREEN_H / GUIDELINE_BASE_HEIGHT) * size;
+const MINI_HEIGHT = verticalScale(80);
+const HANDLE_ZONE_HEIGHT = verticalScale(60);
+const VISIBLE_PEEK_HEIGHT = verticalScale(-85);
+const PEEK_OFFSET = MINI_HEIGHT - VISIBLE_PEEK_HEIGHT;
 const ANIM_CONFIG = { duration: 300, easing: Easing.out(Easing.quad) };
 
 export type MiniPlayerRef = {
