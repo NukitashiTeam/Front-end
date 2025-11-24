@@ -37,75 +37,72 @@ export default function RootLayout() {
         pathname.startsWith("/NowPlayingScreen") || 
         pathname.startsWith("/CreateMoodPlaylistScreen") ||
         pathname.startsWith("/SearchScreen")||
-        pathname.startsWith("/MyMusic")||
+        // pathname.startsWith("/MyMusic")||
         pathname.startsWith("/CreatePlaylist")||
-        pathname.startsWith("/PlaylistSong")
+        pathname.startsWith("/PlaylistSong") ||
+        pathname.startsWith("/ChoosingMoodPlayScreen")
     );
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <PlayerProvider>
-            <Stack 
-                screenOptions={{
-                    headerShown: false, 
-                    contentStyle: {
-                        backgroundColor: "#818BFF",
-                        flex: 1,
-                    }
-                }}
-            >
-                <Stack.Screen name="index" />
-                <Stack.Screen name="onboarding" />
-                <Stack.Screen name="HomeScreen" />
-                <Stack.Screen name="CreateMoodPlaylistScreen" />
-                <Stack.Screen name="SearchScreen" />
-                <Stack.Screen name="MyMusic" />
-                <Stack.Screen 
-                    name="NowPlayingScreen" 
-                    options={{
-                        presentation: "transparentModal",  // Overlay lên screen trước, không replace
-                        gestureEnabled: true,              // Cho phép gesture swipe down để back (đã có pan gesture trong NowPlayingScreen)
-                        animation: "none",                 // Bỏ animation default để seamless với gesture của MiniPlayer
-                        contentStyle: { backgroundColor: 'transparent' },
+                <Stack 
+                    screenOptions={{
+                        headerShown: false, 
+                        contentStyle: {
+                            backgroundColor: "#818BFF",
+                            flex: 1,
+                        }
                     }}
-                />
-            </Stack>
+                >
+                    <Stack.Screen name="index" />
+                    <Stack.Screen name="onboarding" />
+                    <Stack.Screen name="HomeScreen" />
+                    <Stack.Screen name="CreateMoodPlaylistScreen" />
+                    <Stack.Screen name="SearchScreen" />
+                    <Stack.Screen name="MyMusic" />
+                    <Stack.Screen name="ChoosingMoodPlayScreen" />
+                    {/* <Stack.Screen 
+                        name="NowPlayingScreen" 
+                        options={{
+                            presentation: "transparentModal",  // Overlay lên screen trước, không replace
+                            gestureEnabled: true,              // Cho phép gesture swipe down để back (đã có pan gesture trong NowPlayingScreen)
+                            animation: "none",                 // Bỏ animation default để seamless với gesture của MiniPlayer
+                            contentStyle: { backgroundColor: 'transparent' },
+                        }}
+                    /> */}
+                </Stack>
 
                 <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
-                    <View
-                        pointerEvents="box-none"
-                        style={{
-                            position: "absolute",
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            zIndex: 8000,
-                            elevation: 8000,
-                        }}
-                    >
-                        <MiniPlayer hidden={isNowPlaying} />
-                    </View>
-
-                    <View
-                        pointerEvents="box-none"
-                        style={{
-                            position: "absolute",
-                            left: 0,
-                            right: 0,
-                            bottom: "2%",
-                            zIndex: 9999,
-                            elevation: 9999,
-                            alignItems: "center",
-                        }}
-                    >
-                        <BottomBar
-                            active={activeTab as any}
-                            onPress={(k) => {
-                                if (k === "home") router.navigate("/HomeScreen");
-                                else if (k === "radio") router.navigate("/NowPlayingScreen");
-                                else if (k === "search") router.navigate("/SearchScreen");
-                                else if (k === "music") router.navigate("/MyMusic");
-                            }}
+                    {appearBottomBar && (
+                        <View style={{ position: "absolute", bottom: "2%", left: 0, right: 0, zIndex: 9999, alignItems: 'center' }}>
+                            <BottomBar
+                                active={activeTab as any}
+                                onPress={(k) => {
+                                    if (k === "home") {
+                                        if (pathname === "/HomeScreen" && isPlayerExpanded) {
+                                            playerRef.current?.collapse();
+                                        }
+                                        router.navigate("/HomeScreen");
+                                    } else if (k === "radio") {
+                                        playerRef.current?.expand();
+                                    } else if (k === "search") {
+                                        if (isPlayerExpanded) playerRef.current?.collapse();
+                                        router.navigate("/SearchScreen");
+                                    } else if (k === "music") {
+                                        if (isPlayerExpanded) playerRef.current?.collapse();
+                                        router.navigate("/MyMusic");
+                                    }
+                                }}
+                            />
+                        </View>
+                    )}
+                    
+                    <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "100%", zIndex: 8000 }} pointerEvents="box-none">
+                        <MiniPlayer 
+                            ref={playerRef} 
+                            hidden={pathname === "/onboarding" || pathname === "/index"}
+                            onStateChange={(expanded) => setIsPlayerExpanded(expanded)}
                         />
                     </View>
                 </View>

@@ -1,35 +1,48 @@
-import 'react-native-gesture-handler';
-import { StyleSheet, Text, View, Image, Dimensions, FlatList, Animated, TouchableOpacity } from 'react-native';
-import React, { useRef, useState } from 'react';
-import { useRouter } from "expo-router";
+import BackgroundLayer from "@/Components/BackgroundLayer";
+import Paginator from "@/Components/Paginator";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Paginator from '@/Components/Paginator';
-import BackgroundLayer from '@/Components/BackgroundLayer';
+import { useRouter } from "expo-router";
+import React, { useRef, useState } from "react";
+import {
+  Animated,
+  Dimensions,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import "react-native-gesture-handler";
+
+console.log("✅ Onboarding component loaded");
 
 const { width, height } = Dimensions.get("window");
 
 const onboardingData = [
   {
     id: 0,
-    image: require('../assets/images/onboarding1.png'),
+    image: require("../assets/images/onboarding1.png"),
     title: "Welcome to MoodyBlue!",
     description: "Nghe nhạc theo tâm trạng hiện tại của bạn mọi lúc mọi nơi",
   },
   {
     id: 1,
-    image: require('../assets/images/onboarding2.png'),
+    image: require("../assets/images/onboarding2.png"),
     title: "Discover & Save Easily",
-    description: "Tìm kiếm mọi loại nhạc phù hợp với tâm trạng của bạn và lưu lại một cách đơn giản và nhanh chóng",
+    description:
+      "Tìm kiếm mọi loại nhạc phù hợp với tâm trạng của bạn và lưu lại một cách đơn giản và nhanh chóng",
   },
   {
     id: 2,
-    image: require('../assets/images/onboarding3.png'),
+    image: require("../assets/images/onboarding3.png"),
     title: "Relax & Enjoy",
-    description: "Sau khi đã lưu lại bạn chỉ cần trải nghiệm, thư giãn và tận hưởng; chúng tôi sẽ mang đến cho bạn khoảng thời gian tuyệt vời",
+    description:
+      "Sau khi đã lưu lại bạn chỉ cần trải nghiệm, thư giãn và tận hưởng; chúng tôi sẽ mang đến cho bạn khoảng thời gian tuyệt vời",
   },
   {
     id: 3,
-    image: require('../assets/images/onboarding4.png'),
+    image: require("../assets/images/onboarding4.png"),
     title: "Your Style, One App",
     description: "Lên mood – lên nhạc – lên năng lượng",
   },
@@ -51,7 +64,7 @@ function Onboarding() {
     } else {
       // ✅ Khi hoàn tất onboarding, lưu lại trạng thái đã xem
       await AsyncStorage.setItem("hasSeenOnboarding", "true");
-      router.replace("/src/signin/Login");
+      router.replace("/HomeScreen");
     }
   };
 
@@ -61,18 +74,15 @@ function Onboarding() {
     router.replace("/HomeScreen");
   };
 
-  const renderPage = ({ item }: { item: typeof onboardingData[0] }) => {
+  const renderPage = ({ item }: { item: (typeof onboardingData)[0] }) => {
     return (
       <View style={styles.container}>
         <Image
-          source={require('../assets/images/MoodyBlue.png')}
+          source={require("../assets/images/MoodyBlue.png")}
           style={styles.logo}
         />
 
-        <Image
-          source={item.image}
-          style={styles.image}
-        />
+        <Image source={item.image} style={styles.image} />
 
         <Text style={styles.title}>{item.title}</Text>
         <View style={{ width: width * 0.7 }}>
@@ -100,11 +110,21 @@ function Onboarding() {
           { useNativeDriver: false }
         )}
         scrollEventThrottle={32}
+        onScrollToIndexFailed={(info) => {
+          setTimeout(() => {
+            if (flatListRef.current) {
+              flatListRef.current.scrollToIndex({
+                index: info.index,
+                animated: true,
+              });
+            }
+          }, 100);
+        }}
       />
 
       <Paginator data={onboardingData} scrollX={scrollX} index={index} />
 
-      <View style={{ alignItems: 'center', marginTop: -20}}>
+      <View style={{ alignItems: "center", marginBottom: 20 }}>
         <TouchableOpacity style={styles.button} onPress={handleNextPage}>
           <Text style={styles.buttonText}>
             {index === onboardingData.length - 1 ? "Get Started" : "Next"}
@@ -112,7 +132,7 @@ function Onboarding() {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={skipOnboarding}>
-          <Text style={{ fontSize: 13, marginTop: 15, fontWeight: '400' }}>
+          <Text style={{ fontSize: 13, marginTop: 15, fontWeight: "400" }}>
             Skip!
           </Text>
         </TouchableOpacity>
@@ -136,34 +156,34 @@ const styles = StyleSheet.create({
     width: width,
     height: height * 0.4,
     marginTop: 10,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   title: {
-    fontFamily: 'Inter-Bold',
+    fontFamily: "Inter-Bold",
     fontSize: 28,
-    fontWeight: '700',
-    color: 'black',
-    textAlign: 'center',
+    fontWeight: "700",
+    color: "black",
+    textAlign: "center",
     marginTop: 25,
   },
   description: {
     fontSize: 20,
-    color: '#ddd',
-    textAlign: 'center',
+    color: "#ddd",
+    textAlign: "center",
     marginTop: 10,
     lineHeight: 25,
-    fontWeight: '400',
+    fontWeight: "400",
   },
   button: {
-    backgroundColor: '#8400FF',
+    backgroundColor: "#8400FF",
     paddingVertical: 20,
     paddingHorizontal: 48,
     gap: 34,
     borderRadius: 12,
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 21,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 });
