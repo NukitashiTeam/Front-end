@@ -37,7 +37,7 @@ export default function RootLayout() {
         pathname.startsWith("/NowPlayingScreen") || 
         pathname.startsWith("/CreateMoodPlaylistScreen") ||
         pathname.startsWith("/SearchScreen")||
-        // pathname.startsWith("/MyMusic")||
+        pathname.startsWith("/MyMusic")||
         pathname.startsWith("/CreatePlaylist")||
         pathname.startsWith("/PlaylistSong") ||
         pathname.startsWith("/ChoosingMoodPlayScreen")
@@ -72,9 +72,9 @@ export default function RootLayout() {
                         }}
                     /> */}
                 </Stack>
-
+ {appearBottomBar && (
                 <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
-                    {appearBottomBar && (
+                   
                         <View style={{ position: "absolute", bottom: "2%", left: 0, right: 0, zIndex: 9999, alignItems: 'center' }}>
                             <BottomBar
                                 active={activeTab as any}
@@ -96,16 +96,19 @@ export default function RootLayout() {
                                 }}
                             />
                         </View>
-                    )}
-                    
-                    <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "100%", zIndex: 8000 }} pointerEvents="box-none">
+
+                    {!isNowPlaying&&(
+                        <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "100%", zIndex: 8000 }} pointerEvents="box-none">
                         <MiniPlayer 
                             ref={playerRef} 
                             hidden={pathname === "/onboarding" || pathname === "/index"}
                             onStateChange={(expanded) => setIsPlayerExpanded(expanded)}
                         />
                     </View>
+                    )}
+                    
                 </View>
+                                    )}
             </PlayerProvider>
         </GestureHandlerRootView>
     );
