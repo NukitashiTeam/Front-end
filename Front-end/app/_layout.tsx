@@ -28,7 +28,7 @@ export default function RootLayout() {
         ? "home"
         : (pathname.startsWith("/SearchScreen") || pathname.startsWith("/ChoosingMoodPlayScreen"))
         ? "search"
-		: pathname.startsWith("/MyMusic")
+		: pathname.startsWith("/MyMusic")||pathname.startsWith("/CreatePlaylist")||pathname.startsWith("/PlaylistSong")
         ? "music"
         : "home";
 	const isNowPlaying = pathname.startsWith("/NowPlayingScreen")||pathname.startsWith("/MyMusic")||pathname.startsWith("/CreatePlaylist")||pathname.startsWith("/PlaylistSong");
