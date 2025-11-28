@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import styles from "../../../styles/style";
 import Background from "../../../Components/background";
-export default function LoginScreen() {
+export default function SignupScreen() {
     const router = useRouter();
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -17,7 +17,7 @@ export default function LoginScreen() {
     return (
         <Background>
             <Text style={styles.signinlogo}>MoodyBlue</Text>
-            <Text style={styles.signinsubtitle}>All your music in one place.</Text>
+            <Text style={styles.signinsubtitle}>Welcome to Moody Blue</Text>
             <TextInput
                 style={styles.textinput}
                 placeholder="Insert your username"
@@ -42,7 +42,23 @@ export default function LoginScreen() {
                     onPress={toggleShowPassword}
                 />
         </View>
-        
+        <View style={styles.passwordContainer}>
+            <TextInput
+            style={styles.passwordInput}
+            placeholder="Insert your password"
+            placeholderTextColor="#999"
+            secureTextEntry={!showPassword}
+            value={password}
+            onChangeText={setPassword}
+            />  
+            <MaterialCommunityIcons
+                    name={showPassword ? 'eye-off' : 'eye'}
+                    size={24}
+                    color="#aaa"
+                    style={styles.eyeButton}
+                    onPress={toggleShowPassword}
+                />
+        </View>
         <TouchableOpacity 
           style={styles.rememberContainer}
           onPress={() => setRememberMe(!rememberMe)}
@@ -55,12 +71,12 @@ export default function LoginScreen() {
         
         <TouchableOpacity style={[styles.otpbutton,{backgroundColor: username&&password ? 'white' : '#AAA'}]}
           disabled={!username||!password}
-          onPress={()=>router.navigate('/HomeScreen')}
+          onPress={()=>router.navigate('/src/signin/ChooseType')}
         >
           <Text style={styles.buttonText}>LOGIN</Text>
         </TouchableOpacity>
         <Text style={styles.signupText}>
-          Don&apos;t have an account? <Text style={{fontWeight: 'bold'}} onPress={() => router.push('/src/signin/Signup')}>Sign Up</Text>
+          Already have an account? <Text style={{fontWeight: 'bold'}} onPress={() => router.push('/src/signin/Login')}>Log In</Text>
         </Text>
         </Background>
     );

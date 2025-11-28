@@ -324,5 +324,83 @@ export const styles = StyleSheet.create({
         fontSize: 14,
         color: '#888',
     },
+
+  /// Login Screen
+    textinput: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 25,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    marginBottom: 15,
+    fontSize: 16,
+    width: '85%',
+    color: '#333',
+    },
+    rememberContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  customCheckbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 1,
+    borderColor: '#FFFFFF',
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  checkedCheckbox: {
+    backgroundColor: '#FFFFFF',
+  },
+  checkMark: {
+    color: '#6A5ACD',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  rememberText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+  loginButton: {
+    backgroundColor: '#A9A9A9', // Gray color
+    borderRadius: 25,
+    paddingVertical: 15,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  loginButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  signupText: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+    fontSize: 14,
+  },
+passwordContainer: {
+    position: 'relative',
+    marginBottom: 15,
+    width: '85%',
+  },
+  passwordInput: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 25,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    fontSize: 16,
+    color: '#333',
+
+  },
+  eyeButton: {
+    position: 'absolute',
+    right: 15,
+    top: '50%',
+    transform: [{ translateY: -12 }], // Center vertically
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 })
 export default styles;
