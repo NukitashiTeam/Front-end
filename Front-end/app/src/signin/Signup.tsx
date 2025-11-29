@@ -9,15 +9,31 @@ export default function SignupScreen() {
     const router = useRouter();
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [confirmPassword, setConfirmPassword] = useState<string>(''); 
     const [rememberMe, setRememberMe] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     };
+    const [passwordError, setPasswordError] = useState<string>('');
+    const handleSignup = () => {
+        if (password !== confirmPassword) {
+            setPasswordError("Passwords do not match!");
+            return;
+        }
+
+        setPasswordError("");
+        router.navigate('/src/signin/ChooseType');
+    };
     return (
         <Background>
             <Text style={styles.signinlogo}>MoodyBlue</Text>
             <Text style={styles.signinsubtitle}>Welcome to Moody Blue</Text>
+                        {passwordError ? (
+                <Text style={{ color: "red", marginLeft: 10, marginTop: -5 }}>
+                    {passwordError}
+                </Text>
+            ) : null}
             <TextInput
                 style={styles.textinput}
                 placeholder="Insert your username"
@@ -43,22 +59,30 @@ export default function SignupScreen() {
                 />
         </View>
         <View style={styles.passwordContainer}>
-            <TextInput
-            style={styles.passwordInput}
-            placeholder="Insert your password"
-            placeholderTextColor="#999"
-            secureTextEntry={!showPassword}
-            value={password}
-            onChangeText={setPassword}
-            />  
-            <MaterialCommunityIcons
+                <TextInput
+                    style={[
+                        styles.passwordInput,
+                        passwordError ? { borderColor: "red", borderWidth: 1 } : null
+                    ]}
+                    placeholder="Confirm password"
+                    placeholderTextColor="#999"
+                    secureTextEntry={!showPassword}
+                    value={confirmPassword}
+                    onChangeText={(text) => {
+                        setConfirmPassword(text);
+                        if (passwordError) setPasswordError("");
+                    }}
+                />
+                <MaterialCommunityIcons
                     name={showPassword ? 'eye-off' : 'eye'}
                     size={24}
                     color="#aaa"
                     style={styles.eyeButton}
                     onPress={toggleShowPassword}
                 />
-        </View>
+            </View>
+
+
         <TouchableOpacity 
           style={styles.rememberContainer}
           onPress={() => setRememberMe(!rememberMe)}
@@ -71,9 +95,9 @@ export default function SignupScreen() {
         
         <TouchableOpacity style={[styles.otpbutton,{backgroundColor: username&&password ? 'white' : '#AAA'}]}
           disabled={!username||!password}
-          onPress={()=>router.navigate('/src/signin/ChooseType')}
+          onPress={handleSignup}
         >
-          <Text style={styles.buttonText}>LOGIN</Text>
+          <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
         <Text style={styles.signupText}>
           Already have an account? <Text style={{fontWeight: 'bold'}} onPress={() => router.push('/src/signin/Login')}>Log In</Text>

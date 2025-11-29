@@ -85,7 +85,11 @@ export default function RootLayout() {
                                         }
                                         router.navigate("/HomeScreen");
                                     } else if (k === "radio") {
-                                        playerRef.current?.expand();
+                                        if (pathname.startsWith("/MyMusic") || pathname.startsWith("/CreatePlaylist") || pathname.startsWith("/PlaylistSong")) {
+                                            router.navigate("/NowPlayingScreen");
+                                        } else {
+                                            playerRef.current?.expand();
+                                        }
                                     } else if (k === "search") {
                                         if (isPlayerExpanded) playerRef.current?.collapse();
                                         router.navigate("/SearchScreen");
