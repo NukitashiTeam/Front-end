@@ -30,6 +30,8 @@ jobs:
         working-directory: Front-end
 
       - name: Run Jest Coverage Tests
+        env:
+          CI: false
         run: npm run test:coverage
         working-directory: Front-end
 
