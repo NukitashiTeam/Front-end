@@ -2,6 +2,7 @@
 Đây là Repo lưu trữ các file frond end cho hệ thống nghe nhạc theo mood
 
 [![React Native CI - Test, Report & SonarCloud](https://github.com/NukitashiTeam/Front-end/actions/workflows/test.yml/badge.svg)](https://github.com/NukitashiTeam/Front-end/actions/workflows/test.yml)
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=NukitashiTeam_Front-end)](https://sonarcloud.io/summary/new_code?id=NukitashiTeam_Front-end)
 
 ## 🧪 Testing Guide
 
