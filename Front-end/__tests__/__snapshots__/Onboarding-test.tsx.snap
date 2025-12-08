@@ -1,0 +1,536 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Onboarding test snapshot 1`] = `
+<View
+  testID="mock-background"
+>
+  <RCTScrollView
+    bounces={false}
+    data={
+      [
+        {
+          "description": "Nghe nhạc theo tâm trạng hiện tại của bạn mọi lúc mọi nơi",
+          "id": 0,
+          "image": {
+            "testUri": "../../../assets/images/onboarding1.png",
+          },
+          "title": "Welcome to MoodyBlue!",
+        },
+        {
+          "description": "Tìm kiếm mọi loại nhạc phù hợp với tâm trạng của bạn và lưu lại một cách đơn giản và nhanh chóng",
+          "id": 1,
+          "image": {
+            "testUri": "../../../assets/images/onboarding2.png",
+          },
+          "title": "Discover & Save Easily",
+        },
+        {
+          "description": "Sau khi đã lưu lại bạn chỉ cần trải nghiệm, thư giãn và tận hưởng; chúng tôi sẽ mang đến cho bạn khoảng thời gian tuyệt vời",
+          "id": 2,
+          "image": {
+            "testUri": "../../../assets/images/onboarding3.png",
+          },
+          "title": "Relax & Enjoy",
+        },
+        {
+          "description": "Lên mood – lên nhạc – lên năng lượng",
+          "id": 3,
+          "image": {
+            "testUri": "../../../assets/images/onboarding4.png",
+          },
+          "title": "Your Style, One App",
+        },
+      ]
+    }
+    getItem={[Function]}
+    getItemCount={[Function]}
+    horizontal={true}
+    keyExtractor={[Function]}
+    onContentSizeChange={[Function]}
+    onLayout={[Function]}
+    onMomentumScrollBegin={[Function]}
+    onMomentumScrollEnd={[Function]}
+    onScroll={[Function]}
+    onScrollBeginDrag={[Function]}
+    onScrollEndDrag={[Function]}
+    onScrollToIndexFailed={[Function]}
+    pagingEnabled={true}
+    removeClippedSubviews={false}
+    renderItem={[Function]}
+    scrollEnabled={false}
+    scrollEventThrottle={32}
+    showsHorizontalScrollIndicator={true}
+    stickyHeaderIndices={[]}
+    style={
+      {
+        "flex": 0,
+      }
+    }
+    viewabilityConfigCallbackPairs={[]}
+  >
+    <View>
+      <View
+        onFocusCapture={[Function]}
+        onLayout={[Function]}
+        style={
+          [
+            {
+              "flexDirection": "row",
+            },
+            null,
+          ]
+        }
+      >
+        <View
+          style={
+            {
+              "alignItems": "center",
+              "width": 750,
+              "zIndex": 2,
+            }
+          }
+        >
+          <Image
+            source={
+              {
+                "testUri": "../../../assets/images/MoodyBlue.png",
+              }
+            }
+            style={
+              {
+                "marginTop": 60,
+              }
+            }
+          />
+          <Image
+            source={
+              {
+                "testUri": "../../../assets/images/onboarding1.png",
+              }
+            }
+            style={
+              {
+                "height": 533.6,
+                "marginTop": 10,
+                "resizeMode": "contain",
+                "width": 750,
+              }
+            }
+          />
+          <Text
+            style={
+              {
+                "color": "black",
+                "fontFamily": "Inter-Bold",
+                "fontSize": 28,
+                "fontWeight": "700",
+                "marginTop": 25,
+                "textAlign": "center",
+              }
+            }
+          >
+            Welcome to MoodyBlue!
+          </Text>
+          <View
+            style={
+              {
+                "width": 525,
+              }
+            }
+          >
+            <Text
+              style={
+                {
+                  "color": "#ddd",
+                  "fontSize": 20,
+                  "fontWeight": "400",
+                  "lineHeight": 25,
+                  "marginTop": 10,
+                  "textAlign": "center",
+                }
+              }
+            >
+              Nghe nhạc theo tâm trạng hiện tại của bạn mọi lúc mọi nơi
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View
+        onFocusCapture={[Function]}
+        onLayout={[Function]}
+        style={
+          [
+            {
+              "flexDirection": "row",
+            },
+            null,
+          ]
+        }
+      >
+        <View
+          style={
+            {
+              "alignItems": "center",
+              "width": 750,
+              "zIndex": 2,
+            }
+          }
+        >
+          <Image
+            source={
+              {
+                "testUri": "../../../assets/images/MoodyBlue.png",
+              }
+            }
+            style={
+              {
+                "marginTop": 60,
+              }
+            }
+          />
+          <Image
+            source={
+              {
+                "testUri": "../../../assets/images/onboarding2.png",
+              }
+            }
+            style={
+              {
+                "height": 533.6,
+                "marginTop": 10,
+                "resizeMode": "contain",
+                "width": 750,
+              }
+            }
+          />
+          <Text
+            style={
+              {
+                "color": "black",
+                "fontFamily": "Inter-Bold",
+                "fontSize": 28,
+                "fontWeight": "700",
+                "marginTop": 25,
+                "textAlign": "center",
+              }
+            }
+          >
+            Discover & Save Easily
+          </Text>
+          <View
+            style={
+              {
+                "width": 525,
+              }
+            }
+          >
+            <Text
+              style={
+                {
+                  "color": "#ddd",
+                  "fontSize": 20,
+                  "fontWeight": "400",
+                  "lineHeight": 25,
+                  "marginTop": 10,
+                  "textAlign": "center",
+                }
+              }
+            >
+              Tìm kiếm mọi loại nhạc phù hợp với tâm trạng của bạn và lưu lại một cách đơn giản và nhanh chóng
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View
+        onFocusCapture={[Function]}
+        onLayout={[Function]}
+        style={
+          [
+            {
+              "flexDirection": "row",
+            },
+            null,
+          ]
+        }
+      >
+        <View
+          style={
+            {
+              "alignItems": "center",
+              "width": 750,
+              "zIndex": 2,
+            }
+          }
+        >
+          <Image
+            source={
+              {
+                "testUri": "../../../assets/images/MoodyBlue.png",
+              }
+            }
+            style={
+              {
+                "marginTop": 60,
+              }
+            }
+          />
+          <Image
+            source={
+              {
+                "testUri": "../../../assets/images/onboarding3.png",
+              }
+            }
+            style={
+              {
+                "height": 533.6,
+                "marginTop": 10,
+                "resizeMode": "contain",
+                "width": 750,
+              }
+            }
+          />
+          <Text
+            style={
+              {
+                "color": "black",
+                "fontFamily": "Inter-Bold",
+                "fontSize": 28,
+                "fontWeight": "700",
+                "marginTop": 25,
+                "textAlign": "center",
+              }
+            }
+          >
+            Relax & Enjoy
+          </Text>
+          <View
+            style={
+              {
+                "width": 525,
+              }
+            }
+          >
+            <Text
+              style={
+                {
+                  "color": "#ddd",
+                  "fontSize": 20,
+                  "fontWeight": "400",
+                  "lineHeight": 25,
+                  "marginTop": 10,
+                  "textAlign": "center",
+                }
+              }
+            >
+              Sau khi đã lưu lại bạn chỉ cần trải nghiệm, thư giãn và tận hưởng; chúng tôi sẽ mang đến cho bạn khoảng thời gian tuyệt vời
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View
+        onFocusCapture={[Function]}
+        onLayout={[Function]}
+        style={
+          [
+            {
+              "flexDirection": "row",
+            },
+            null,
+          ]
+        }
+      >
+        <View
+          style={
+            {
+              "alignItems": "center",
+              "width": 750,
+              "zIndex": 2,
+            }
+          }
+        >
+          <Image
+            source={
+              {
+                "testUri": "../../../assets/images/MoodyBlue.png",
+              }
+            }
+            style={
+              {
+                "marginTop": 60,
+              }
+            }
+          />
+          <Image
+            source={
+              {
+                "testUri": "../../../assets/images/onboarding4.png",
+              }
+            }
+            style={
+              {
+                "height": 533.6,
+                "marginTop": 10,
+                "resizeMode": "contain",
+                "width": 750,
+              }
+            }
+          />
+          <Text
+            style={
+              {
+                "color": "black",
+                "fontFamily": "Inter-Bold",
+                "fontSize": 28,
+                "fontWeight": "700",
+                "marginTop": 25,
+                "textAlign": "center",
+              }
+            }
+          >
+            Your Style, One App
+          </Text>
+          <View
+            style={
+              {
+                "width": 525,
+              }
+            }
+          >
+            <Text
+              style={
+                {
+                  "color": "#ddd",
+                  "fontSize": 20,
+                  "fontWeight": "400",
+                  "lineHeight": 25,
+                  "marginTop": 10,
+                  "textAlign": "center",
+                }
+              }
+            >
+              Lên mood – lên nhạc – lên năng lượng
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  </RCTScrollView>
+  <View
+    style={
+      {
+        "marginTop": -50,
+      }
+    }
+  >
+    <View
+      testID="mock-paginator"
+    />
+    <View
+      style={
+        {
+          "alignItems": "center",
+          "marginTop": -10,
+        }
+      }
+    >
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "backgroundColor": "#8400FF",
+            "borderRadius": 12,
+            "gap": 34,
+            "opacity": 1,
+            "paddingHorizontal": 48,
+            "paddingVertical": 20,
+          }
+        }
+      >
+        <Text
+          style={
+            {
+              "color": "white",
+              "fontSize": 21,
+              "fontWeight": "700",
+            }
+          }
+        >
+          Next
+        </Text>
+      </View>
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "opacity": 1,
+          }
+        }
+      >
+        <Text
+          style={
+            {
+              "fontSize": 13,
+              "fontWeight": "400",
+              "marginTop": 15,
+            }
+          }
+        >
+          Skip!
+        </Text>
+      </View>
+    </View>
+  </View>
+</View>
+`;

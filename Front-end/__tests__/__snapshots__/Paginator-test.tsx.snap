@@ -1,0 +1,108 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Paginator matches snapshot 1`] = `
+<View
+  style={
+    {
+      "alignItems": "center",
+      "flexDirection": "row",
+      "height": 120,
+      "justifyContent": "center",
+    }
+  }
+>
+  <View
+    collapsable={false}
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "#818BFF",
+        "borderRadius": 50,
+        "flex": 0,
+        "height": 16,
+        "justifyContent": "center",
+        "marginHorizontal": 8,
+        "transform": [
+          {
+            "scale": 1.2,
+          },
+        ],
+        "width": 16,
+      }
+    }
+  >
+    <Text
+      style={
+        {
+          "color": "#818BFF",
+          "fontSize": 10,
+        }
+      }
+    >
+      1
+    </Text>
+  </View>
+  <View
+    collapsable={false}
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "#FFF",
+        "borderRadius": 50,
+        "flex": 0,
+        "height": 16,
+        "justifyContent": "center",
+        "marginHorizontal": 8,
+        "transform": [
+          {
+            "scale": 0.8,
+          },
+        ],
+        "width": 16,
+      }
+    }
+  >
+    <Text
+      style={
+        {
+          "color": "#818BFF",
+          "fontSize": 10,
+        }
+      }
+    >
+      2
+    </Text>
+  </View>
+  <View
+    collapsable={false}
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "#FFF",
+        "borderRadius": 50,
+        "flex": 0,
+        "height": 16,
+        "justifyContent": "center",
+        "marginHorizontal": 8,
+        "transform": [
+          {
+            "scale": 0.8,
+          },
+        ],
+        "width": 16,
+      }
+    }
+  >
+    <Text
+      style={
+        {
+          "color": "#818BFF",
+          "fontSize": 10,
+        }
+      }
+    >
+      3
+    </Text>
+  </View>
+</View>
+`;
