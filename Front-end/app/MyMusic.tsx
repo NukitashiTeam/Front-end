@@ -51,7 +51,8 @@ export default function MyMusic(){
         );
     return(
         <Background>
-            <View style={{flex:1, paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0, paddingBottom: insets.bottom ? Math.max(insets.bottom, 12) : 12,}}>
+            <View style={{flex:1, paddingTop: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0) + insets.top,
+                                     paddingBottom: insets.bottom ? Math.max(insets.bottom, 12) : 12,}}>
                 <View style={styles.headerWrap}>
                 <Header isModEnabled={isModEnabled} onToggleMod={setIsModEnabled} />
                 </View>
@@ -60,7 +61,7 @@ export default function MyMusic(){
                 {/* <Ionicons name="search" size={20} color="#888" style={styles.searchIcon} /> */}
                 <Image source={require('../assets/images/Search.png')} style={{width: 20, height: 20, borderColor: 'rgba(0, 0, 0, 0.40)', marginRight: 8}} />
                 <TextInput
-                style={styles.searchInput}
+                style={{...styles.searchInput,height: 40}}
                 placeholder="Playlist's Name"
                 placeholderTextColor="#888"
                 />
