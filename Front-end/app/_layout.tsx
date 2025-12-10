@@ -5,16 +5,51 @@ import { StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MiniPlayer, { MiniPlayerRef } from "../Components/MiniPlayer";
 import BottomBar from "../Components/BottomBar";
-import  PlayerProvider  from "./PlayerContext";
+import PlayerProvider from "./PlayerContext";
+import * as Sentry from '@sentry/react-native';
+import { useNavigationContainerRef } from 'expo-router';
+
+// 1. Khai báo integration
+export const navigationIntegration = Sentry.reactNavigationIntegration();
+
+Sentry.init({
+  dsn: 'https://ff33da7f27044f642b735cc7f2ec6d9c@o4510503566049280.ingest.us.sentry.io/4510503622541312',
+  
+  // 2. QUAN TRỌNG: Phải thêm integration vào đây
+  integrations: [
+    navigationIntegration,
+  ],
+
+  tracePropagationTargets: ["https://myproject.org", /^\/api\//],
+  debug: true,
+
+  // Performance Monitoring
+  tracesSampleRate: 1.0,
+  enableAutoSessionTracking: true,
+  sessionTrackingIntervalMillis: 5000,
+
+  // User Interaction Tracking
+  enableUserInteractionTracing: true,
+
+  // Privacy
+  sendDefaultPii: false,
+  maxBreadcrumbs: 150,
+
+  // Enable native crash handling
+  enableNative: true,
+  enableNativeCrashHandling: true,
+  enableAutoPerformanceTracing: true,
+});
+
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+export default Sentry.wrap(function RootLayout() {
     const router = useRouter();
     const pathname = usePathname();
     const [isPlayerExpanded, setIsPlayerExpanded] = useState(false);
 
     const playerRef = useRef<MiniPlayerRef>(null);
-    
+
     useEffect(() => {
         const timeout = setTimeout(() => {
             SplashScreen.hideAsync();
@@ -22,23 +57,44 @@ export default function RootLayout() {
         return () => clearTimeout(timeout);
     }, []);
 
-	const activeTab = isPlayerExpanded
+    const ref = useNavigationContainerRef();
+    
+    // Đăng ký navigation container cho Sentry
+    useEffect(() => {
+        if (ref) {
+            navigationIntegration.registerNavigationContainer(ref);
+        }
+    }, [ref]);
+
+    // 3. SỬA LỖI CÚ PHÁP Ở ĐÂY
+    useEffect(() => {
+        Sentry.setUser({
+            id: "nukitashiteam",
+            email: "lekhanh98777@gmail.com",
+            username: "khanhPear",
+        });
+        Sentry.setTag("group", "nukitashiteam");
+    }, []);
+
+    const activeTab = isPlayerExpanded
         ? "radio"
         : pathname.startsWith("/HomeScreen")
-        ? "home"
-        : (pathname.startsWith("/SearchScreen") || pathname.startsWith("/ChoosingMoodPlayScreen"))
-        ? "search"
-		: pathname.startsWith("/MyMusic")||pathname.startsWith("/CreatePlaylist")||pathname.startsWith("/PlaylistSong")
-        ? "music"
-        : "home";
-	const isNowPlaying = pathname.startsWith("/NowPlayingScreen")||pathname.startsWith("/MyMusic")||pathname.startsWith("/CreatePlaylist")||pathname.startsWith("/PlaylistSong");
+            ? "home"
+            : (pathname.startsWith("/SearchScreen") || pathname.startsWith("/ChoosingMoodPlayScreen"))
+                ? "search"
+                : pathname.startsWith("/MyMusic") || pathname.startsWith("/CreatePlaylist") || pathname.startsWith("/PlaylistSong")
+                    ? "music"
+                    : "home";
+                    
+    const isNowPlaying = pathname.startsWith("/NowPlayingScreen") || pathname.startsWith("/MyMusic") || pathname.startsWith("/CreatePlaylist") || pathname.startsWith("/PlaylistSong");
+    
     const appearBottomBar = (
-        pathname.startsWith("/HomeScreen") || 
-        pathname.startsWith("/NowPlayingScreen") || 
+        pathname.startsWith("/HomeScreen") ||
+        pathname.startsWith("/NowPlayingScreen") ||
         pathname.startsWith("/CreateMoodPlaylistScreen") ||
-        pathname.startsWith("/SearchScreen")||
-        pathname.startsWith("/MyMusic")||
-        pathname.startsWith("/CreatePlaylist")||
+        pathname.startsWith("/SearchScreen") ||
+        pathname.startsWith("/MyMusic") ||
+        pathname.startsWith("/CreatePlaylist") ||
         pathname.startsWith("/PlaylistSong") ||
         pathname.startsWith("/ChoosingMoodPlayScreen")
     );
@@ -46,13 +102,10 @@ export default function RootLayout() {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <PlayerProvider>
-                <Stack 
+                <Stack
                     screenOptions={{
-                        headerShown: false, 
-                        contentStyle: {
-                            backgroundColor: "#818BFF",
-                            flex: 1,
-                        }
+                        headerShown: false,
+                        contentStyle: { backgroundColor: "#818BFF", flex: 1 }
                     }}
                 >
                     <Stack.Screen name="index" />
@@ -62,19 +115,10 @@ export default function RootLayout() {
                     <Stack.Screen name="SearchScreen" />
                     <Stack.Screen name="MyMusic" />
                     <Stack.Screen name="ChoosingMoodPlayScreen" />
-                    {/* <Stack.Screen 
-                        name="NowPlayingScreen" 
-                        options={{
-                            presentation: "transparentModal",  // Overlay lên screen trước, không replace
-                            gestureEnabled: true,              // Cho phép gesture swipe down để back (đã có pan gesture trong NowPlayingScreen)
-                            animation: "none",                 // Bỏ animation default để seamless với gesture của MiniPlayer
-                            contentStyle: { backgroundColor: 'transparent' },
-                        }}
-                    /> */}
                 </Stack>
- {appearBottomBar && (
-                <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
-                   
+                {appearBottomBar && (
+                    <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+
                         <View style={{ position: "absolute", bottom: "2%", left: 0, right: 0, zIndex: 9999, alignItems: 'center' }}>
                             <BottomBar
                                 active={activeTab as any}
@@ -101,19 +145,19 @@ export default function RootLayout() {
                             />
                         </View>
 
-                    {!isNowPlaying&&(
-                        <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "100%", zIndex: 8000 }} pointerEvents="box-none">
-                        <MiniPlayer 
-                            ref={playerRef} 
-                            hidden={pathname === "/onboarding" || pathname === "/index"}
-                            onStateChange={(expanded) => setIsPlayerExpanded(expanded)}
-                        />
+                        {!isNowPlaying && (
+                            <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "100%", zIndex: 8000 }} pointerEvents="box-none">
+                                <MiniPlayer
+                                    ref={playerRef}
+                                    hidden={pathname === "/onboarding" || pathname === "/index"}
+                                    onStateChange={(expanded) => setIsPlayerExpanded(expanded)}
+                                />
+                            </View>
+                        )}
+
                     </View>
-                    )}
-                    
-                </View>
-                                    )}
+                )}
             </PlayerProvider>
         </GestureHandlerRootView>
     );
-}
+});
