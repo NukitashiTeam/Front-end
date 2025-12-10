@@ -25,7 +25,8 @@ export default function CreatePlaylist(){
     const router = useRouter();
     return(
         <Background>
-             <View style={{flex:1, paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0, paddingBottom: insets.bottom ? Math.max(insets.bottom, 12) : 12,}}>
+             <View style={{flex:1, paddingTop: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0) + insets.top,
+                         paddingBottom: insets.bottom ? Math.max(insets.bottom, 12) : 12,}}>
                             <View style={styles.headerWrap}>
                             <Header isModEnabled={isModEnabled} onToggleMod={setIsModEnabled} />
                             </View>
