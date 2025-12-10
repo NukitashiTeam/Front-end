@@ -121,22 +121,24 @@ function Onboarding() {
           }, 100);
         }}
       />
+      <View style={{ marginTop: -40 }}>
+        <Paginator data={onboardingData} scrollX={scrollX} index={index} />
 
-      <Paginator data={onboardingData} scrollX={scrollX} index={index} />
+        <View style={{ alignItems: "center", marginTop: -25 }}>
+          <TouchableOpacity style={styles.button} onPress={handleNextPage}>
+            <Text style={styles.buttonText}>
+              {index === onboardingData.length - 1 ? "Get Started" : "Next"}
+            </Text>
+          </TouchableOpacity>
 
-      <View style={{ alignItems: "center", marginTop: -20 }}>
-        <TouchableOpacity style={styles.button} onPress={handleNextPage}>
-          <Text style={styles.buttonText}>
-            {index === onboardingData.length - 1 ? "Get Started" : "Next"}
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={skipOnboarding}>
-          <Text style={{ fontSize: 13, marginTop: 15, fontWeight: "400" }}>
-            Skip!
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={skipOnboarding}>
+            <Text style={{ fontSize: 13, marginTop: 15, fontWeight: "400" }}>
+              Skip!
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
+
     </BackgroundLayer>
   );
 }

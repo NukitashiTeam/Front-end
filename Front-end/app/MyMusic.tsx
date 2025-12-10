@@ -76,9 +76,12 @@ export default function MyMusic(){
                     columnWrapperStyle={styles.row}
                     contentContainerStyle={{...styles.listContent, paddingBottom: 80 + (insets.bottom || 0)}}
                 />
-                <TouchableOpacity style={{...styles.addButton, bottom: 50 + (insets.bottom || 0)}} onPress={()=> router.navigate('/CreatePlaylist')}>
-                    <Image source={require('../assets/images/pepicons-pop_plus-circle-filled.png')} style={{width: 60, height: 60, tintColor: '#FFFFFF'}} />
-                </TouchableOpacity>
+                <View>
+                    <TouchableOpacity style={{...styles.addButton, bottom: 40 + (insets.bottom || 0)}} onPress={()=> router.navigate('/CreatePlaylist')}>
+                        <Image source={require('../assets/images/pepicons-pop_plus-circle-filled.png')} style={{width: 40, height: 40, tintColor: '#FFFFFF', marginBottom: 10}} />
+                    </TouchableOpacity>
+                </View>
+
             </View>
             
             
