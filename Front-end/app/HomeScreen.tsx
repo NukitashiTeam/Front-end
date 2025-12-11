@@ -59,13 +59,11 @@ export default function HomeScreen() {
     useEffect(() => {
         if (!fontsLoaded) return;
         (async () => {
-          await SplashScreen.hideAsync();
+            await SplashScreen.hideAsync();
         })();
-      }, [fontsLoaded]);
+    }, [fontsLoaded]);
 
-    if(!fontsLoaded) {
-        return null;
-    }
+    if(!fontsLoaded) return null;
 
     return (
         <View style={styles.container}>
@@ -149,7 +147,13 @@ export default function HomeScreen() {
                     <TouchableOpacity
                         activeOpacity={0.85}
                         style={{ width: ITEM_W }}
-                        onPress={() => console.log("Open playlist:", item.title)}
+                        onPress={() => {
+                            console.log("Open playlist:", item.title);
+                            router.navigate({
+                                pathname: "/PlaylistSong",
+                                params: { title: item.title, pic: item.cover }
+                            });
+                        }}
                     >
                         <View style={{ borderRadius: 16, overflow: "hidden" }}>
                             <Image source={item.cover} resizeMode="cover" style={{ width: "100%", height: ITEM_W }} />
