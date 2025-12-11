@@ -53,7 +53,7 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
     bottomGap = 8
 }, ref) => {
     const { isPlaying, setIsPlaying, progressVal, setProgress: setProgressVal } = usePlayer();
-    const { height: SCREEN_H, width: SCREEN_W } = useWindowDimensions();
+    // const { height: SCREEN_H, width: SCREEN_W } = useWindowDimensions();
     const insets = useSafeAreaInsets();
     const safeBottom = bottomInset ?? insets.bottom;
     
@@ -66,7 +66,7 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
 
     const MINI_BOTTOM_OFFSET = safeBottom + bottomGap + bottomBarHeight + 8;
     const MINIMIZED_PEEK = 18;
-    const MINIMIZED_TRANSLATE_Y = MINI_HEIGHT + 95;
+    const MINIMIZED_TRANSLATE_Y = SCREEN_H * 0.15;
     const MAX_TRAVEL = Math.max(1, SCREEN_H - (MINI_HEIGHT + MINI_BOTTOM_OFFSET));
 
     const notifyStateChange = (expanded: boolean) => {

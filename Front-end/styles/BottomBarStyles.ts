@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
     // BOTTOM BAR
     bottomBar: {
         width: "93%",
-        marginTop: 16,
+        marginTop: "4%",
         backgroundColor: "rgba(255,255,255,0.88)",
         borderRadius: 28,
         paddingVertical: 5,
