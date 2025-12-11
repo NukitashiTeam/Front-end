@@ -61,7 +61,7 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
     const context = useSharedValue(0);
 
     const MINI_HEIGHT = useMemo(() => {
-        return Math.round(clamp(SCREEN_H * 0.10, 72, 92));
+        return Math.round(clamp(SCREEN_H * 0.09, 72, 92));
     }, [SCREEN_H]);
 
     const MINI_BOTTOM_OFFSET = safeBottom + bottomGap + bottomBarHeight + 8;
@@ -233,7 +233,7 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
             </Animated.View>
 
             <GestureDetector gesture={panUp}>
-                <Animated.View style={[styles.miniPlayerStub, { bottom: MINI_BOTTOM_OFFSET }, miniPlayerStyle]}>
+                <Animated.View style={[styles.miniPlayerStub, miniPlayerStyle]}>
                     <LinearGradient
                         colors={["#580499E3", "#580499E3"]}
                         start={{ x: 0, y: 0 }}
