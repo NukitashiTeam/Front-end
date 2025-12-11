@@ -65,8 +65,8 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
     }, [SCREEN_H]);
 
     const MINI_BOTTOM_OFFSET = safeBottom + bottomGap + bottomBarHeight + 8;
-    const MINIMIZED_PEEK = 18;
-    const MINIMIZED_TRANSLATE_Y = SCREEN_H * 0.15;
+    const HANDLE_PEEK = Platform.OS === "ios" ? verticalScale(-80) : verticalScale(-100);
+    const MINIMIZED_TRANSLATE_Y = MINI_HEIGHT - HANDLE_PEEK;
     const MAX_TRAVEL = Math.max(1, SCREEN_H - (MINI_HEIGHT + MINI_BOTTOM_OFFSET));
 
     const notifyStateChange = (expanded: boolean) => {
@@ -208,7 +208,7 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
     if (hidden) return null;
 
     return (
-        <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "transparent", height: "106%"}]} pointerEvents="box-none">
             <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: 'black' }, backdropStyle]} pointerEvents="none" />
 
             <Animated.View style={[StyleSheet.absoluteFill, fullPlayerStyle]}>
@@ -233,7 +233,9 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
             </Animated.View>
 
             <GestureDetector gesture={panUp}>
-                <Animated.View style={[styles.miniPlayerStub, miniPlayerStyle]}>
+                <Animated.View style={[styles.miniPlayerStub, {
+                    bottom: MINI_BOTTOM_OFFSET,
+                }, miniPlayerStyle]}>
                     <LinearGradient
                         colors={["#580499E3", "#580499E3"]}
                         start={{ x: 0, y: 0 }}

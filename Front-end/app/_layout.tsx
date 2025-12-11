@@ -129,7 +129,7 @@ export default Sentry.wrap(function RootLayout() {
                 {appearBottomBar && (
                     <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
 
-                        <View style={{ position: "absolute", bottom: "2%", left: 0, right: 0, zIndex: 9999, alignItems: 'center', paddingBottom: insets.bottom}}>
+                        <View style={{ position: "absolute", bottom: "0%", left: 0, right: 0, zIndex: 9999, alignItems: 'center', paddingBottom: insets.bottom}}>
                             <BottomBar
                                 active={activeTab as any}
                                 onPress={(k) => {
