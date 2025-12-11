@@ -124,6 +124,7 @@ export default Sentry.wrap(function RootLayout() {
                     <Stack.Screen name="SearchScreen" />
                     <Stack.Screen name="MyMusic" />
                     <Stack.Screen name="ChoosingMoodPlayScreen" />
+                    <Stack.Screen name="ContextConfigScreen" />
                 </Stack>
                 {appearBottomBar && (
                     <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
