@@ -40,13 +40,19 @@ export default function PlaylistSong(){
         { id: '7', title: 'Name of the song', artist: 'Artist Name', pic: require('../assets/images/song7.jpg') },
         ];
     const renderSongItem = ({ item }: { item: Song }) => (
-        <View style={styles.songItem}>
-            <Image source={item.pic} style={styles.songImage} />
-            <View >
-                <Text style={styles.songTitle}>{item.title}</Text>
-                <Text style={styles.songArtist}>{item.artist}</Text>
+        <View style={{display:"flex", flexDirection:"row", justifyContent:"space-between", alignItems:"center", paddingHorizontal:20, marginBottom:15}}>
+            <View style={styles.songItem}>
+                <Image source={item.pic} style={styles.songImage} />
+                <View >
+                    <Text style={styles.songTitle}>{item.title}</Text>
+                    <Text style={styles.songArtist}>{item.artist}</Text>
+                </View>
             </View>
+            <TouchableOpacity>
+                <Image source={require('../assets/images/delete.png')} />
+            </TouchableOpacity>
         </View>
+
     );
     const handleVectorPress = () => {
         console.log('Vector icon pressed');
@@ -59,6 +65,9 @@ export default function PlaylistSong(){
     const handlePlayPress = () => {
         console.log('Play icon pressed');
     };
+    const handleDeletePlaylist = () =>{
+        console.log('Delete playlist pressed');
+    }
     return(
         <Background>
                 <View style={{flex:1, paddingTop: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0) + insets.top,
@@ -73,18 +82,21 @@ export default function PlaylistSong(){
                     <Image source={artistPic} style={styles.artistImage} />
                     <Text style={styles.artistName}>{artistTitle}</Text>
                     </View>
-                    <View style={{flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginBottom: 10,gap:100}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginBottom: 10,gap:170}}>
                         <View style={{flexDirection: 'row', alignItems: 'center', gap:20}}>
                             <TouchableOpacity onPress={handleVectorPress}>
-                                <Image source={require('../assets/images/Vector (1).png')} style={{ width: 24, height: 24, tintColor: '#FFFFFF' }} />
+                                <Image source={require('../assets/images/Vector (1).png')} style={{ width: 21, height: 24, tintColor: '#FFFFFF' }} />
                             </TouchableOpacity>
                             <TouchableOpacity onPress={handleAddPress}>
-                                <Image source={require('../assets/images/add.png')} style={{ width: 24, height: 24, tintColor: '#FFFFFF' }} />
+                                <Image source={require('../assets/images/add.png')} style={{ width: 29, height: 30, tintColor: '#FFFFFF' }} />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={handleDeletePlaylist}>
+                                <Image source = {require('../assets/images/icon (1).png')} style={{ width: 24, height: 24, tintColor: '#FFFFFF' }} />
                             </TouchableOpacity>
                         </View>
 
                             <TouchableOpacity onPress={handlePlayPress}>
-                                <Image source={require('../assets/images/carbon_play-filled.png')} style={{ width: 50, height: 50, tintColor: '#FFFFFF' }} />
+                                <Image source={require('../assets/images/carbon_play-filled.png')} style={{ width: 30, height: 30, tintColor: '#FFFFFF' }} />
                             </TouchableOpacity>
                     </View>
                     <FlatList
