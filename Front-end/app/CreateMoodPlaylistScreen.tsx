@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     Text,
@@ -8,100 +8,74 @@ import {
     TouchableOpacity,
     StatusBar,
     Platform,
+    ActivityIndicator,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import styles from "../styles/CreateMoodPlaylistScreenStyles";
-import Header from "../Components/Header";
+import * as SecureStore from 'expo-secure-store';
 import {
     useFonts as useMontserrat,
     Montserrat_400Regular,
     Montserrat_700Bold
 } from "@expo-google-fonts/montserrat";
 
-type Song = {
-    id: string;
-    cover: any;
-    title: string;
-    artist: string;
-};
+import styles from "../styles/CreateMoodPlaylistScreenStyles";
+import Header from "../Components/Header";
+import getRandomSongsByMood, { ISongPreview } from "../fetchAPI/getRandomSongsByMood";
 
 export default function CreateMoodPlaylistScreen() {
     const router = useRouter();
-    const [isModEnabled, setIsModEnabled] = useState(false);
     const insets = useSafeAreaInsets();
+    
+    const params = useLocalSearchParams();
+    const moodNameParam = params.moodName as string; 
+    
+    const [isModEnabled, setIsModEnabled] = useState(false);
+    const [songList, setSongList] = useState<ISongPreview[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    
+    const displayMoodName = moodNameParam || "happy";
 
     let [fontsMontserratLoaded] = useMontserrat({
         Montserrat_400Regular,
         Montserrat_700Bold,
     });
 
-    if(!fontsMontserratLoaded) {
-        return null;
-    }
-    
-    const data: Song[] = [
-        {
-            id: `song-1`,
-            cover: require("../assets/images/weebooSong.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-        {
-            id: `song-2`,
-            cover: require("../assets/images/lonelySong.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-        {
-            id: `song-3`,
-            cover: require("../assets/images/allegoryOfTheCaveSong.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-        {
-            id: `song-4`,
-            cover: require("../assets/images/song4.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-        {
-            id: `song-5`,
-            cover: require("../assets/images/song5.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-        {
-            id: `song-6`,
-            cover: require("../assets/images/song6.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-        {
-            id: `song-7`,
-            cover: require("../assets/images/sadSong.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-        {
-            id: `song-8`,
-            cover: require("../assets/images/song7.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-        {
-            id: `song-9`,
-            cover: require("../assets/images/artNowPlayingMusic.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-    ];
+    const fetchSongsByMood = async (mood: string) => {
+        setIsLoading(true);
+        try {
+            const token = await SecureStore.getItemAsync('accessToken');
+            if (token) {
+                const data = await getRandomSongsByMood(token, mood);
+                if (data && data.success) {
+                    setSongList(data.songs);
+                }
+            } else {
+                console.log("Chưa đăng nhập hoặc không có token");
+            }
+        } catch (error) {
+            console.error("Lỗi khi fetch songs:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-    const renderSong = ({ item }: { item: Song }) => (
+    useEffect(() => {
+        if (moodNameParam) {
+            fetchSongsByMood(moodNameParam);
+        } else {}
+    }, [moodNameParam]);
+
+    if (!fontsMontserratLoaded) return null;
+
+    const renderSong = ({ item }: { item: ISongPreview }) => (
         <View style={styles.songRow}>
-            <Image source={item.cover} style={styles.songCover} />
+            <Image 
+                source={item.image_url ? { uri: item.image_url } : require("../assets/images/song4.jpg")} 
+                style={styles.songCover} 
+            />
             <View style={styles.songMeta}>
                 <Text style={styles.songTitle} numberOfLines={1}>{item.title}</Text>
                 <Text style={styles.songArtist} numberOfLines={1}>{item.artist}</Text>
@@ -141,7 +115,7 @@ export default function CreateMoodPlaylistScreen() {
                 <View style={styles.playlistNameView}>
                     <Image source={require("../assets/images/avatar.png")} style={styles.ownerAvatar} />
                     <View style={{ flex: 1 }}>
-                        <Text style={styles.ownerName}>Chill</Text>
+                        <Text style={styles.ownerName}>{displayMoodName}</Text>
                     </View>
                 </View>
                 
@@ -164,14 +138,25 @@ export default function CreateMoodPlaylistScreen() {
                 </View>
             </View>
 
-            <FlatList
-                data={data}
-                keyExtractor={(it) => it.id}
-                renderItem={renderSong}
-                contentContainerStyle={{ paddingBottom: 96 }}
-                showsVerticalScrollIndicator={false}
-            />
+            {isLoading ? (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size="large" color="#fff" />
+                    <Text style={{ color: 'white', marginTop: 10 }}>Creating playlist for {displayMoodName}...</Text>
+                </View>
+            ) : (
+                <FlatList
+                    data={songList}
+                    keyExtractor={(it) => it.songId}
+                    renderItem={renderSong}
+                    contentContainerStyle={{ paddingBottom: 96 }}
+                    showsVerticalScrollIndicator={false}
+                    ListEmptyComponent={
+                        <Text style={{ color: 'white', textAlign: 'center', marginTop: 20 }}>
+                            No songs found for this mood.
+                        </Text>
+                    }
+                />
+            )}
         </View>
     );
-   
 }

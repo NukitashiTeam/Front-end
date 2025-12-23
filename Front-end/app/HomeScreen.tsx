@@ -193,7 +193,10 @@ export default function HomeScreen() {
                     
                     <View style={styles.quickStartWrapper}>
                         <Pressable
-                            onPress={() => router.push("/CreateMoodPlaylistScreen")}
+                            onPress={() => router.push({
+                                pathname: "/CreateMoodPlaylistScreen",
+                                params: { moodName: "happy" }
+                            })}
                             style={({ pressed }) => [{
                                 opacity: pressed ? 0.96 : 1
                             }]}
@@ -205,18 +208,21 @@ export default function HomeScreen() {
                                 style={styles.quickStartCard}
                             >
                                 <View style={styles.quickStartTopRow}>
-                                    <Text style={styles.quickStartLabel}>Last Mood</Text>
+                                    <Text style={styles.quickStartLabel}>Best Mood</Text>
                                     <View style={styles.quickStartLeftDown}>
                                         <View style={styles.moodAvatarCircle}>
                                             <Image source={require("../assets/images/avatar.png")} style={styles.moodAvatarImg} />
                                         </View>
-                                        <Text style={styles.moodNameText}>Chill</Text>
+                                        <Text style={styles.moodNameText}>Happy</Text>
                                     </View>
                                 </View>
                                 
                                 <View style={styles.quickStartBottomRow}>
                                     <Pressable
-                                        onPress={() => console.log("Play!")}
+                                        onPress={() => router.push({
+                                            pathname: "/CreateMoodPlaylistScreen",
+                                            params: { moodName: "happy" }
+                                        })}
                                         accessibilityRole="button"
                                         accessibilityLabel="Play"
                                         hitSlop={8}
