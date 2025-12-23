@@ -16,15 +16,11 @@ export interface IPlaylistDetail {
     mood?: string;
     context?: string;
     songs: ISong[];
-    owner?: string;
+    owner?: string | { _id: string, avatar: string };
     isPublic?: boolean;
     createdAt?: string;
     updatedAt?: string;
-}
-
-interface ServerResponse {
-    success: boolean;
-    data: IPlaylistDetail | IPlaylistDetail[];
+    __v?: number;
 }
 
 const getPlaylistDetail = async (token: string, playlistId: string): Promise<IPlaylistDetail | null> => {
@@ -41,40 +37,28 @@ const getPlaylistDetail = async (token: string, playlistId: string): Promise<IPl
 
         const responseText = await response.text();
         if (responseText.trim().startsWith('<')) {
-            console.error('[PLAYLIST DETAIL API] LỖI: Server trả về HTML. Kiểm tra lại ID hoặc Endpoint.');
+            console.error('[PLAYLIST DETAIL API] LỖI: Server trả về HTML.');
             return null;
         }
 
         try {
-            const responseJson = JSON.parse(responseText) as ServerResponse;
-
+            const responseData = JSON.parse(responseText) as IPlaylistDetail;
             if (response.ok) {
-                let resultData: IPlaylistDetail | null = null;
-
-                if (Array.isArray(responseJson.data)) {
-                    if (responseJson.data.length > 0) {
-                        resultData = responseJson.data[0];
-                    }
-                } else if (responseJson.data) {
-                    resultData = responseJson.data;
-                }
-
-                if (resultData) {
-                    console.log(`[PLAYLIST DETAIL API] Thành công! Playlist: "${resultData.title}" có ${resultData.songs?.length || 0} bài hát.`);
-                    return resultData;
+                if (responseData && responseData._id) {
+                    console.log(`[PLAYLIST DETAIL API] Thành công! Playlist: "${responseData.title}"`);
+                    return responseData;
                 } else {
-                    console.warn('[PLAYLIST DETAIL API] Không tìm thấy dữ liệu playlist trong response.');
+                    console.warn('[PLAYLIST DETAIL API] JSON trả về không có _id, có thể lỗi format:', JSON.stringify(responseData, null, 2));
                     return null;
                 }
             } else {
-                console.error('[PLAYLIST DETAIL API] Server trả lỗi:', responseJson);
+                console.error('[PLAYLIST DETAIL API] Server trả lỗi HTTP:', response.status);
                 return null;
             }
         } catch (e) {
             console.error('[PLAYLIST DETAIL API] Lỗi Parse JSON. Raw:', responseText);
             return null;
         }
-
     } catch (error) {
         console.error('[PLAYLIST DETAIL API] Lỗi hệ thống:', error);
         return null;

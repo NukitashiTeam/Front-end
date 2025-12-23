@@ -55,7 +55,7 @@ const PlaylistItem = memo(({ item, onPress }: { item: IPlaylist, onPress: (item:
                     source={
                         (item.thumbnail && item.thumbnail !== "") 
                         ? { uri: item.thumbnail } 
-                        : require("../assets/images/MoodyBlue.png")
+                        : require("../assets/images/song4.jpg")
                     } 
                     resizeMode="cover" 
                     style={{ width: "100%", height: ITEM_W }} 
@@ -66,6 +66,7 @@ const PlaylistItem = memo(({ item, onPress }: { item: IPlaylist, onPress: (item:
     );
 });
 PlaylistItem.displayName = 'PlaylistItem';
+
 export default function HomeScreen() {
     let [fontsIrishGroverLoaded] = useIrishGrover({
         IrishGrover_400Regular,
