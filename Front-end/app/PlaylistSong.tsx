@@ -75,7 +75,13 @@ export default function PlaylistSong(){
                     <View style={styles.headerWrap}>
                         <Header isModEnabled={isModEnabled} onToggleMod={setIsModEnabled} />
                     </View>
-                    <TouchableOpacity style={styles.backbutton} onPress={() => router.navigate('/MyMusic')}>
+                    <TouchableOpacity style={styles.backbutton} onPress={() => {
+                        if (router.canGoBack()) {
+                            router.back();
+                        } else {
+                            router.replace("/MyMusic");
+                        }
+                    }}>
                         <Image source={require('../assets/images/material-symbols-light_arrow-back-ios.png')} style={{width: 24, height: 24, tintColor: '#FFFFFF'}} />
                     </TouchableOpacity>
                     <View style={styles.artistHeader}>

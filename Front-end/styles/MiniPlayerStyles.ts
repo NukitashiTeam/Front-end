@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     },
     miniBg: {
         paddingTop: "2%",
-        paddingBottom: "20%",
+        paddingBottom: "30%",
         paddingHorizontal: "4%",
         borderTopLeftRadius: 50,
         borderTopRightRadius: 50,

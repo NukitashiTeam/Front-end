@@ -44,7 +44,7 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
                 style,
             ]}
         >
-            <View style={{ height: "91%" }}>
+            <View style={{ flex: 1 }}>
                 <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
 
                 <Header isModEnabled={isModEnabled} onToggleMod={setIsModEnabled} />

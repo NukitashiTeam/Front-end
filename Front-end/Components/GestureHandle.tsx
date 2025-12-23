@@ -1,10 +1,6 @@
+// GestureHandle.tsx
 import React from "react";
-import {
-    View,
-    StyleProp,
-    ViewStyle,
-    ViewProps
-} from "react-native";
+import { View, StyleProp, ViewStyle, ViewProps } from "react-native";
 import styles from "../styles/GestureHandleStyles";
 
 interface GestureHandleProps extends ViewProps {
@@ -12,7 +8,11 @@ interface GestureHandleProps extends ViewProps {
 }
 
 const GestureHandle: React.FC<GestureHandleProps> = ({ style, ...rest }) => {
-    return <View style={[styles.handle, style]} {...rest} />;
+    return (
+        <View style={[styles.touchArea]} {...rest}>
+            <View style={[styles.handle, style]} />
+        </View>
+    );
 };
 
 export default GestureHandle;

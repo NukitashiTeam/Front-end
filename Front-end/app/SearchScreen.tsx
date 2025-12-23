@@ -438,7 +438,12 @@ export default function SearchScreen() {
                     </Pressable>
                 </View>
 
-                <Text style={styles.sectionTitle}>Context Playlist</Text>
+                <View style={styles.suggestionsMoodPlaylistTextBlock}>
+                    <Text style={styles.sectionTitle}>Context Playlist</Text>
+                    <TouchableOpacity onPress={() => router.navigate("/ContextConfigScreen")}>
+                        <Text style={styles.showMoreText}>Create your context</Text>
+                    </TouchableOpacity>
+                </View>
 
                 <View style={styles.contextSection}>
                     <Animated.FlatList
