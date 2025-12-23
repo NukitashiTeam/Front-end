@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,  } from "react";
 import {
     View,
     Text,
@@ -31,7 +31,8 @@ import {
     Montserrat_400Regular,
     Montserrat_700Bold
 } from "@expo-google-fonts/montserrat";
-
+import searchSongsByKeyword from "@/fetchAPI/SearchMusic";
+import { SongPreview } from "@/fetchAPI/SearchMusic";
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CONTEXT_ITEM_WIDTH = SCREEN_WIDTH * 0.3;
 const CONTEXT_ITEM_SIZE = CONTEXT_ITEM_WIDTH;
@@ -55,7 +56,7 @@ type ContextItem = {
     bgColor: string;
     imgPath: any;
 };
-
+type ListItem = Song | SongPreview;
 export default function SearchScreen() {
     const router = useRouter();
     const [isModEnabled, setIsModEnabled] = useState(false);
@@ -66,6 +67,13 @@ export default function SearchScreen() {
         Montserrat_700Bold,
     });
     
+    //Search
+    const [searchKeyword,setSearchKeyword] = useState<string>("");
+    const [searchResult, setSearchResults] = useState<SongPreview[]>([]);
+    const [isSearching, setIsSearching] =useState(false);
+    const [searchedKeyword, setSearchedKeyword] = useState<string>("");
+    const [isSearchMode,setIsSearchMode] = useState(false);
+
     const data: Song[] = [
         {
             id: `song-1`,
@@ -146,7 +154,29 @@ export default function SearchScreen() {
         }
         return data.map((item, index) => ({ ...item, uniqueKey: `${item.id}_${index}` }));
     }, []);
-
+    const handleSearch = async()=>{
+        const keyword = searchKeyword.trim();
+        if(!keyword) return;
+        setIsSearching(true);
+        setIsSearchMode(true);
+        setSearchedKeyword(keyword);
+        try {
+            const results = await searchSongsByKeyword(keyword, 5);
+            setSearchResults(results);
+        } catch (error) {
+        console.error("Search error:", error);
+        setSearchResults([]);
+        } finally {
+        setIsSearching(false);
+        }
+    }
+    const handleBack = () => {
+        setIsSearchMode(false);
+        setSearchKeyword("");
+        setSearchResults([]);
+        setSearchedKeyword("");
+        setIsSearching(false);
+    };
     const renderSong = ({ item }: { item: Song }) => (
         <View style={styles.songRow}>
             <Image source={item.cover} style={styles.songCover} />
@@ -167,7 +197,28 @@ export default function SearchScreen() {
             </View>
         </View>
     );
-
+    const renderSearchResult = ({ item }: { item: SongPreview }) => (
+        <View style={styles.songRow}>
+        <Image
+            source={{ uri: item.image_url }}
+            style={styles.songCover}
+            resizeMode="cover"
+        />
+        <View style={styles.songMeta}>
+            <Text style={styles.songTitle} numberOfLines={1}>
+            {item.title || "Unknown Title"}
+            </Text>
+            <Text style={styles.songArtist} numberOfLines={1}>
+            Artist: {item.artist || "Unknown Artist"}
+            </Text>
+            {item.moods && item.moods.length > 0 && (
+            <Text style={{ fontSize: 12, color: "#AAA", marginTop: 4 }}>
+                Moods: {item.moods.map((m) => m.name).join(", ")}
+            </Text>
+            )}
+        </View>
+        </View>
+    );
     const AnimatedContextItem = ({ item, index, scrollX }: {
         item: ContextItem,
         index: number,
@@ -257,8 +308,10 @@ export default function SearchScreen() {
                 <Header isModEnabled={isModEnabled} onToggleMod={setIsModEnabled} />
             </View>
             
+            {isSearchMode ? (
+            <>
             <View style={styles.headerBlock}>
-                <View style={styles.searchContainer}>
+                {/* <View style={styles.searchContainer}>
                     <Ionicons name="search-outline" size={22} color="#8E8E93" style={{ marginRight: 10 }} />
                     <TextInput
                         placeholder="Find By Name, Artists or Mood"
@@ -266,6 +319,93 @@ export default function SearchScreen() {
                         style={styles.searchInput}
                     />
                     <Ionicons name="mic-outline" size={22} color="#555555" />
+                </View> */}
+                <View style={styles.searchContainer}>
+                    <Ionicons name="search-outline" size={22} color="#8E8E93" style={{ marginRight: 10 }} />
+                    <TextInput
+                        placeholder="Find By Name, Artists or Mood"
+                        placeholderTextColor="#8E8E93"
+                        style={styles.searchInput}
+                        value={searchKeyword}
+                        onChangeText={setSearchKeyword}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        returnKeyType="search"
+                        onSubmitEditing={handleSearch}  // Chỉ search khi nhấn Enter trên bàn phím
+                    />
+                    {searchKeyword==="" ?(
+                        <Ionicons name="mic-outline" size={22} color="#555555" />
+                    ):(
+                        <TouchableOpacity onPress={handleSearch}>
+                            <Ionicons name="arrow-forward" size={24} color="transparent" style={{ marginLeft: 8 }} />
+                        </TouchableOpacity>
+                    )}
+                    
+                    
+                </View>
+                <TouchableOpacity onPress={handleBack} style={{ marginLeft: 5 }}>
+                    <Ionicons name="arrow-back" size={35} color="#FFF" style={{width: 50}} />
+                </TouchableOpacity>
+                <Text style={[styles.sectionTitle, {  textAlign: "center", fontSize: 18 }]}>
+                    Kết quả tìm kiếm cho &quot;{searchedKeyword}&quot;
+                </Text>
+                {isSearching && (
+                    <View style={{ flex: 1, justifyContent: "center" }}>
+                    <Text style={{ textAlign: "center", color: "#FFF", fontSize: 16 }}>
+                        Đang tìm kiếm...
+                    </Text>
+                    </View>
+                )}
+                <FlatList<ListItem>
+                    data={isSearchMode ? searchResult : data}
+                    keyExtractor={(item) => ("track_id" in item ? item.track_id : item.id)}
+                    renderItem={({ item }) => {
+                    if ("track_id" in item) {
+                        return renderSearchResult({ item: item as SongPreview });
+                    }
+                    return renderSong({ item: item as Song });
+                    }}
+                    contentContainerStyle={{ paddingBottom: 96 }}
+                    showsVerticalScrollIndicator={false}
+                    ListEmptyComponent={
+                    isSearchMode && !isSearching && searchResult.length === 0 ? (
+                        <View style={{ alignItems: "center", marginTop: 80 }}>
+                        <Ionicons name="musical-notes-outline" size={80} color="#666" />
+                        <Text style={{ color: "#FFF", marginTop: 20, fontSize: 18 }}>
+                            Không tìm thấy bài hát nào
+                        </Text>
+                        <Text style={{ color: "#AAA", marginTop: 8, textAlign: "center", paddingHorizontal: 40 }}>
+                            Thử tìm với từ khóa khác hoặc kiểm tra chính tả nhé!
+                        </Text>
+                        </View>
+                    ) : null
+                    }
+                />
+            </View>
+            </>
+          ) : (
+            <>
+              <View style={styles.headerBlock}>
+                <View style={styles.searchContainer}>
+                    <Ionicons name="search-outline" size={22} color="#8E8E93" style={{ marginRight: 10 }} />
+                    <TextInput
+                        placeholder="Find By Name, Artists or Mood"
+                        placeholderTextColor="#8E8E93"
+                        style={styles.searchInput}
+                        value={searchKeyword}
+                        onChangeText={setSearchKeyword}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        returnKeyType="search"
+                        onSubmitEditing={handleSearch}  // Chỉ search khi nhấn Enter trên bàn phím
+                    />
+                    {searchKeyword==="" ?(
+                        <Ionicons name="mic-outline" size={22} color="#555555" />
+                    ):(
+                        <TouchableOpacity onPress={handleSearch}>
+                            <Ionicons name="arrow-forward" size={24} color="transparent" style={{ marginLeft: 8 }} />
+                        </TouchableOpacity>
+                    )}
                 </View>
 
                 <View style={styles.suggestionsMoodPlaylistTextBlock}>
@@ -341,6 +481,9 @@ export default function SearchScreen() {
                 contentContainerStyle={{ paddingBottom: 96 }}
                 showsVerticalScrollIndicator={false}
             />
+            </>
+          )}
+            
         </View>
     );
 }

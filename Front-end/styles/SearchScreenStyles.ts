@@ -23,6 +23,8 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 700,
         fontFamily: "Montserrat_700Bold",
+        marginTop:10,
+        marginBottom:20
     },
     ownerName: {
         color: "#000000",
@@ -191,6 +193,12 @@ const styles = StyleSheet.create({
         color: "#000000",
         height: '100%',
     },
+    backbutton:{
+        fontSize: 40,
+    color: "white",
+    marginBottom: 30,
+    marginLeft: 20,
+    }
 });
 
 export default styles;
