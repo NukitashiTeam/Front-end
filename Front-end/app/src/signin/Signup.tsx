@@ -1,10 +1,12 @@
 import React,{ useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image, TextInput, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import styles from "../../../styles/style";
 import Background from "../../../Components/background";
+import { signupStep1 } from "@/fetchAPI/signupAPI";
+
 export default function SignupScreen() {
     const router = useRouter();
     const [username, setUsername] = useState<string>('');
@@ -16,15 +18,29 @@ export default function SignupScreen() {
         setShowPassword(!showPassword);
     };
     const [passwordError, setPasswordError] = useState<string>('');
-    const handleSignup = () => {
+    const handleSignup = async () => {
         if (password !== confirmPassword) {
-            setPasswordError("Passwords do not match!");
-            return;
-        }
+        setPasswordError("Passwords do not match!");
+        return;
+    }
+    if (!username || !password) {
+        Alert.alert("Lỗi", "Vui lòng điền đầy đủ thông tin");
+        return;
+    }
 
-        setPasswordError("");
-        router.navigate('/src/signin/ChooseType');
+    try {
+        await signupStep1({
+        username: username.trim(),
+        password,
+        passwordConfirm: confirmPassword,
+        });
+
+        router.navigate('/src/signin/EmailInput');
+    } catch (error: any) {
+        Alert.alert("Đăng ký thất bại", error.message);
+    }
     };
+    
     return (
         <Background>
             <Text style={styles.signinlogo}>MoodyBlue</Text>

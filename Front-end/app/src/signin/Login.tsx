@@ -2,7 +2,7 @@ import React,{ useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image, TextInput } from "react-native";
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
+import loginAPI from "@/fetchAPI/loginAPI";
 import styles from "../../../styles/style";
 import Background from "../../../Components/background";
 export default function LoginScreen() {
@@ -13,6 +13,18 @@ export default function LoginScreen() {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
+    };
+    const handleLogin = async () => {
+      if (!username || !password) return;
+
+      try {
+        await loginAPI(username, password);
+        // Đăng nhập thành công → chuyển sang Home
+        router.navigate('/HomeScreen');
+      } catch (error) {
+        alert('Đăng nhập thất bại. Kiểm tra username/password.');
+        console.error(error);
+      }
     };
     return (
         <Background>
@@ -55,7 +67,7 @@ export default function LoginScreen() {
         
         <TouchableOpacity style={[styles.otpbutton,{backgroundColor: username&&password ? 'white' : '#AAA'}]}
           disabled={!username||!password}
-          onPress={()=>router.navigate('/HomeScreen')}
+          onPress={handleLogin}
         >
           <Text style={styles.buttonText}>LOGIN</Text>
         </TouchableOpacity>

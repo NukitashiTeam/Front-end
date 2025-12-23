@@ -64,14 +64,14 @@ function Onboarding() {
     } else {
       // ✅ Khi hoàn tất onboarding, lưu lại trạng thái đã xem
       await AsyncStorage.setItem("hasSeenOnboarding", "true");
-      router.replace("/HomeScreen");
+      router.replace("/src/signin/Login");
     }
   };
 
   const skipOnboarding = async () => {
     // ✅ Khi người dùng bấm "Skip!", cũng lưu lại
     await AsyncStorage.setItem("hasSeenOnboarding", "true");
-    router.replace("/HomeScreen");
+    router.replace("/src/signin/Login");
   };
 
   const renderPage = ({ item }: { item: (typeof onboardingData)[0] }) => {
@@ -121,10 +121,10 @@ function Onboarding() {
           }, 100);
         }}
       />
-      <View style={{ marginTop: -40 }}>
+      <View style={{marginTop: -50 }}>
         <Paginator data={onboardingData} scrollX={scrollX} index={index} />
 
-        <View style={{ alignItems: "center", marginTop: -25 }}>
+        <View style={{ alignItems: "center", marginTop:-10 }}>
           <TouchableOpacity style={styles.button} onPress={handleNextPage}>
             <Text style={styles.buttonText}>
               {index === onboardingData.length - 1 ? "Get Started" : "Next"}

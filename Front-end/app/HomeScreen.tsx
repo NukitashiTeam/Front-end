@@ -19,7 +19,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SplashScreen from 'expo-splash-screen';
-
+import * as SecureStore from 'expo-secure-store';
 import {
     useFonts as useIrishGrover,
     IrishGrover_400Regular
@@ -33,6 +33,7 @@ import {
 import styles from "../styles/HomeStyles";
 import Header from "../Components/Header";
 import loginAPI from "../fetchAPI/loginAPI";
+import {refreshTokenUse} from '../fetchAPI/loginAPI'
 import getAllPlaylist, { IPlaylist } from "../fetchAPI/getAllPlaylist";
 
 const CACHE_KEY_PLAYLIST = 'CACHE_HOME_PLAYLIST';
@@ -64,7 +65,7 @@ const PlaylistItem = memo(({ item, onPress }: { item: IPlaylist, onPress: (item:
         </TouchableOpacity>
     );
 });
-
+PlaylistItem.displayName = 'PlaylistItem';
 export default function HomeScreen() {
     let [fontsIrishGroverLoaded] = useIrishGrover({
         IrishGrover_400Regular,
@@ -90,7 +91,8 @@ export default function HomeScreen() {
                 setIsLoading(false); 
             }
 
-            let token = await AsyncStorage.getItem(CACHE_KEY_TOKEN);
+            // let token = await AsyncStorage.getItem(CACHE_KEY_TOKEN);
+            let token = await SecureStore.getItemAsync("accessToken")
             let needRefreshLogin = false;
             if (!token) {
                 needRefreshLogin = true;
@@ -113,11 +115,12 @@ export default function HomeScreen() {
             }
 
             if (needRefreshLogin) {
-                const newToken = await loginAPI('kieto', '123456');
+                const newToken = await refreshTokenUse();
                 if (newToken) {
-                    await AsyncStorage.setItem(CACHE_KEY_TOKEN, newToken);
+                    // await AsyncStorage.setItem(CACHE_KEY_TOKEN, newToken);
                     token = newToken;
                     const dataRetry = await getAllPlaylist(newToken);
+                    console.log(dataRetry)
                     if (dataRetry && Array.isArray(dataRetry)) {
                         const top4 = dataRetry.slice(0, 4);
                         setRecentPlaylists(top4);
