@@ -1,11 +1,23 @@
 const BASE_URL = 'https://moody-blue-597542124573.asia-southeast2.run.app';
 
+export interface ISongInPlaylist {
+    songId: string;
+    title: string;
+    artist: string;
+    image_url: string;
+    addedAt: string;
+}
+
 export interface IPlaylist {
     _id: string;
     title: string;
     thumbnail?: string;
     owner?: string;
     type?: string;
+    songs?: ISongInPlaylist[];
+    isPublic?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 interface ServerResponse {

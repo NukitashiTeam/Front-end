@@ -27,7 +27,7 @@ Sentry.init({
   ],
 
   tracePropagationTargets: ["https://myproject.org", /^\/api\//],
-  debug: true,
+  debug: !true,
 
   // Performance Monitoring
   tracesSampleRate: 1.0,

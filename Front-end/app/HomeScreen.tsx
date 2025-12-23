@@ -2,7 +2,8 @@ import React, {
     useEffect,
     useState,
     useCallback,
-    memo
+    memo,
+    useMemo 
 } from "react";
 import { 
     View,
@@ -32,18 +33,20 @@ import {
 
 import styles from "../styles/HomeStyles";
 import Header from "../Components/Header";
-import loginAPI from "../fetchAPI/loginAPI";
 import {refreshTokenUse} from '../fetchAPI/loginAPI'
 import getAllPlaylist, { IPlaylist } from "../fetchAPI/getAllPlaylist";
 
 const CACHE_KEY_PLAYLIST = 'CACHE_HOME_PLAYLIST';
-const CACHE_KEY_TOKEN = 'CACHE_USER_TOKEN';
 const NUM_COLS = 2;
 const H_PADDING = 20;
 const GAP = 16;
 const ITEM_W = Math.floor((Dimensions.get("window").width - H_PADDING * 2 - GAP) / NUM_COLS);
 
 const PlaylistItem = memo(({ item, onPress }: { item: IPlaylist, onPress: (item: IPlaylist) => void }) => {
+    const imageSource = useMemo(() => {
+        return (item.songs && item.songs.length > 0 && item.songs[0].image_url) ? { uri: item.songs[0].image_url } : require("../assets/images/song4.jpg");
+    }, [item.thumbnail, item.songs]);
+
     return (
         <TouchableOpacity
             activeOpacity={0.85}
@@ -52,11 +55,7 @@ const PlaylistItem = memo(({ item, onPress }: { item: IPlaylist, onPress: (item:
         >
             <View style={{ borderRadius: 16, overflow: "hidden" }}>
                 <Image 
-                    source={
-                        (item.thumbnail && item.thumbnail !== "") 
-                        ? { uri: item.thumbnail } 
-                        : require("../assets/images/song4.jpg")
-                    } 
+                    source={imageSource} 
                     resizeMode="cover" 
                     style={{ width: "100%", height: ITEM_W }} 
                 />
@@ -92,7 +91,6 @@ export default function HomeScreen() {
                 setIsLoading(false); 
             }
 
-            // let token = await AsyncStorage.getItem(CACHE_KEY_TOKEN);
             let token = await SecureStore.getItemAsync("accessToken")
             let needRefreshLogin = false;
             if (!token) {
@@ -118,7 +116,6 @@ export default function HomeScreen() {
             if (needRefreshLogin) {
                 const newToken = await refreshTokenUse();
                 if (newToken) {
-                    // await AsyncStorage.setItem(CACHE_KEY_TOKEN, newToken);
                     token = newToken;
                     const dataRetry = await getAllPlaylist(newToken);
                     console.log(dataRetry)
@@ -148,12 +145,17 @@ export default function HomeScreen() {
 
     const handlePressItem = useCallback((item: IPlaylist) => {
         console.log("Open playlist:", item.title);
+        let validPic = "";
+        if (item.songs && item.songs.length > 0 && item.songs[0].image_url) {
+            validPic = item.songs[0].image_url;
+        }
+
         router.navigate({
             pathname: "/PlaylistSong",
             params: { 
                 id: item._id, 
                 title: item.title,
-                pic: item.thumbnail
+                pic: validPic
             }
         });
     }, [router]);
