@@ -440,8 +440,8 @@ export default function SearchScreen() {
 
                 <View style={styles.suggestionsMoodPlaylistTextBlock}>
                     <Text style={styles.sectionTitle}>Context Playlist</Text>
-                    <TouchableOpacity onPress={() => router.navigate("/ContextConfigScreen")}>
-                        <Text style={styles.showMoreText}>Create your context</Text>
+                    <TouchableOpacity onPress={() => router.navigate("/ContextUserListScreen")}>
+                        <Text style={styles.showMoreText}>See all context</Text>
                     </TouchableOpacity>
                 </View>
 
