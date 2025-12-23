@@ -86,24 +86,40 @@ export default function HomeScreen() {
         try {
             const cachedData = await AsyncStorage.getItem(CACHE_KEY_PLAYLIST);
             if (cachedData) {
-                const parsedData = JSON.parse(cachedData);
-                setRecentPlaylists(parsedData);
+                setRecentPlaylists(JSON.parse(cachedData));
                 setIsLoading(false); 
             }
 
             let token = await AsyncStorage.getItem(CACHE_KEY_TOKEN);
+            let needRefreshLogin = false;
             if (!token) {
-                token = await loginAPI('kieto', '123456');
-                if (token) {
-                    await AsyncStorage.setItem(CACHE_KEY_TOKEN, token);
+                needRefreshLogin = true;
+            }
+
+            if (!needRefreshLogin && token) {
+                const data = await getAllPlaylist(token);
+                if (data) {
+                    if (Array.isArray(data)) {
+                        const top4 = data.slice(0, 4);
+                        if (JSON.stringify(top4) !== cachedData) {
+                            setRecentPlaylists(top4);
+                            await AsyncStorage.setItem(CACHE_KEY_PLAYLIST, JSON.stringify(top4));
+                        }
+                    }
+                } else {
+                    console.log("Token cũ có thể đã hết hạn, đang thử đăng nhập lại...");
+                    needRefreshLogin = true; 
                 }
             }
 
-            if (token) {
-                const data = await getAllPlaylist(token);
-                if (data && Array.isArray(data)) {
-                    const top4 = data.slice(0, 4);
-                    if (JSON.stringify(top4) !== cachedData) {
+            if (needRefreshLogin) {
+                const newToken = await loginAPI('kieto', '123456');
+                if (newToken) {
+                    await AsyncStorage.setItem(CACHE_KEY_TOKEN, newToken);
+                    token = newToken;
+                    const dataRetry = await getAllPlaylist(newToken);
+                    if (dataRetry && Array.isArray(dataRetry)) {
+                        const top4 = dataRetry.slice(0, 4);
                         setRecentPlaylists(top4);
                         await AsyncStorage.setItem(CACHE_KEY_PLAYLIST, JSON.stringify(top4));
                     }
