@@ -13,7 +13,7 @@ import {
     Modal
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import styles from "../styles/PlaylistSongStyles";
+import styles from "../styles/style";
 import Header from "../Components/Header";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import Background from "../Components/MainBackground";
