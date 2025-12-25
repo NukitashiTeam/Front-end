@@ -86,7 +86,7 @@ export const refreshTokenUse = async (): Promise<string>=>{
       method: 'POST',
       headers:{
         'Accept': 'application/json',
-        'Authentication': `Bearer ${refreshtoken}`
+        'Authorization': `Bearer ${refreshtoken}`
       }
     });
     if(!response.ok){
