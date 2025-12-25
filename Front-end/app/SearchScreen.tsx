@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import {
     View,
     Text,
@@ -11,6 +11,7 @@ import {
     Dimensions,
     TextInput,
     TouchableOpacity,
+    ActivityIndicator,
 } from "react-native";
 import Animated, { 
     useAnimatedScrollHandler, 
@@ -35,6 +36,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import searchSongsByKeyword, { SongPreview } from "@/fetchAPI/SearchMusic";
 import getAllMoods, { IMood } from "@/fetchAPI/getAllMoods";
+import getUserContexts, { IContext } from "@/fetchAPI/getUserContexts"; 
 import { refreshTokenUse } from '@/fetchAPI/loginAPI';
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -48,12 +50,15 @@ type Song = {
     title: string;
     artist: string;
 };
+
 type ContextItem = {
     id: string;
     title: string;
     bgColor: string;
-    imgPath: any;
+    icon: string;
+    uniqueKey?: string;
 };
+
 type ListItem = Song | SongPreview;
 
 export default function SearchScreen() {
@@ -72,7 +77,8 @@ export default function SearchScreen() {
     const [searchedKeyword, setSearchedKeyword] = useState<string>("");
     const [isSearchMode, setIsSearchMode] = useState(false);
     const [moods, setMoods] = useState<IMood[]>([]);
-    const [loadingMoods, setLoadingMoods] = useState<boolean>(true);
+    const [contexts, setContexts] = useState<IContext[]>([]);
+    const [loadingData, setLoadingData] = useState<boolean>(true);
 
     const data: Song[] = [
         { id: `song-1`, cover: require("../assets/images/weebooSong.jpg"), title: "Name of the song", artist: "Artist Name" },
@@ -83,47 +89,67 @@ export default function SearchScreen() {
         { id: `song-6`, cover: require("../assets/images/song6.jpg"), title: "Name of the song", artist: "Artist Name" },
     ];
 
-    const contextData: ContextItem[] = [
-        { id: '1', title: 'Studying', bgColor: '#F0E5C3', imgPath: require("../assets/images/book.png")},
-        { id: '2', title: 'Studying', bgColor: '#FBA7C0', imgPath: require("../assets/images/book.png")}, 
-        { id: '3', title: 'Studying', bgColor: '#72A8FF', imgPath: require("../assets/images/book.png")}, 
-    ];
-
     const infiniteContextData = useMemo(() => {
-        let data: any[] = [];
+        if (contexts.length === 0) return [];
+        const mappedContexts: ContextItem[] = contexts.map(c => ({
+            id: c._id,
+            title: c.name,
+            bgColor: c.color || '#F0E5C3',
+            icon: c.icon || '🔥'
+        }));
+
+        let data: ContextItem[] = [];
         for (let i = 0; i < 20; i++) {
-            data = [...data, ...contextData];
+            data = [...data, ...mappedContexts];
         }
         return data.map((item, index) => ({ ...item, uniqueKey: `${item.id}_${index}` }));
-    }, []);
+    }, [contexts]);
 
     const scrollX = useSharedValue(0);
     const onScroll = useAnimatedScrollHandler((event) => {
         scrollX.value = event.contentOffset.x;
     });
 
-    React.useEffect(() => {
-        const fetchMoodData = async () => {
+    useEffect(() => {
+        const fetchData = async () => {
             try {
+                setLoadingData(true);
                 let token = await SecureStore.getItemAsync("accessToken");
-                let fetchedData = null;
-                if (token) fetchedData = await getAllMoods(token);
-                
-                if (!fetchedData) {
-                    const newToken = await refreshTokenUse();
-                    if (newToken) fetchedData = await getAllMoods(newToken);
+                const fetchAll = async (currentToken: string) => {
+                    const [moodsData, contextsData] = await Promise.all([
+                        getAllMoods(currentToken),
+                        getUserContexts(currentToken)
+                    ]);
+                    return { moodsData, contextsData };
+                };
+
+                let results = null;
+                if (token) {
+                    results = await fetchAll(token);
                 }
                 
-                if (fetchedData && Array.isArray(fetchedData)) {
-                    setMoods(fetchedData);
+                if (!results || !results.moodsData || !results.contextsData) {
+                    const newToken = await refreshTokenUse();
+                    if (newToken) {
+                        results = await fetchAll(newToken);
+                    }
+                }
+                
+                if (results) {
+                    if (results.moodsData && Array.isArray(results.moodsData)) {
+                        setMoods(results.moodsData);
+                    }
+                    if (results.contextsData && Array.isArray(results.contextsData)) {
+                        setContexts(results.contextsData);
+                    }
                 }
             } catch (error) {
-                console.error("Error fetching moods:", error);
+                console.error("Error fetching home data:", error);
             } finally {
-                setLoadingMoods(false);
+                setLoadingData(false);
             }
         };
-        fetchMoodData();
+        fetchData();
     }, []);
 
     const handleSearch = async()=>{
@@ -204,7 +230,7 @@ export default function SearchScreen() {
         return (
             <Animated.View style={[{ width: CONTEXT_ITEM_WIDTH, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 10 }, animatedStyle]}>
                 <View style={[styles.contextCard, { backgroundColor: item.bgColor }]}>
-                    <Image source={item.imgPath} style={styles.contextImage} />
+                    <Text style={{ fontSize: 40, marginBottom: 8 }}>{item.icon}</Text>
                     <Text style={[styles.contextTitle]}>{item.title}</Text>
                 </View>
             </Animated.View>
@@ -281,8 +307,8 @@ export default function SearchScreen() {
                             </View>
 
                             <View style={styles.moodListContainer}>
-                                {loadingMoods ? (
-                                    <Text style={{ color: 'white', textAlign: 'center' }}>Loading moods...</Text>
+                                {loadingData ? (
+                                    <ActivityIndicator size="small" color="#FFF" />
                                 ) : (
                                     <FlatList<IMood>
                                         data={moods}
@@ -303,31 +329,36 @@ export default function SearchScreen() {
                             </View>
 
                             <View style={styles.contextSection}>
-                                <Animated.FlatList
-                                    data={infiniteContextData}
-                                    keyExtractor={(item) => item.uniqueKey}
-                                    horizontal
-                                    showsHorizontalScrollIndicator={false}
-                                    snapToInterval={CONTEXT_ITEM_SIZE}
-                                    decelerationRate="fast"
-                                    contentContainerStyle={{ paddingHorizontal: SPACER, paddingVertical: 10, alignItems: 'center' }}
-                                    onScroll={onScroll}
-                                    scrollEventThrottle={16}
-                                    renderItem={({ item, index }) => (
-                                        <AnimatedContextItem item={item} index={index} scrollX={scrollX} />
-                                    )}
-                                    getItemLayout={(data, index) => ({
-                                        length: CONTEXT_ITEM_SIZE, offset: CONTEXT_ITEM_SIZE * index, index,
-                                    })}
-                                    initialScrollIndex={contextData.length * 2}
-                                />
+                                {loadingData ? (
+                                     <ActivityIndicator size="small" color="#FFF" />
+                                ) : contexts.length > 0 ? (
+                                    <Animated.FlatList
+                                        data={infiniteContextData}
+                                        keyExtractor={(item) => item.uniqueKey!}
+                                        horizontal
+                                        showsHorizontalScrollIndicator={false}
+                                        snapToInterval={CONTEXT_ITEM_SIZE}
+                                        decelerationRate="fast"
+                                        contentContainerStyle={{ paddingHorizontal: SPACER, paddingVertical: 10, alignItems: 'center' }}
+                                        onScroll={onScroll}
+                                        scrollEventThrottle={16}
+                                        renderItem={({ item, index }) => (
+                                            <AnimatedContextItem item={item} index={index} scrollX={scrollX} />
+                                        )}
+                                        getItemLayout={(data, index) => ({
+                                            length: CONTEXT_ITEM_SIZE, offset: CONTEXT_ITEM_SIZE * index, index,
+                                        })}
+                                        initialScrollIndex={contexts.length * 2} 
+                                    />
+                                ) : (
+                                    <Text style={{color: '#FFF', textAlign: 'center'}}>No contexts found</Text>
+                                )}
                             </View>
 
                             <Text style={styles.ownerName}>Recent Playlist's Song</Text>
                         </>)}
                     </View>
                 }
-                // --- KẾT THÚC PHẦN HEADER ---
 
                 renderItem={({ item }) => {
                     if ("track_id" in item) return renderSearchResult({ item: item as SongPreview });
