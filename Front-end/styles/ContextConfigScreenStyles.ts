@@ -63,7 +63,8 @@ const styles = StyleSheet.create({
     typeText: {
         marginTop: 8,
         color: "#1D1B20",
-        fontWeight: "700"
+        fontWeight: "700",
+        textAlign: "center",
     },
     pillBtn: {
         height: 40,

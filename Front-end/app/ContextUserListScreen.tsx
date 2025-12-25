@@ -58,10 +58,6 @@ export default function ContextUserListScreen() {
         }
     };
 
-    useEffect(() => {
-        fetchContexts();
-    }, []);
-
     useFocusEffect(
         useCallback(() => {
             fetchContexts();
@@ -72,14 +68,25 @@ export default function ContextUserListScreen() {
 
     const renderItem = ({ item }: { item: IContext }) => {
         const isUrlIcon = item.icon && (item.icon.startsWith('http') || item.icon.startsWith('file'));
-        const iconName = (!isUrlIcon && item.icon && item.icon.trim() !== "") ? item.icon : "book-outline";
 
         return (
             <TouchableOpacity 
                 style={styles.cardContainer}
                 activeOpacity={0.8}
                 onPress={() => {
-                    console.log("Pressed context:", item._id);
+                    const moodIdsStr = item.moods ? item.moods.map(m => m._id).join(',') : "";
+                    router.push({
+                        pathname: "/ContextConfigScreen",
+                        params: {
+                            mode: "config",
+                            isEdit: "true",
+                            contextId: item._id,
+                            contextName: item.name,
+                            contextIcon: item.icon,
+                            contextColor: item.color,
+                            moodIds: moodIdsStr
+                        }
+                    });
                 }}
             >
                 <View style={[styles.cardBox, { backgroundColor: item.color || '#82B1FF' }]}>
@@ -91,7 +98,6 @@ export default function ContextUserListScreen() {
                     ) : (
                         <Text style={styles.cardIcon}>{item.icon}</Text>
                     )}
-                    {/* <Text style={styles.cardTitleInside} numberOfLines={2}>{item.name}</Text> */}
                 </View>
                 
                 <Text style={styles.cardLabelOutside} numberOfLines={2}>{item.name}</Text>
@@ -164,7 +170,13 @@ export default function ContextUserListScreen() {
                 <TouchableOpacity 
                     style={styles.createButton}
                     onPress={() => {
-                        router.push("/ContextConfigScreen"); 
+                        router.push({
+                            pathname: "/ContextConfigScreen",
+                            params: {
+                                mode: "create",
+                                isEdit: "true",
+                            }
+                        }); 
                     }}
                 >
                     <Text style={styles.createButtonText}>Create Your Own</Text>
