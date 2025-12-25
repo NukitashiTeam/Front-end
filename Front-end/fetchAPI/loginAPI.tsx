@@ -18,6 +18,7 @@ export interface LoginResponse {
 interface RefreshTokenResponse{
   message:string;
   accessToken:string;
+  refreshToken:string
 }
 const loginAPI = async (username: string, password: string): Promise<LoginResponse> => {
     try {
@@ -94,7 +95,8 @@ export const refreshTokenUse = async (): Promise<string>=>{
        throw new Error('Refresh thất bại');
     }
     const data : RefreshTokenResponse = await response.json();
-    await SecureStore.setItemAsync('accessToken',data.accessToken)
+    await SecureStore.setItemAsync('accessToken',data.accessToken);
+    await SecureStore.setItemAsync('refreshToken',data.refreshToken)
     return data.accessToken
   } 
   catch (error){
