@@ -103,7 +103,7 @@ export default function ContextUserListScreen() {
         <View style={[styles.container, {
             paddingTop: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0) + insets.top,
         }]}>
-            <StatusBar barStyle="light-content" />
+            <StatusBar barStyle="light-content" translucent={true} backgroundColor="transparent" />
 
             <LinearGradient
                 colors={["#8C84FF", "#6E5ED1"]}

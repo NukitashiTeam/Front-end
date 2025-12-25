@@ -111,6 +111,8 @@ export default function MyMusic() {
           paddingBottom: insets.bottom ? Math.max(insets.bottom, 12) : 12,
         }}
       >
+        <StatusBar barStyle="light-content" translucent={true} backgroundColor="transparent" />
+        
         {/* Header */}
         <View style={styles.headerWrap}>
           <Header isModEnabled={isModEnabled} onToggleMod={setIsModEnabled} />
