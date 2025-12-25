@@ -74,17 +74,11 @@ export default function ContextUserListScreen() {
                 style={styles.cardContainer}
                 activeOpacity={0.8}
                 onPress={() => {
-                    const moodIdsStr = item.moods ? item.moods.map(m => m._id).join(',') : "";
                     router.push({
                         pathname: "/ContextConfigScreen",
                         params: {
                             mode: "config",
-                            isEdit: "true",
                             contextId: item._id,
-                            contextName: item.name,
-                            contextIcon: item.icon,
-                            contextColor: item.color,
-                            moodIds: moodIdsStr
                         }
                     });
                 }}
@@ -174,7 +168,7 @@ export default function ContextUserListScreen() {
                             pathname: "/ContextConfigScreen",
                             params: {
                                 mode: "create",
-                                isEdit: "true",
+                                isEdit: "false",
                             }
                         }); 
                     }}
