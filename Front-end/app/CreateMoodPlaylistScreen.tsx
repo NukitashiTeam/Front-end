@@ -24,6 +24,7 @@ import {
 import styles from "../styles/CreateMoodPlaylistScreenStyles";
 import Header from "../Components/Header";
 import getRandomSongsByMood, { ISongPreview } from "../fetchAPI/getRandomSongsByMood";
+import { refreshTokenUse } from "../fetchAPI/loginAPI";
 
 export default function CreateMoodPlaylistScreen() {
     const router = useRouter();
@@ -48,9 +49,12 @@ export default function CreateMoodPlaylistScreen() {
         try {
             const token = await SecureStore.getItemAsync('accessToken');
             if (token) {
-                const data = await getRandomSongsByMood(token, mood);
-                if (data && data.success) {
-                    setSongList(data.songs);
+                console.log(`fetching songs for mood: ${mood}`);
+                const responseData = await getRandomSongsByMood(token, mood);
+                if (responseData && responseData.success) {
+                    setSongList(responseData.data);
+                } else {
+                    console.log("Không lấy được dữ liệu nhạc mood.");
                 }
             } else {
                 console.log("Chưa đăng nhập hoặc không có token");
@@ -63,9 +67,8 @@ export default function CreateMoodPlaylistScreen() {
     };
 
     useEffect(() => {
-        if (moodNameParam) {
-            fetchSongsByMood(moodNameParam);
-        } else {}
+        const moodToFetch = moodNameParam || "happy";
+        fetchSongsByMood(moodToFetch);
     }, [moodNameParam]);
 
     if (!fontsMontserratLoaded) return null;
@@ -115,14 +118,14 @@ export default function CreateMoodPlaylistScreen() {
                 <View style={styles.playlistNameView}>
                     <Image source={require("../assets/images/avatar.png")} style={styles.ownerAvatar} />
                     <View style={{ flex: 1 }}>
-                        <Text style={styles.ownerName}>{displayMoodName}</Text>
+                        <Text style={styles.ownerName}>{displayMoodName.toUpperCase()}</Text> 
                     </View>
                 </View>
                 
                 <View style={styles.playlistHeaderRow}>
                     <View style={styles.playlistHeaderRowColumn1}>
-                        <TouchableOpacity style={styles.iconCircle}>
-                            <Ionicons name="shuffle-outline" size={18} color="#fff" />
+                        <TouchableOpacity style={styles.iconCircle} onPress={() => fetchSongsByMood(displayMoodName)}>
+                            <Ionicons name="refresh" size={18} color="#fff" />
                         </TouchableOpacity>
                         
                         <TouchableOpacity style={[styles.iconCircle, { marginLeft: 10 }]}>
@@ -141,7 +144,7 @@ export default function CreateMoodPlaylistScreen() {
             {isLoading ? (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <ActivityIndicator size="large" color="#fff" />
-                    <Text style={{ color: 'white', marginTop: 10 }}>Creating playlist for {displayMoodName}...</Text>
+                    <Text style={{ color: 'white', marginTop: 10 }}>Generating "{displayMoodName}" playlist...</Text>
                 </View>
             ) : (
                 <FlatList

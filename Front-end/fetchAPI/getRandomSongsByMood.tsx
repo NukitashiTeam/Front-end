@@ -11,9 +11,8 @@ export interface ISongPreview {
 
 export interface IRandomMoodResponse {
     success: boolean;
-    title: string;
-    songs: ISongPreview[];
-    isTemporary: boolean;
+    data: ISongPreview[];
+    mood?: string;
 }
 
 const getRandomSongsByMood = async (token: string, moodName: string): Promise<IRandomMoodResponse | null> => {
@@ -30,7 +29,7 @@ const getRandomSongsByMood = async (token: string, moodName: string): Promise<IR
     };
 
     try {
-        console.log(`--- [MOOD API] Đang lấy nhạc theo mood: "${moodName}"... ---`);
+        console.log(`--- [MOOD API] Đang lấy nhạc theo mood: ${moodName}... ---`);
 
         let response = await fetchRandomSongs(token);
         if (response.status === 403) {
@@ -52,12 +51,13 @@ const getRandomSongsByMood = async (token: string, moodName: string): Promise<IR
 
         const responseText = await response.text();
         try {
-            const data = JSON.parse(responseText);
+            const result = JSON.parse(responseText);
             if (response.ok) {
-                console.log(`[MOOD API] Thành công! Tìm thấy ${data.songs?.length || 0} bài.`);
-                return data as IRandomMoodResponse;
+                const songCount = result.data ? result.data.length : 0;
+                console.log(`[MOOD API] Thành công! Tìm thấy ${songCount} bài.`);
+                return result as IRandomMoodResponse;
             } else {
-                console.error(`[MOOD API] Lỗi HTTP ${response.status}:`, data);
+                console.error(`[MOOD API] Lỗi HTTP ${response.status}:`, result);
                 return null;
             }
         } catch (jsonError) {
