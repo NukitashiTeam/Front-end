@@ -128,7 +128,22 @@ export default function CreateMoodPlaylistScreen() {
                             <Ionicons name="refresh" size={18} color="#fff" />
                         </TouchableOpacity>
                         
-                        <TouchableOpacity style={[styles.iconCircle, { marginLeft: 10 }]}>
+                        <TouchableOpacity 
+                            style={[styles.iconCircle, { marginLeft: 10 }]}
+                            onPress={() => {
+                                if (songList.length > 0) {
+                                    router.push({
+                                        pathname: '/CreatePlaylist',
+                                        params: { 
+                                            songsData: JSON.stringify(songList),
+                                            defaultTitle: `My ${displayMoodName.toUpperCase()} Mix`
+                                        }
+                                    });
+                                } else {
+                                    router.navigate('/CreatePlaylist');
+                                }
+                            }}
+                        >
                             <Ionicons name="add-outline" size={22} color="#fff" />
                         </TouchableOpacity>
                     </View>
