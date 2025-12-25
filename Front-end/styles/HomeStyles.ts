@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     },
     moodNameText: {
         color: "white",
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: 700,
         marginLeft: 16,
         fontFamily: "Montserrat_700Bold",
@@ -128,6 +128,10 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         padding: 16,
         minHeight: 150,
+    },
+    moodEmojiText: {
+        fontSize: 40,
+        textAlign: 'center',
     },
 });
 

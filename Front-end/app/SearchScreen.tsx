@@ -42,7 +42,6 @@ const CONTEXT_ITEM_WIDTH = SCREEN_WIDTH * 0.3;
 const CONTEXT_ITEM_SIZE = CONTEXT_ITEM_WIDTH;
 const SPACER = (SCREEN_WIDTH - CONTEXT_ITEM_SIZE) / 2;
 
-// ... (Giữ nguyên các type Song, ListItem...)
 type Song = {
     id: string;
     cover: any;
@@ -67,7 +66,6 @@ export default function SearchScreen() {
         Montserrat_700Bold,
     });
     
-    // --- STATE ---
     const [searchKeyword, setSearchKeyword] = useState<string>("");
     const [searchResult, setSearchResults] = useState<SongPreview[]>([]);
     const [isSearching, setIsSearching] = useState(false);
@@ -76,7 +74,6 @@ export default function SearchScreen() {
     const [moods, setMoods] = useState<IMood[]>([]);
     const [loadingMoods, setLoadingMoods] = useState<boolean>(true);
 
-    // --- DATA MẪU ---
     const data: Song[] = [
         { id: `song-1`, cover: require("../assets/images/weebooSong.jpg"), title: "Name of the song", artist: "Artist Name" },
         { id: `song-2`, cover: require("../assets/images/lonelySong.jpg"), title: "Name of the song", artist: "Artist Name" },
@@ -94,19 +91,17 @@ export default function SearchScreen() {
 
     const infiniteContextData = useMemo(() => {
         let data: any[] = [];
-        for (let i = 0; i < 20; i++) { // Giảm số lượng loop xuống 20 cho nhẹ máy
+        for (let i = 0; i < 20; i++) {
             data = [...data, ...contextData];
         }
         return data.map((item, index) => ({ ...item, uniqueKey: `${item.id}_${index}` }));
     }, []);
 
-    // --- ANIMATION VALUES ---
     const scrollX = useSharedValue(0);
     const onScroll = useAnimatedScrollHandler((event) => {
         scrollX.value = event.contentOffset.x;
     });
 
-    // --- EFFECTS ---
     React.useEffect(() => {
         const fetchMoodData = async () => {
             try {
@@ -131,7 +126,6 @@ export default function SearchScreen() {
         fetchMoodData();
     }, []);
 
-    // --- HANDLERS ---
     const handleSearch = async()=>{
         const keyword = searchKeyword.trim();
         if(!keyword) return;
@@ -157,7 +151,6 @@ export default function SearchScreen() {
         setIsSearching(false);
     };
 
-    // --- RENDER ITEMS ---
     const renderSong = ({ item }: { item: Song }) => (
         <View style={styles.songRow}>
             <Image source={item.cover} style={styles.songCover} />
@@ -178,7 +171,6 @@ export default function SearchScreen() {
         </View>
     );
 
-    // MỚI: Render từng Mood Item (Icon + Text)
     const renderMoodItem = ({ item }: { item: IMood }) => (
         <TouchableOpacity 
             style={styles.moodItemWrapper}

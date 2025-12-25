@@ -33,8 +33,9 @@ import {
 
 import styles from "../styles/HomeStyles";
 import Header from "../Components/Header";
-import {refreshTokenUse} from '../fetchAPI/loginAPI'
+import { refreshTokenUse } from '../fetchAPI/loginAPI';
 import getAllPlaylist, { IPlaylist } from "../fetchAPI/getAllPlaylist";
+import getAllMoods, { IMood } from "../fetchAPI/getAllMoods";
 
 const CACHE_KEY_PLAYLIST = 'CACHE_HOME_PLAYLIST';
 const NUM_COLS = 2;
@@ -81,6 +82,7 @@ export default function HomeScreen() {
 
     const [isModEnabled, setIsModEnabled] = useState(true);
     const [recentPlaylists, setRecentPlaylists] = useState<IPlaylist[]>([]);
+    const [quickStartMood, setQuickStartMood] = useState<IMood | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     const loadData = useCallback(async () => {
@@ -111,6 +113,15 @@ export default function HomeScreen() {
                     console.log("Token cũ có thể đã hết hạn, đang thử đăng nhập lại...");
                     needRefreshLogin = true; 
                 }
+
+                if (!needRefreshLogin) {
+                    const moods = await getAllMoods(token);
+                    if (moods && moods.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * moods.length);
+                        setQuickStartMood(moods[randomIndex]);
+                        console.log("Random Mood selected:", moods[randomIndex].name);
+                    }
+                }
             }
 
             if (needRefreshLogin) {
@@ -118,11 +129,17 @@ export default function HomeScreen() {
                 if (newToken) {
                     token = newToken;
                     const dataRetry = await getAllPlaylist(newToken);
-                    console.log(dataRetry)
                     if (dataRetry && Array.isArray(dataRetry)) {
                         const top4 = dataRetry.slice(0, 4);
                         setRecentPlaylists(top4);
                         await AsyncStorage.setItem(CACHE_KEY_PLAYLIST, JSON.stringify(top4));
+                    }
+
+                    const moodsRetry = await getAllMoods(newToken);
+                    if (moodsRetry && moodsRetry.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * moodsRetry.length);
+                        setQuickStartMood(moodsRetry[randomIndex]);
+                        console.log("Random Mood selected (retry):", moodsRetry[randomIndex].name);
                     }
                 }
             }
@@ -144,7 +161,6 @@ export default function HomeScreen() {
     }, [loadData]);
 
     const handlePressItem = useCallback((item: IPlaylist) => {
-        console.log("Open playlist:", item.title);
         let validPic = "";
         if (item.songs && item.songs.length > 0 && item.songs[0].image_url) {
             validPic = item.songs[0].image_url;
@@ -160,7 +176,18 @@ export default function HomeScreen() {
         });
     }, [router]);
 
+    const handleQuickStartPress = () => {
+        const moodToPlay = quickStartMood?.name || "happy";
+        router.push({
+            pathname: "/CreateMoodPlaylistScreen",
+            params: { moodName: moodToPlay }
+        });
+    };
+
     if(!fontsLoaded) return null;
+
+    const moodDisplayName = quickStartMood?.name ? quickStartMood.name.charAt(0).toUpperCase() + quickStartMood.name.slice(1) : "Happy";
+    const moodIcon = quickStartMood?.icon || "🎵"; 
 
     return (
         <View style={styles.container}>
@@ -186,17 +213,13 @@ export default function HomeScreen() {
                 ListHeaderComponent={<>
                     <Header isModEnabled={isModEnabled} onToggleMod={setIsModEnabled} />
 
-                    {/* QUICK START */}
                     <View style={{ width: "100%", alignItems: "center" }}>
                         <Text style={styles.sectionTitle}>QUICK START</Text>
                     </View>
                     
                     <View style={styles.quickStartWrapper}>
                         <Pressable
-                            onPress={() => router.push({
-                                pathname: "/CreateMoodPlaylistScreen",
-                                params: { moodName: "happy" }
-                            })}
+                            onPress={handleQuickStartPress}
                             style={({ pressed }) => [{
                                 opacity: pressed ? 0.96 : 1
                             }]}
@@ -211,18 +234,15 @@ export default function HomeScreen() {
                                     <Text style={styles.quickStartLabel}>Best Mood</Text>
                                     <View style={styles.quickStartLeftDown}>
                                         <View style={styles.moodAvatarCircle}>
-                                            <Image source={require("../assets/images/avatar.png")} style={styles.moodAvatarImg} />
+                                            <Text style={styles.moodEmojiText}>{moodIcon}</Text>
                                         </View>
-                                        <Text style={styles.moodNameText}>Happy</Text>
+                                        <Text style={styles.moodNameText}>{moodDisplayName}</Text>
                                     </View>
                                 </View>
                                 
                                 <View style={styles.quickStartBottomRow}>
                                     <Pressable
-                                        onPress={() => router.push({
-                                            pathname: "/CreateMoodPlaylistScreen",
-                                            params: { moodName: "happy" }
-                                        })}
+                                        onPress={handleQuickStartPress}
                                         accessibilityRole="button"
                                         accessibilityLabel="Play"
                                         hitSlop={8}
@@ -238,7 +258,6 @@ export default function HomeScreen() {
                         </Pressable>
                     </View>
 
-                    {/* RECENT PLAYLIST title */}
                     <View style={{ width: "100%", alignItems: "center" }}>
                         <Text style={styles.sectionTitle}>RECENT PLAYLIST</Text>
                     </View>
