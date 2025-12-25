@@ -17,7 +17,8 @@ export interface INewPlaylist {
 
 interface CreateResponse {
     success: boolean;
-    playlist: INewPlaylist;
+    data: INewPlaylist; 
+    message?: string;
 }
 
 const createManualPlaylist = async (token: string, title: string): Promise<INewPlaylist | null> => {
@@ -42,14 +43,13 @@ const createManualPlaylist = async (token: string, title: string): Promise<INewP
 
         try {
             const responseJson = JSON.parse(responseText);
-
             if (response.ok) {
                 const resultData = responseJson as CreateResponse;
-                if (resultData.success && resultData.playlist) {
-                    console.log(`[CREATE PLAYLIST API] Thành công! ID: ${resultData.playlist._id}`);
-                    return resultData.playlist;
+                if (resultData.success && resultData.data) {
+                    console.log(`[CREATE PLAYLIST API] Thành công! ID: ${resultData.data._id}`);
+                    return resultData.data;
                 } else {
-                    console.warn('[CREATE PLAYLIST API] Server báo thành công nhưng không tìm thấy object playlist:', resultData);
+                    console.warn('[CREATE PLAYLIST API] Server báo thành công nhưng không tìm thấy object data:', resultData);
                     return null;
                 }
             } else {

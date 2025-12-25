@@ -20,6 +20,7 @@ import Background from "../Components/MainBackground";
 import getPlaylistDetail, { IPlaylistDetail, ISong } from "../fetchAPI/getPlaylistDetail";
 import deletePlaylist from "../fetchAPI/deletePlaylist";
 import removeSongFromPlaylist from "../fetchAPI/removeSongFromPlaylist";
+import * as SecureStore from 'expo-secure-store';
 
 const CACHE_KEY_TOKEN = 'CACHE_USER_TOKEN';
 
@@ -39,7 +40,7 @@ export default function PlaylistSong() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const token = await AsyncStorage.getItem(CACHE_KEY_TOKEN);
+                const token = await SecureStore.getItemAsync("accessToken");
                 if (token && playlistId) {
                     const data = await getPlaylistDetail(token, playlistId);
                     if (data) {

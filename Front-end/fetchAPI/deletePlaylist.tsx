@@ -1,3 +1,5 @@
+import { refreshTokenUse } from './loginAPI';
+
 const BASE_URL = 'https://moody-blue-597542124573.asia-southeast2.run.app';
 
 interface DeleteResponse {
@@ -5,17 +7,35 @@ interface DeleteResponse {
 }
 
 const deletePlaylist = async (token: string, playlistId: string): Promise<boolean> => {
-    try {
-        console.log(`--- [DELETE PLAYLIST API] Đang xóa playlist ID: "${playlistId}"... ---`);
-
-        const response = await fetch(`${BASE_URL}/api/playlist/${playlistId}`, {
+    const callDelete = async (currentToken: string) => {
+        return await fetch(`${BASE_URL}/api/playlist/${playlistId}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
-                'Authorization': `Bearer ${token}`,
+                'Authorization': `Bearer ${currentToken}`,
                 'Content-Type': 'application/json',
             },
         });
+    };
+
+    try {
+        console.log(`--- [DELETE PLAYLIST API] Đang xóa playlist ID: "${playlistId}"... ---`);
+
+        let response = await callDelete(token);
+        if (response.status === 403 || response.status === 401) {
+            console.warn(`[DELETE PLAYLIST API] Token hết hạn (${response.status}). Đang thử Refresh Token...`);
+            
+            try {
+                const newToken = await refreshTokenUse();
+                if (newToken) {
+                    console.log('[DELETE PLAYLIST API] Refresh thành công. Đang thực hiện lại lệnh Xóa...');
+                    response = await callDelete(newToken);
+                } 
+            } catch (refreshError) {
+                console.warn('[DELETE PLAYLIST API] Refresh thất bại. Phiên đăng nhập đã hết hạn.');
+                return false;
+            }
+        }
 
         const responseText = await response.text();
         if (responseText.trim().startsWith('<')) {
@@ -32,7 +52,7 @@ const deletePlaylist = async (token: string, playlistId: string): Promise<boolea
             } else {
                 if (response.status === 404) {
                     console.error('[DELETE PLAYLIST API] Lỗi 404: Playlist không tồn tại hoặc bạn không phải chủ sở hữu.');
-                } else if (response.status === 403) {
+                } else if (response.status === 403 || response.status === 401) {
                     console.error('[DELETE PLAYLIST API] Lỗi 403: Không có quyền truy cập.');
                 } else if (response.status === 500) {
                     console.error('[DELETE PLAYLIST API] Lỗi 500: Server gặp sự cố.');
