@@ -1,4 +1,4 @@
-import React, { useState,  } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
     View,
     Text,
@@ -33,27 +33,22 @@ import {
     Montserrat_700Bold
 } from "@expo-google-fonts/montserrat";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import searchSongsByKeyword from "@/fetchAPI/SearchMusic";
-import { SongPreview } from "@/fetchAPI/SearchMusic";
+import searchSongsByKeyword, { SongPreview } from "@/fetchAPI/SearchMusic";
 import getAllMoods, { IMood } from "@/fetchAPI/getAllMoods";
 import { refreshTokenUse } from '@/fetchAPI/loginAPI';
+
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CONTEXT_ITEM_WIDTH = SCREEN_WIDTH * 0.3;
 const CONTEXT_ITEM_SIZE = CONTEXT_ITEM_WIDTH;
 const SPACER = (SCREEN_WIDTH - CONTEXT_ITEM_SIZE) / 2;
 
+// ... (Giữ nguyên các type Song, ListItem...)
 type Song = {
     id: string;
     cover: any;
     title: string;
     artist: string;
 };
-
-type SuggestionsMoodItem = {
-    moodName: string;
-    imgPath: any;
-};
-
 type ContextItem = {
     id: string;
     title: string;
@@ -61,6 +56,7 @@ type ContextItem = {
     imgPath: any;
 };
 type ListItem = Song | SongPreview;
+
 export default function SearchScreen() {
     const router = useRouter();
     const [isModEnabled, setIsModEnabled] = useState(false);
@@ -71,99 +67,58 @@ export default function SearchScreen() {
         Montserrat_700Bold,
     });
     
-    //Search
-    const [searchKeyword,setSearchKeyword] = useState<string>("");
+    // --- STATE ---
+    const [searchKeyword, setSearchKeyword] = useState<string>("");
     const [searchResult, setSearchResults] = useState<SongPreview[]>([]);
-    const [isSearching, setIsSearching] =useState(false);
+    const [isSearching, setIsSearching] = useState(false);
     const [searchedKeyword, setSearchedKeyword] = useState<string>("");
-    const [isSearchMode,setIsSearchMode] = useState(false);
-
-    const data: Song[] = [
-        {
-            id: `song-1`,
-            cover: require("../assets/images/weebooSong.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-        {
-            id: `song-2`,
-            cover: require("../assets/images/lonelySong.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-        {
-            id: `song-3`,
-            cover: require("../assets/images/allegoryOfTheCaveSong.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-        {
-            id: `song-4`,
-            cover: require("../assets/images/song4.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-        {
-            id: `song-5`,
-            cover: require("../assets/images/song5.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-        {
-            id: `song-6`,
-            cover: require("../assets/images/song6.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-        {
-            id: `song-7`,
-            cover: require("../assets/images/sadSong.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-        {
-            id: `song-8`,
-            cover: require("../assets/images/song7.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-        {
-            id: `song-9`,
-            cover: require("../assets/images/artNowPlayingMusic.jpg"),
-            title: "Name of the song",
-            artist: "Artist Name",
-        },
-    ];
-
-    // const suggestionsMoodPlaylist: SuggestionsMoodItem[] = [
-    //     { moodName: "Chill", imgPath: require("../assets/images/avatar.png") },
-    //     { moodName: "Travel", imgPath: require("../assets/images/avatar2.png") },
-    //     { moodName: "Exhausted", imgPath: require("../assets/images/avatar3.png") },
-    //     { moodName: "Educational", imgPath: require("../assets/images/avatar4.png") },
-    //     { moodName: "Deadline", imgPath: require("../assets/images/avatar5.png") },
-    // ];
-
+    const [isSearchMode, setIsSearchMode] = useState(false);
     const [moods, setMoods] = useState<IMood[]>([]);
     const [loadingMoods, setLoadingMoods] = useState<boolean>(true);
 
+    // --- DATA MẪU ---
+    const data: Song[] = [
+        { id: `song-1`, cover: require("../assets/images/weebooSong.jpg"), title: "Name of the song", artist: "Artist Name" },
+        { id: `song-2`, cover: require("../assets/images/lonelySong.jpg"), title: "Name of the song", artist: "Artist Name" },
+        { id: `song-3`, cover: require("../assets/images/allegoryOfTheCaveSong.jpg"), title: "Name of the song", artist: "Artist Name" },
+        { id: `song-4`, cover: require("../assets/images/song4.jpg"), title: "Name of the song", artist: "Artist Name" },
+        { id: `song-5`, cover: require("../assets/images/song5.jpg"), title: "Name of the song", artist: "Artist Name" },
+        { id: `song-6`, cover: require("../assets/images/song6.jpg"), title: "Name of the song", artist: "Artist Name" },
+    ];
+
+    const contextData: ContextItem[] = [
+        { id: '1', title: 'Studying', bgColor: '#F0E5C3', imgPath: require("../assets/images/book.png")},
+        { id: '2', title: 'Studying', bgColor: '#FBA7C0', imgPath: require("../assets/images/book.png")}, 
+        { id: '3', title: 'Studying', bgColor: '#72A8FF', imgPath: require("../assets/images/book.png")}, 
+    ];
+
+    const infiniteContextData = useMemo(() => {
+        let data: any[] = [];
+        for (let i = 0; i < 20; i++) { // Giảm số lượng loop xuống 20 cho nhẹ máy
+            data = [...data, ...contextData];
+        }
+        return data.map((item, index) => ({ ...item, uniqueKey: `${item.id}_${index}` }));
+    }, []);
+
+    // --- ANIMATION VALUES ---
+    const scrollX = useSharedValue(0);
+    const onScroll = useAnimatedScrollHandler((event) => {
+        scrollX.value = event.contentOffset.x;
+    });
+
+    // --- EFFECTS ---
     React.useEffect(() => {
         const fetchMoodData = async () => {
             try {
                 let token = await SecureStore.getItemAsync("accessToken");
                 let fetchedData = null;
-                if (token) {
-                    fetchedData = await getAllMoods(token);
-                }
+                if (token) fetchedData = await getAllMoods(token);
+                
                 if (!fetchedData) {
-                    console.log("[SearchScreen] Token cũ không dùng được, đang thử Refresh...");
                     const newToken = await refreshTokenUse();
-                    if (newToken) {
-                        console.log("[SearchScreen] Đã có token mới, gọi lại API...");
-                        fetchedData = await getAllMoods(newToken);
-                    } else {
-                        console.log("[SearchScreen] Refresh thất bại, vui lòng đăng nhập lại.");
-                    }
+                    if (newToken) fetchedData = await getAllMoods(newToken);
                 }
+                
                 if (fetchedData && Array.isArray(fetchedData)) {
                     setMoods(fetchedData);
                 }
@@ -176,22 +131,7 @@ export default function SearchScreen() {
         fetchMoodData();
     }, []);
 
-    const contextData: ContextItem[] = [
-        { id: '1', title: 'Studying', bgColor: '#F0E5C3', imgPath: require("../assets/images/book.png")},
-        { id: '2', title: 'Studying', bgColor: '#FBA7C0', imgPath: require("../assets/images/book.png")}, 
-        { id: '3', title: 'Studying', bgColor: '#72A8FF', imgPath: require("../assets/images/book.png")}, 
-        { id: '4', title: 'Studying', bgColor: '#FACA9A', imgPath: require("../assets/images/book.png")}, 
-        { id: '5', title: 'Studying', bgColor: '#8CFAC5', imgPath: require("../assets/images/book.png")}, 
-    ];
-
-    const infiniteContextData = React.useMemo(() => {
-        let data: any[] = [];
-        for (let i = 0; i < 100; i++) {
-            data = [...data, ...contextData];
-        }
-        return data.map((item, index) => ({ ...item, uniqueKey: `${item.id}_${index}` }));
-    }, []);
-
+    // --- HANDLERS ---
     const handleSearch = async()=>{
         const keyword = searchKeyword.trim();
         if(!keyword) return;
@@ -202,10 +142,10 @@ export default function SearchScreen() {
             const results = await searchSongsByKeyword(keyword, 5);
             setSearchResults(results);
         } catch (error) {
-        console.error("Search error:", error);
-        setSearchResults([]);
+            console.error("Search error:", error);
+            setSearchResults([]);
         } finally {
-        setIsSearching(false);
+            setIsSearching(false);
         }
     }
 
@@ -217,6 +157,7 @@ export default function SearchScreen() {
         setIsSearching(false);
     };
 
+    // --- RENDER ITEMS ---
     const renderSong = ({ item }: { item: Song }) => (
         <View style={styles.songRow}>
             <Image source={item.cover} style={styles.songCover} />
@@ -227,55 +168,30 @@ export default function SearchScreen() {
         </View>
     );
 
-    const renderSuggestionMoodItem = ({ item }: { item: IMood }) => (
+    const renderSearchResult = ({ item }: { item: SongPreview }) => (
+        <View style={styles.songRow}>
+            <Image source={{ uri: item.image_url }} style={styles.songCover} resizeMode="cover"/>
+            <View style={styles.songMeta}>
+                <Text style={styles.songTitle} numberOfLines={1}>{item.title || "Unknown Title"}</Text>
+                <Text style={styles.songArtist} numberOfLines={1}>{item.artist || "Unknown Artist"}</Text>
+            </View>
+        </View>
+    );
+
+    // MỚI: Render từng Mood Item (Icon + Text)
+    const renderMoodItem = ({ item }: { item: IMood }) => (
         <TouchableOpacity 
             style={styles.moodItemWrapper}
-            onPress={() => {
-                console.log("Selected mood:", item.name);
-            }}
+            onPress={() => console.log("Selected mood:", item.name)}
         >
-            <View style={[
-                styles.moodAvatarCircle, 
-                { backgroundColor: item.colorCode || '#E0E0E0' } 
-            ]}>
-                <Text style={styles.moodEmojiText}>
-                    {item.icon}
-                </Text>
+            <View style={[styles.moodAvatarCircle, { backgroundColor: item.colorCode || '#E0E0E0' }]}>
+                <Text style={styles.moodEmojiText}>{item.icon}</Text>
             </View>
-            <Text style={styles.moodNameText} numberOfLines={2}>
-                {item.displayName}
-            </Text>
+            <Text style={styles.moodNameText} numberOfLines={2}>{item.displayName}</Text>
         </TouchableOpacity>
     );
 
-    const renderSearchResult = ({ item }: { item: SongPreview }) => (
-        <View style={styles.songRow}>
-        <Image
-            source={{ uri: item.image_url }}
-            style={styles.songCover}
-            resizeMode="cover"
-        />
-        <View style={styles.songMeta}>
-            <Text style={styles.songTitle} numberOfLines={1}>
-            {item.title || "Unknown Title"}
-            </Text>
-            <Text style={styles.songArtist} numberOfLines={1}>
-            Artist: {item.artist || "Unknown Artist"}
-            </Text>
-            {item.moods && item.moods.length > 0 && (
-            <Text style={{ fontSize: 12, color: "#AAA", marginTop: 4 }}>
-                Moods: {item.moods.map((m) => m.name).join(", ")}
-            </Text>
-            )}
-        </View>
-        </View>
-    );
-
-    const AnimatedContextItem = ({ item, index, scrollX }: {
-        item: ContextItem,
-        index: number,
-        scrollX: SharedValue<number>
-    }) => {
+    const AnimatedContextItem = ({ item, index, scrollX }: { item: ContextItem, index: number, scrollX: SharedValue<number> }) => {
         const animatedStyle = useAnimatedStyle(() => {
             const inputRange = [
                 (index - 2) * CONTEXT_ITEM_SIZE,
@@ -284,21 +200,8 @@ export default function SearchScreen() {
                 (index + 1) * CONTEXT_ITEM_SIZE,
                 (index + 2) * CONTEXT_ITEM_SIZE,
             ];
-            
-            const scale = interpolate(
-                scrollX.value,
-                inputRange,
-                [0.9, 0.95, 1.1, 0.95, 0.9],
-                Extrapolation.CLAMP
-            );
-            
-            const opacity = interpolate(
-                scrollX.value,
-                inputRange,
-                [0.3, 0.6, 1, 0.6, 0.3], 
-                Extrapolation.CLAMP
-            );
-
+            const scale = interpolate(scrollX.value, inputRange, [0.9, 0.95, 1.1, 0.95, 0.9], Extrapolation.CLAMP);
+            const opacity = interpolate(scrollX.value, inputRange, [0.3, 0.6, 1, 0.6, 0.3], Extrapolation.CLAMP);
             return {
                 transform: [{ scale }],
                 opacity: opacity,
@@ -307,25 +210,8 @@ export default function SearchScreen() {
         });
 
         return (
-            <Animated.View style={[{
-                width: CONTEXT_ITEM_WIDTH,
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingHorizontal: 10, 
-            }, animatedStyle ]}>
-                <View style={[styles.contextCard, { 
-                    backgroundColor: item.bgColor,
-                    width: "100%",
-                    aspectRatio: 1, 
-                    shadowColor: "#000",
-                    shadowOffset: {
-                        width: 0,
-                        height: 4
-                    },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 4,
-                    elevation: 6,
-                }]}>
+            <Animated.View style={[{ width: CONTEXT_ITEM_WIDTH, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 10 }, animatedStyle]}>
+                <View style={[styles.contextCard, { backgroundColor: item.bgColor }]}>
                     <Image source={item.imgPath} style={styles.contextImage} />
                     <Text style={[styles.contextTitle]}>{item.title}</Text>
                 </View>
@@ -333,22 +219,13 @@ export default function SearchScreen() {
         );
     };
 
-    const scrollX = useSharedValue(0);
-    const onScroll = useAnimatedScrollHandler((event) => {
-        scrollX.value = event.contentOffset.x;
-    });
-
-    if(!fontsMontserratLoaded) {
-        return null;
-    }
-
     return (
         <View style={[styles.container, {
             paddingTop: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0) + insets.top,
             paddingBottom: insets.bottom ? Math.max(insets.bottom, 12) : 12,
+            paddingHorizontal: (Platform.OS === "android" ? 12 : 8),
         }]}>
             <StatusBar barStyle="light-content" />
-
             <LinearGradient
                 colors={["#8C84FF", "#6E5ED1"]}
                 start={{ x: 0.2, y: 0.0 }}
@@ -356,201 +233,125 @@ export default function SearchScreen() {
                 style={StyleSheet.absoluteFill}
             />
             
-            <View style={styles.headerWrap}>
-                <Header isModEnabled={isModEnabled} onToggleMod={setIsModEnabled} />
-            </View>
-            
-            {isSearchMode ? (
-            <>
-            <View style={styles.headerBlock}>
-                {/* <View style={styles.searchContainer}>
-                    <Ionicons name="search-outline" size={22} color="#8E8E93" style={{ marginRight: 10 }} />
-                    <TextInput
-                        placeholder="Find By Name, Artists or Mood"
-                        placeholderTextColor="#8E8E93"
-                        style={styles.searchInput}
-                    />
-                    <Ionicons name="mic-outline" size={22} color="#555555" />
-                </View> */}
-                <View style={styles.searchContainer}>
-                    <Ionicons name="search-outline" size={22} color="#8E8E93" style={{ marginRight: 10 }} />
-                    <TextInput
-                        placeholder="Find By Name, Artists or Mood"
-                        placeholderTextColor="#8E8E93"
-                        style={styles.searchInput}
-                        value={searchKeyword}
-                        onChangeText={setSearchKeyword}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        returnKeyType="search"
-                        onSubmitEditing={handleSearch}
-                    />
-                    {searchKeyword==="" ?(
-                        <Ionicons name="mic-outline" size={22} color="#555555" />
-                    ):(
-                        <TouchableOpacity onPress={handleSearch}>
-                            <Ionicons name="arrow-forward" size={24} color="transparent" style={{ marginLeft: 8 }} />
-                        </TouchableOpacity>
-                    )}
-                    
-                    
-                </View>
-                <TouchableOpacity onPress={handleBack} style={{ marginLeft: 5 }}>
-                    <Ionicons name="arrow-back" size={35} color="#FFF" style={{width: 50}} />
-                </TouchableOpacity>
-                <Text style={[styles.sectionTitle, {  textAlign: "center", fontSize: 18 }]}>
-                    Kết quả tìm kiếm cho &quot;{searchedKeyword}&quot;
-                </Text>
-                {isSearching && (
-                    <View style={{ flex: 1, justifyContent: "center" }}>
-                    <Text style={{ textAlign: "center", color: "#FFF", fontSize: 16 }}>
-                        Đang tìm kiếm...
-                    </Text>
-                    </View>
-                )}
-                <FlatList<ListItem>
-                    data={isSearchMode ? searchResult : data}
-                    keyExtractor={(item) => ("track_id" in item ? item.track_id : item.id)}
-                    renderItem={({ item }) => {
-                    if ("track_id" in item) {
-                        return renderSearchResult({ item: item as SongPreview });
-                    }
-                    return renderSong({ item: item as Song });
-                    }}
-                    contentContainerStyle={{ paddingBottom: 96 }}
-                    showsVerticalScrollIndicator={false}
-                    ListEmptyComponent={
-                    isSearchMode && !isSearching && searchResult.length === 0 ? (
-                        <View style={{ alignItems: "center", marginTop: 80 }}>
-                        <Ionicons name="musical-notes-outline" size={80} color="#666" />
-                        <Text style={{ color: "#FFF", marginTop: 20, fontSize: 18 }}>
-                            Không tìm thấy bài hát nào
-                        </Text>
-                        <Text style={{ color: "#AAA", marginTop: 8, textAlign: "center", paddingHorizontal: 40 }}>
-                            Thử tìm với từ khóa khác hoặc kiểm tra chính tả nhé!
-                        </Text>
-                        </View>
-                    ) : null
-                    }
-                />
-            </View>
-            </>
-          ) : (
-            <>
-              <View style={styles.headerBlock}>
-                <View style={styles.searchContainer}>
-                    <Ionicons name="search-outline" size={22} color="#8E8E93" style={{ marginRight: 10 }} />
-                    <TextInput
-                        placeholder="Find By Name, Artists or Mood"
-                        placeholderTextColor="#8E8E93"
-                        style={styles.searchInput}
-                        value={searchKeyword}
-                        onChangeText={setSearchKeyword}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        returnKeyType="search"
-                        onSubmitEditing={handleSearch}
-                    />
-                    {searchKeyword==="" ?(
-                        <Ionicons name="mic-outline" size={22} color="#555555" />
-                    ):(
-                        <TouchableOpacity onPress={handleSearch}>
-                            <Ionicons name="arrow-forward" size={24} color="transparent" style={{ marginLeft: 8 }} />
-                        </TouchableOpacity>
-                    )}
-                </View>
-
-                <View style={styles.suggestionsMoodPlaylistTextBlock}>
-                    <Text style={styles.sectionTitle}>All Mood Playlist</Text>
-                    <TouchableOpacity onPress={() => router.navigate("/ChoosingMoodPlayScreen")}>
-                        <Text style={styles.showMoreText}>Show more</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={styles.quickStartWrapper}>
-                    <Pressable
-                        style={({ pressed }) => [{
-                            opacity: pressed ? 0.96 : 1
-                        }]}
-                    >
-                        <LinearGradient
-                            colors={["#4F3BDB", "#2E266F"]}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 1 }}
-                            style={styles.quickStartCard}
-                        >
-                            {loadingMoods ? (
-                                <View style={{ height: 90, justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={{ color: '#000' }}>Loading moods...</Text>
-                                </View>
-                            ) : (
-                                <FlatList<IMood>
-                                    data={moods}
-                                    keyExtractor={(item) => item._id}
-                                    renderItem={renderSuggestionMoodItem}
-                                    horizontal={true} 
-                                    showsHorizontalScrollIndicator={false}
-                                    contentContainerStyle={{ 
-                                        paddingHorizontal: 20,
-                                        paddingTop: 10
-                                    }}
-                                />
-                            )}
-                        </LinearGradient>
-                    </Pressable>
-                </View>
-
-                <View style={styles.suggestionsMoodPlaylistTextBlock}>
-                    <Text style={styles.sectionTitle}>Context Playlist</Text>
-                    <TouchableOpacity onPress={() => router.navigate("/ContextUserListScreen")}>
-                        <Text style={styles.showMoreText}>See all context</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={styles.contextSection}>
-                    <Animated.FlatList
-                        data={infiniteContextData}
-                        keyExtractor={(item) => item.uniqueKey}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        snapToInterval={CONTEXT_ITEM_SIZE} 
-                        decelerationRate="fast"
-                        contentContainerStyle={{
-                            paddingHorizontal: SPACER,
-                            paddingVertical: 10, 
-                            alignItems: 'center'
-                        }}
-                        onScroll={onScroll}
-                        scrollEventThrottle={16}
-                        renderItem={({ item, index }) => (
-                            <AnimatedContextItem 
-                                item={item} 
-                                index={index} 
-                                scrollX={scrollX} 
-                            />
+            <FlatList<ListItem>
+                data={isSearchMode ? searchResult : data}
+                keyExtractor={(item) => ("track_id" in item ? item.track_id : item.id)}
+                ListHeaderComponent={
+                    <View style={styles.headerBlock}>
+                        {!isSearchMode && (
+                            <View style={{ marginBottom: 10, marginHorizontal: -10 }}>
+                                <Header isModEnabled={isModEnabled} onToggleMod={setIsModEnabled} />
+                            </View>
                         )}
-                        getItemLayout={(data, index) => ({
-                            length: CONTEXT_ITEM_SIZE,
-                            offset: CONTEXT_ITEM_SIZE * index,
-                            index,
-                        })}
-                        initialScrollIndex={contextData.length * 50} 
-                    />
-                </View>
 
-                <Text style={styles.ownerName}>Recent Playlist&apos;s Song</Text>
-            </View>
+                        <View style={styles.searchContainer}>
+                            <Ionicons name="search-outline" size={22} color="#8E8E93" style={{ marginRight: 10 }} />
+                            <TextInput
+                                placeholder="Find By Name, Artists or Mood"
+                                placeholderTextColor="#8E8E93"
+                                style={styles.searchInput}
+                                value={searchKeyword}
+                                onChangeText={setSearchKeyword}
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                returnKeyType="search"
+                                onSubmitEditing={handleSearch}
+                            />
+                            {searchKeyword === "" ? (
+                                <Ionicons name="mic-outline" size={22} color="#555555" />
+                            ) : (
+                                <TouchableOpacity onPress={handleSearch}>
+                                    <Ionicons name="arrow-forward" size={24} color="transparent" style={{ marginLeft: 8 }} />
+                                </TouchableOpacity>
+                            )}
+                        </View>
 
-            <FlatList
-                data={data}
-                keyExtractor={(it) => it.id}
-                renderItem={renderSong}
+                        {isSearchMode ? (
+                            <>
+                                <TouchableOpacity onPress={handleBack} style={{ marginLeft: 5, marginBottom: 10 }}>
+                                    <Ionicons name="arrow-back" size={35} color="#FFF" style={{ width: 50 }} />
+                                </TouchableOpacity>
+                                <Text style={[styles.sectionTitle, { textAlign: "center", fontSize: 18 }]}>
+                                    Kết quả cho "{searchedKeyword}"
+                                </Text>
+                                {isSearching && (
+                                    <Text style={{ textAlign: "center", color: "#FFF", fontSize: 16, marginBottom: 20 }}>
+                                        Đang tìm kiếm...
+                                    </Text>
+                                )}
+                            </>
+                        ) : (<>
+                            <View style={styles.suggestionsMoodPlaylistTextBlock}>
+                                <Text style={styles.sectionTitle}>All Mood Playlist</Text>
+                                <TouchableOpacity onPress={() => router.navigate("/ChoosingMoodPlayScreen")}>
+                                    <Text style={styles.showMoreText}>Show more</Text>
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={styles.moodListContainer}>
+                                {loadingMoods ? (
+                                    <Text style={{ color: 'white', textAlign: 'center' }}>Loading moods...</Text>
+                                ) : (
+                                    <FlatList<IMood>
+                                        data={moods}
+                                        keyExtractor={(item) => item._id}
+                                        renderItem={renderMoodItem}
+                                        horizontal={true}
+                                        showsHorizontalScrollIndicator={false}
+                                        contentContainerStyle={{ paddingHorizontal: 10 }}
+                                    />
+                                )}
+                            </View>
+
+                            <View style={styles.suggestionsMoodPlaylistTextBlock}>
+                                <Text style={styles.sectionTitle}>Context Playlist</Text>
+                                <TouchableOpacity onPress={() => router.navigate("/ContextUserListScreen")}>
+                                    <Text style={styles.showMoreText}>See all context</Text>
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={styles.contextSection}>
+                                <Animated.FlatList
+                                    data={infiniteContextData}
+                                    keyExtractor={(item) => item.uniqueKey}
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}
+                                    snapToInterval={CONTEXT_ITEM_SIZE}
+                                    decelerationRate="fast"
+                                    contentContainerStyle={{ paddingHorizontal: SPACER, paddingVertical: 10, alignItems: 'center' }}
+                                    onScroll={onScroll}
+                                    scrollEventThrottle={16}
+                                    renderItem={({ item, index }) => (
+                                        <AnimatedContextItem item={item} index={index} scrollX={scrollX} />
+                                    )}
+                                    getItemLayout={(data, index) => ({
+                                        length: CONTEXT_ITEM_SIZE, offset: CONTEXT_ITEM_SIZE * index, index,
+                                    })}
+                                    initialScrollIndex={contextData.length * 2}
+                                />
+                            </View>
+
+                            <Text style={styles.ownerName}>Recent Playlist's Song</Text>
+                        </>)}
+                    </View>
+                }
+                // --- KẾT THÚC PHẦN HEADER ---
+
+                renderItem={({ item }) => {
+                    if ("track_id" in item) return renderSearchResult({ item: item as SongPreview });
+                    return renderSong({ item: item as Song });
+                }}
                 contentContainerStyle={{ paddingBottom: 96 }}
                 showsVerticalScrollIndicator={false}
+                ListEmptyComponent={
+                    isSearchMode && !isSearching && searchResult.length === 0 ? (
+                        <View style={{ alignItems: "center", marginTop: 40 }}>
+                            <Ionicons name="musical-notes-outline" size={60} color="#DDD" />
+                            <Text style={{ color: "#FFF", marginTop: 10 }}>Không tìm thấy kết quả</Text>
+                        </View>
+                    ) : null
+                }
             />
-            </>
-          )}
-            
         </View>
     );
 }
