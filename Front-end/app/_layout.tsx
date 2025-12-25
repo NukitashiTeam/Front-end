@@ -1,13 +1,14 @@
 import { useRouter, Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MiniPlayer, { MiniPlayerRef } from "../Components/MiniPlayer";
 import BottomBar from "../Components/BottomBar";
 import PlayerProvider from "./PlayerContext";
 import * as Sentry from '@sentry/react-native';
 import { useNavigationContainerRef } from 'expo-router';
+import * as NavigationBar from 'expo-navigation-bar';
 
 import {
     SafeAreaProvider,
@@ -74,6 +75,14 @@ export default Sentry.wrap(function RootLayout() {
             navigationIntegration.registerNavigationContainer(ref);
         }
     }, [ref]);
+
+    useEffect(() => {
+        if (Platform.OS === 'android') {
+            NavigationBar.setPositionAsync("absolute");
+            NavigationBar.setBackgroundColorAsync("#00000000");
+            NavigationBar.setButtonStyleAsync("light"); 
+        }
+    }, []);
 
     // 3. SỬA LỖI CÚ PHÁP Ở ĐÂY
     useEffect(() => {
