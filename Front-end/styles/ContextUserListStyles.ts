@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
     },
     cardIcon: {
         marginBottom: 4,
+        fontSize: 64,
     },
     cardTitleInside: {
         fontFamily: "Montserrat_700Bold",
@@ -105,10 +106,11 @@ const styles = StyleSheet.create({
     },
     cardLabelOutside: {
         fontFamily: "Montserrat_400Regular",
-        fontSize: 12,
+        fontSize: 14,
         color: "#FFFFFF",
         textAlign: "center",
         width: "100%",
+        fontWeight: "bold",
     },
 
     createButtonContainer: {

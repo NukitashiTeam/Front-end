@@ -89,17 +89,12 @@ export default function ContextUserListScreen() {
                             style={{ width: 32, height: 32, resizeMode: 'contain', marginBottom: 4 }} 
                         />
                     ) : (
-                        <Ionicons 
-                            name={item.icon as any} 
-                            size={32} 
-                            color="#2E266F" 
-                            style={styles.cardIcon} 
-                        />
+                        <Text style={styles.cardIcon}>{item.icon}</Text>
                     )}
-                    <Text style={styles.cardTitleInside} numberOfLines={1}>{item.name}</Text>
+                    {/* <Text style={styles.cardTitleInside} numberOfLines={2}>{item.name}</Text> */}
                 </View>
                 
-                <Text style={styles.cardLabelOutside} numberOfLines={1}>{item.name}</Text>
+                <Text style={styles.cardLabelOutside} numberOfLines={2}>{item.name}</Text>
             </TouchableOpacity>
         );
     };
