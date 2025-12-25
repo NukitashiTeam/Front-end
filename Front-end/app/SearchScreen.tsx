@@ -24,6 +24,7 @@ import { useRouter } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import * as SecureStore from 'expo-secure-store';
 import styles from "../styles/SearchScreenStyles";
 import Header from "../Components/Header";
 import {
@@ -31,8 +32,11 @@ import {
     Montserrat_400Regular,
     Montserrat_700Bold
 } from "@expo-google-fonts/montserrat";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import searchSongsByKeyword from "@/fetchAPI/SearchMusic";
 import { SongPreview } from "@/fetchAPI/SearchMusic";
+import getAllMoods, { IMood } from "@/fetchAPI/getAllMoods";
+import { refreshTokenUse } from '@/fetchAPI/loginAPI';
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CONTEXT_ITEM_WIDTH = SCREEN_WIDTH * 0.3;
 const CONTEXT_ITEM_SIZE = CONTEXT_ITEM_WIDTH;
@@ -131,13 +135,46 @@ export default function SearchScreen() {
         },
     ];
 
-    const suggestionsMoodPlaylist: SuggestionsMoodItem[] = [
-        { moodName: "Chill", imgPath: require("../assets/images/avatar.png") },
-        { moodName: "Travel", imgPath: require("../assets/images/avatar2.png") },
-        { moodName: "Exhausted", imgPath: require("../assets/images/avatar3.png") },
-        { moodName: "Educational", imgPath: require("../assets/images/avatar4.png") },
-        { moodName: "Deadline", imgPath: require("../assets/images/avatar5.png") },
-    ];
+    // const suggestionsMoodPlaylist: SuggestionsMoodItem[] = [
+    //     { moodName: "Chill", imgPath: require("../assets/images/avatar.png") },
+    //     { moodName: "Travel", imgPath: require("../assets/images/avatar2.png") },
+    //     { moodName: "Exhausted", imgPath: require("../assets/images/avatar3.png") },
+    //     { moodName: "Educational", imgPath: require("../assets/images/avatar4.png") },
+    //     { moodName: "Deadline", imgPath: require("../assets/images/avatar5.png") },
+    // ];
+
+    const [moods, setMoods] = useState<IMood[]>([]);
+    const [loadingMoods, setLoadingMoods] = useState<boolean>(true);
+
+    React.useEffect(() => {
+        const fetchMoodData = async () => {
+            try {
+                let token = await SecureStore.getItemAsync("accessToken");
+                let fetchedData = null;
+                if (token) {
+                    fetchedData = await getAllMoods(token);
+                }
+                if (!fetchedData) {
+                    console.log("[SearchScreen] Token cũ không dùng được, đang thử Refresh...");
+                    const newToken = await refreshTokenUse();
+                    if (newToken) {
+                        console.log("[SearchScreen] Đã có token mới, gọi lại API...");
+                        fetchedData = await getAllMoods(newToken);
+                    } else {
+                        console.log("[SearchScreen] Refresh thất bại, vui lòng đăng nhập lại.");
+                    }
+                }
+                if (fetchedData && Array.isArray(fetchedData)) {
+                    setMoods(fetchedData);
+                }
+            } catch (error) {
+                console.error("Error fetching moods:", error);
+            } finally {
+                setLoadingMoods(false);
+            }
+        };
+        fetchMoodData();
+    }, []);
 
     const contextData: ContextItem[] = [
         { id: '1', title: 'Studying', bgColor: '#F0E5C3', imgPath: require("../assets/images/book.png")},
@@ -154,6 +191,7 @@ export default function SearchScreen() {
         }
         return data.map((item, index) => ({ ...item, uniqueKey: `${item.id}_${index}` }));
     }, []);
+
     const handleSearch = async()=>{
         const keyword = searchKeyword.trim();
         if(!keyword) return;
@@ -170,6 +208,7 @@ export default function SearchScreen() {
         setIsSearching(false);
         }
     }
+
     const handleBack = () => {
         setIsSearchMode(false);
         setSearchKeyword("");
@@ -177,6 +216,7 @@ export default function SearchScreen() {
         setSearchedKeyword("");
         setIsSearching(false);
     };
+
     const renderSong = ({ item }: { item: Song }) => (
         <View style={styles.songRow}>
             <Image source={item.cover} style={styles.songCover} />
@@ -187,16 +227,27 @@ export default function SearchScreen() {
         </View>
     );
 
-    const renderSuggestionMoodItem = ({ item }: {item: SuggestionsMoodItem}) => (
-        <View style={styles.quickStartTopRow}>
-            <View style={styles.quickStartLeftDown}>
-                <View style={styles.moodAvatarCircle}>
-                    <Image source={item.imgPath} style={styles.moodAvatarImg} />
-                </View>
-                <Text style={styles.moodNameText}>{item.moodName}</Text>
+    const renderSuggestionMoodItem = ({ item }: { item: IMood }) => (
+        <TouchableOpacity 
+            style={styles.moodItemWrapper}
+            onPress={() => {
+                console.log("Selected mood:", item.name);
+            }}
+        >
+            <View style={[
+                styles.moodAvatarCircle, 
+                { backgroundColor: item.colorCode || '#E0E0E0' } 
+            ]}>
+                <Text style={styles.moodEmojiText}>
+                    {item.icon}
+                </Text>
             </View>
-        </View>
+            <Text style={styles.moodNameText} numberOfLines={2}>
+                {item.displayName}
+            </Text>
+        </TouchableOpacity>
     );
+
     const renderSearchResult = ({ item }: { item: SongPreview }) => (
         <View style={styles.songRow}>
         <Image
@@ -219,6 +270,7 @@ export default function SearchScreen() {
         </View>
         </View>
     );
+
     const AnimatedContextItem = ({ item, index, scrollX }: {
         item: ContextItem,
         index: number,
@@ -331,7 +383,7 @@ export default function SearchScreen() {
                         autoCapitalize="none"
                         autoCorrect={false}
                         returnKeyType="search"
-                        onSubmitEditing={handleSearch}  // Chỉ search khi nhấn Enter trên bàn phím
+                        onSubmitEditing={handleSearch}
                     />
                     {searchKeyword==="" ?(
                         <Ionicons name="mic-outline" size={22} color="#555555" />
@@ -397,7 +449,7 @@ export default function SearchScreen() {
                         autoCapitalize="none"
                         autoCorrect={false}
                         returnKeyType="search"
-                        onSubmitEditing={handleSearch}  // Chỉ search khi nhấn Enter trên bàn phím
+                        onSubmitEditing={handleSearch}
                     />
                     {searchKeyword==="" ?(
                         <Ionicons name="mic-outline" size={22} color="#555555" />
@@ -409,7 +461,7 @@ export default function SearchScreen() {
                 </View>
 
                 <View style={styles.suggestionsMoodPlaylistTextBlock}>
-                    <Text style={styles.sectionTitle}>Suggestions Mood Playlist</Text>
+                    <Text style={styles.sectionTitle}>All Mood Playlist</Text>
                     <TouchableOpacity onPress={() => router.navigate("/ChoosingMoodPlayScreen")}>
                         <Text style={styles.showMoreText}>Show more</Text>
                     </TouchableOpacity>
@@ -427,13 +479,23 @@ export default function SearchScreen() {
                             end={{ x: 1, y: 1 }}
                             style={styles.quickStartCard}
                         >
-                            <FlatList 
-                                data={suggestionsMoodPlaylist}
-                                keyExtractor={(it) => it.moodName}
-                                renderItem={renderSuggestionMoodItem}
-                                showsVerticalScrollIndicator={false}
-                                contentContainerStyle={styles.suggestionsMoodPlaylistFlatList}
-                            />
+                            {loadingMoods ? (
+                                <View style={{ height: 90, justifyContent: 'center', alignItems: 'center' }}>
+                                    <Text style={{ color: '#000' }}>Loading moods...</Text>
+                                </View>
+                            ) : (
+                                <FlatList<IMood>
+                                    data={moods}
+                                    keyExtractor={(item) => item._id}
+                                    renderItem={renderSuggestionMoodItem}
+                                    horizontal={true} 
+                                    showsHorizontalScrollIndicator={false}
+                                    contentContainerStyle={{ 
+                                        paddingHorizontal: 20,
+                                        paddingTop: 10
+                                    }}
+                                />
+                            )}
                         </LinearGradient>
                     </Pressable>
                 </View>

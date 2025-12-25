@@ -106,27 +106,27 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 10,
     },
-    moodAvatarCircle: {
-        width: 55, 
-        height: 55,
-        borderRadius: 32,
-        backgroundColor: "#FFE082",
-        alignItems: "center",
-        justifyContent: "center",
-        overflow: "hidden",
-    },
+    // moodAvatarCircle: {
+    //     width: 55, 
+    //     height: 55,
+    //     borderRadius: 32,
+    //     backgroundColor: "#FFE082",
+    //     alignItems: "center",
+    //     justifyContent: "center",
+    //     overflow: "hidden",
+    // },
     moodAvatarImg: {
         width: "100%",
         height: "100%",
         resizeMode: "cover",
     },
-    moodNameText: {
-        color: "white",
-        fontSize: 10,
-        fontWeight: 700,
-        fontFamily: "Montserrat_700Bold",
-        marginTop: 5,
-    },
+    // moodNameText: {
+    //     color: "white",
+    //     fontSize: 10,
+    //     fontWeight: 700,
+    //     fontFamily: "Montserrat_700Bold",
+    //     marginTop: 5,
+    // },
     suggestionsMoodPlaylistFlatList: {
         width: "100%",
         flexDirection: "row",
@@ -195,10 +195,43 @@ const styles = StyleSheet.create({
     },
     backbutton:{
         fontSize: 40,
-    color: "white",
-    marginBottom: 30,
-    marginLeft: 20,
-    }
+        color: "white",
+        marginBottom: 30,
+        marginLeft: 20,
+    },
+    moodListContainer: {
+        marginBottom: 28,
+    },
+    moodItemWrapper: {
+        alignItems: "center",
+        justifyContent: "flex-start",
+        width: 70,
+        marginRight: 15,
+    },
+    moodAvatarCircle: {
+        width: 60, 
+        height: 60,
+        borderRadius: 30,
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: 8,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 4,
+    },
+    moodEmojiText: {
+        fontSize: 28,
+        textAlign: "center",
+    },
+    moodNameText: {
+        color: "#000000",
+        fontSize: 12,
+        fontWeight: "600",
+        fontFamily: "Montserrat_700Bold",
+        textAlign: "center",
+    },
 });
 
 export default styles;
