@@ -212,17 +212,40 @@ export default function ContextConfigScreen() {
                                 </View>
                                 
                                 <View style={{ flex: 1, gap: 10 }}>
-                                    <Pressable style={styles.pillBtn} onPress={() => {
-                                        setMode("create");
-                                    }}>
+                                    <Pressable
+                                        onPress={() => {
+                                            setMode("create");
+                                        }}
+                                        style={({ pressed }) => [
+                                            styles.pillBtn,
+                                            { opacity: pressed ? 0.7 : 1 }
+                                        ]}
+                                    >
                                         <Text style={styles.pillBtnText}>Edit / Add more</Text>
                                     </Pressable>
                                     
-                                    <Pressable style={[styles.pillBtn, { opacity: 0.6, backgroundColor: "#4C38CA" }]}>
+                                    <Pressable
+                                        onPress={() => {
+                                            // Logic tạo playlist
+                                        }}
+                                        style={({ pressed }) => [
+                                            styles.pillBtn,
+                                            { backgroundColor: "#4C38CA" },
+                                            { opacity: pressed ? 0.7 : selectedMoodIds.length ? 1 : 0.6 }
+                                        ]}
+                                    >
                                         <Text style={styles.pillBtnText}>Create Playlist</Text>
                                     </Pressable>
 
-                                    <Pressable style={[styles.pillBtn]}>
+                                    <Pressable
+                                        onPress={() => {
+                                            // Logic xóa
+                                        }}
+                                        style={({ pressed }) => [
+                                            styles.pillBtn,
+                                            { opacity: pressed ? 0.7 : 1 }
+                                        ]}
+                                    >
                                         <Text style={styles.pillBtnText}>Delete Context</Text>
                                     </Pressable>
                                 </View>
