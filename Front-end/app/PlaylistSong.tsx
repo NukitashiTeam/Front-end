@@ -148,6 +148,8 @@ export default function PlaylistSong() {
                 paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0, 
                 paddingBottom: insets.bottom ? Math.max(insets.bottom, 12) : 12,
             }}>
+                <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+
                 <View style={styles.headerWrap}>
                     <Header isModEnabled={isModEnabled} onToggleMod={setIsModEnabled} />
                 </View>
