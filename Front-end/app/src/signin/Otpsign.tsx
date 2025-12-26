@@ -1,9 +1,9 @@
 import React,{useState, useRef} from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import styles from '../../../styles/style';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import Background from '../../../Components/background';
-import { verifyOTP } from '@/fetchAPI/signupAPI';
+import { verifyOTP, resendOTP } from '@/fetchAPI/signupAPI';
 const Otpsign = () =>{
     const router = useRouter();
     const [otp,setOtp] = useState<string[]>(['', '', '', '']);
@@ -12,6 +12,7 @@ const Otpsign = () =>{
     const ref2 = useRef<TextInput>(null);
     const ref3 = useRef<TextInput>(null);
     const refs = [ref0, ref1, ref2, ref3];
+    const { email } = useLocalSearchParams<{ email?: string }>();
     const handleOtpChange = (text: string, index: number) => {
         const newOtp = [...otp];
         newOtp[index] = text;
@@ -38,10 +39,18 @@ const Otpsign = () =>{
           Alert.alert("OTP sai", error.message);
         } 
     };
-    const handleResend = () => {
-        console.log('Resend SMS');
-        // Logic to resend OTP
+  const handleResend = async () => {
+      if (!email) {
+        Alert.alert("Lỗi", "Không tìm thấy email. Vui lòng quay lại bước trước.");
+        return;
+      }
 
+      try {
+        await resendOTP({ contact: email });
+        Alert.alert("Thành công", "OTP mới đã được gửi lại đến email của bạn!");
+      } catch (error: any) {
+        Alert.alert("Thất bại", error.message || "Không thể gửi lại OTP");
+      }
     };
 
     return(

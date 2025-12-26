@@ -290,7 +290,7 @@ export default function SearchScreen() {
                                     <Ionicons name="arrow-back" size={35} color="#FFF" style={{ width: 50 }} />
                                 </TouchableOpacity>
                                 <Text style={[styles.sectionTitle, { textAlign: "center", fontSize: 18 }]}>
-                                    Kết quả cho "{searchedKeyword}"
+                                    Kết quả cho &quot;{searchedKeyword}&quot;
                                 </Text>
                                 {isSearching && (
                                     <Text style={{ textAlign: "center", color: "#FFF", fontSize: 16, marginBottom: 20 }}>
@@ -355,7 +355,7 @@ export default function SearchScreen() {
                                 )}
                             </View>
 
-                            <Text style={styles.ownerName}>Recent Playlist's Song</Text>
+                            <Text style={styles.ownerName}>Recent Playlist&apos;s Song</Text>
                         </>)}
                     </View>
                 }
