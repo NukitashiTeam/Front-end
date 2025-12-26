@@ -22,6 +22,7 @@ import Header from "../Components/Header";
 import styles from "../styles/ContextConfigScreenStyles";
 import getAllMoods, { IMood } from "../fetchAPI/getAllMoods";
 import { refreshTokenUse } from "../fetchAPI/loginAPI";
+import getDetailContext from "../fetchAPI/getDetailContext";
 
 type Mode = "config" | "create";
 
@@ -49,34 +50,25 @@ export default function ContextConfigScreen() {
         mode?: string; 
         isEdit?: string;
         contextId?: string;
-        contextName?: string;
-        contextIcon?: string;
-        contextColor?: string;
-        moodIds?: string; 
     }>();
 
-    const { 
-        mode: paramMode, 
-        isEdit, 
-        contextName: paramName, 
-        contextIcon: paramIcon, 
-        contextColor: paramColor, 
-        moodIds 
-    } = params;
+    const { mode: paramMode, isEdit, contextId } = params;
 
     const [mode, setMode] = useState<Mode>("config");
     const [isModEnabled, setIsModEnabled] = useState(true);
     
     const [allMoods, setAllMoods] = useState<IMood[]>([]);
     const [loadingMoods, setLoadingMoods] = useState(true);
+    
+    const [fetchingDetail, setFetchingDetail] = useState(false);
 
     const [contextName, setContextName] = useState<string>("");
     const [selectedIcon, setSelectedIcon] = useState<string>("book-outline");
     const [selectedColor, setSelectedColor] = useState<string>("#9fb1ff");
     const [selectedMoodIds, setSelectedMoodIds] = useState<string[]>([]);
 
-    const [displayContextName, setDisplayContextName] = useState("Studying");
-    const [displayContextIcon, setDisplayContextIcon] = useState("book-outline");
+    const [displayContextName, setDisplayContextName] = useState("Loading...");
+    const [displayContextIcon, setDisplayContextIcon] = useState("⏳");
     const [displayContextColor, setDisplayContextColor] = useState("#9fb1ff");
 
     useEffect(() => {
@@ -105,30 +97,46 @@ export default function ContextConfigScreen() {
     }, []);
 
     useEffect(() => {
+        const loadContextDetail = async () => {
+            if (contextId) {
+                setFetchingDetail(true);
+                try {
+                    let token = await SecureStore.getItemAsync("accessToken");
+                    if (token) {
+                        const data = await getDetailContext(token, contextId);
+                        if (data) {
+                            setDisplayContextName(data.name);
+                            setDisplayContextIcon(data.icon);
+                            setDisplayContextColor(data.color);
+                            setContextName(data.name);
+                            setSelectedIcon(data.icon);
+                            setSelectedColor(data.color);
+                            if (data.moods && Array.isArray(data.moods)) {
+                                const ids = data.moods.map(m => m._id);
+                                setSelectedMoodIds(ids);
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error("Lỗi lấy chi tiết context:", error);
+                } finally {
+                    setFetchingDetail(false);
+                }
+            }
+        };
+
         const targetMode = paramMode === "create" ? "create" : "config";
         setMode(targetMode);
-        if (targetMode === "create") {
-            if (isEdit === "true") {
-                setContextName(paramName || "");
-                setSelectedIcon(paramIcon || "book-outline");
-                setSelectedColor(paramColor || "#9fb1ff");
-                if (moodIds) {
-                    setSelectedMoodIds(moodIds.split(','));
-                } else {
-                    setSelectedMoodIds([]);
-                }
-            } else {
-                setContextName("");
-                setSelectedIcon("book-outline");
-                setSelectedColor("#9fb1ff");
-                setSelectedMoodIds([]);
-            }
-        } else {
-            if(paramName) setDisplayContextName(paramName);
-            if(paramIcon) setDisplayContextIcon(paramIcon);
-            if(paramColor) setDisplayContextColor(paramColor);
+        if (targetMode === "create" && isEdit !== "true") {
+            setContextName("");
+            setSelectedIcon("book-outline");
+            setSelectedColor("#9fb1ff");
+            setSelectedMoodIds([]);
+        } else if (contextId) {
+            loadContextDetail();
         }
-    }, [paramMode, isEdit, paramName, paramIcon, paramColor, moodIds]);
+
+    }, [contextId, paramMode, isEdit]);
 
     const selectedMoodsList = useMemo(() => 
         allMoods.filter((m) => selectedMoodIds.includes(m._id)), 
@@ -139,6 +147,10 @@ export default function ContextConfigScreen() {
             if (prev.includes(id)) return prev.filter((x) => x !== id);
             return [...prev, id];
         });
+    };
+
+    const isUrlOrEmoji = (iconStr: string) => {
+        return !ICON_OPTIONS.some(opt => opt.name === iconStr);
     };
 
     const topPad = Math.max(insets.top, 12);
@@ -175,53 +187,50 @@ export default function ContextConfigScreen() {
                 </TouchableOpacity>
                 
                 <Text style={styles.pageTitle}>
-                    {mode === "config" ? "Context Config Page" : (isEdit === "true" ? "Edit Context" : "Create Context")}
+                    {mode === "config" ? "Context Config Page" : (contextId ? "Edit Context" : "Create Context")}
                 </Text>
 
-                {mode === "config" && (<>
-                    <Text style={styles.sectionLabel}>Context Type: {displayContextName}</Text>
-                    <View style={styles.rowCard}>
-                        <View style={[styles.typeCard, {
-                            backgroundColor: displayContextColor
-                        }]}>
-                            <View
-                                style={[styles.typeIconWrap]}
-                            >
-                                <Text style={[{fontSize: 64}]}>{displayContextIcon}</Text>
-                            </View>
-                            
-                            <Text style={styles.typeText}>{displayContextName}</Text>
-                        </View>
-                        
-                        <View style={{ flex: 1, gap: 10 }}>
-                            <Pressable style={styles.pillBtn} onPress={() => {
-                                setContextName(displayContextName);
-                                setSelectedIcon(displayContextIcon);
-                                setSelectedColor(displayContextColor);
-                                setMode("create");
-                            }}>
-                                <Text style={styles.pillBtnText}>Edit / Add more</Text>
-                            </Pressable>
-                            
-                            <Pressable
-                                style={[styles.pillBtn, {
-                                    opacity: selectedMoodIds.length ? 1 : 0.6,
-                                    backgroundColor: "#4C38CA",
-                                }]}
-                                onPress={() => {}}
-                            >
-                                <Text style={styles.pillBtnText}>Create Playlist</Text>
-                            </Pressable>
+                {mode === "config" && (
+                    <>
+                    {fetchingDetail ? (
+                        <ActivityIndicator size="large" color="#FFF" style={{marginVertical: 20}} />
+                    ) : (
+                        <>
+                            <Text style={styles.sectionLabel}>Context Type: {displayContextName}</Text>
+                            <View style={styles.rowCard}>
+                                <View style={[styles.typeCard, {
+                                    backgroundColor: displayContextColor
+                                }]}>
+                                    <View style={styles.typeIconWrap}>
+                                        {isUrlOrEmoji(displayContextIcon) ? (
+                                            <Text style={{fontSize: 40}}>{displayContextIcon}</Text>
+                                        ) : (
+                                            <Ionicons name={displayContextIcon as any} size={32} color="#FFFFFF" />
+                                        )}
+                                    </View>
+                                    <Text style={styles.typeText}>{displayContextName}</Text>
+                                </View>
+                                
+                                <View style={{ flex: 1, gap: 10 }}>
+                                    <Pressable style={styles.pillBtn} onPress={() => {
+                                        setMode("create");
+                                    }}>
+                                        <Text style={styles.pillBtnText}>Edit / Add more</Text>
+                                    </Pressable>
+                                    
+                                    <Pressable style={[styles.pillBtn, { opacity: 0.6, backgroundColor: "#4C38CA" }]}>
+                                        <Text style={styles.pillBtnText}>Create Playlist</Text>
+                                    </Pressable>
 
-                            <Pressable
-                                style={[styles.pillBtn]}
-                                onPress={() => {}}
-                            >
-                                <Text style={styles.pillBtnText}>Delete Context</Text>
-                            </Pressable>
-                        </View>
-                    </View>
-                </>)}
+                                    <Pressable style={[styles.pillBtn]}>
+                                        <Text style={styles.pillBtnText}>Delete Context</Text>
+                                    </Pressable>
+                                </View>
+                            </View>
+                        </>
+                    )}
+                    </>
+                )}
 
                 {mode === "create" && (<>
                     <View style={styles.createHeaderCard}>
@@ -230,7 +239,7 @@ export default function ContextConfigScreen() {
                             <TextInput
                                 value={contextName}
                                 onChangeText={setContextName}
-                                placeholder="e.g. Studying, Workout"
+                                placeholder="Studying"
                                 placeholderTextColor="rgba(255,255,255,0.6)"
                                 style={styles.input}
                             />
@@ -238,34 +247,24 @@ export default function ContextConfigScreen() {
 
                         <View style={styles.logoCard}>
                             <Text style={styles.formLabel}>Context Logo</Text>
-                            <View style={[styles.logoBox, {
-                                backgroundColor: selectedColor || "#9fb1ff"
-                            }]}>
-                                <Ionicons name={selectedIcon as any} size={40} color="#FFFFFF" />
+                            <View style={[styles.logoBox, { backgroundColor: selectedColor || "#9fb1ff" }]}>
+                                {isUrlOrEmoji(selectedIcon) ? (
+                                    <Text style={{fontSize: 40}}>{selectedIcon}</Text>
+                                ) : (
+                                    <Ionicons name={selectedIcon as any} size={40} color="#FFFFFF" />
+                                )}
                             </View>
                         </View>
                     </View>
 
                     <Text style={[styles.sectionLabel, { marginTop: 12 }]}>Choose Context Icon</Text>
-                    <RNScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.iconPickerRow}
-                    >
+                    <RNScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.iconPickerRow}>
                         {ICON_OPTIONS.map((icon) => {
                             const active = selectedIcon === icon.name;
                             return (
-                                <Pressable
-                                    key={icon.id}
-                                    style={[styles.iconOption, active && styles.iconOptionActive]}
-                                    onPress={() => setSelectedIcon(icon.name)}
-                                >
+                                <Pressable key={icon.id} style={[styles.iconOption, active && styles.iconOptionActive]} onPress={() => setSelectedIcon(icon.name)}>
                                     <View style={styles.iconOptionIconWrap}>
-                                        <Ionicons
-                                            name={icon.name}
-                                            size={24}
-                                            color="#FFFFFF"
-                                        />
+                                        <Ionicons name={icon.name} size={24} color="#FFFFFF" />
                                     </View>
                                     <Text style={styles.iconOptionLabel}>{icon.label}</Text>
                                 </Pressable>
@@ -275,18 +274,11 @@ export default function ContextConfigScreen() {
 
                     <Text style={[styles.sectionLabel, { marginTop: 12 }]}>Choose Background Color</Text>
                     <View style={styles.colorPickerRow}>
-                        {COLOR_OPTIONS.map((c) => {
-                            const active = selectedColor === c;
-                            return (
-                                <Pressable
-                                    key={c}
-                                    style={[styles.colorDot, { backgroundColor: c }]}
-                                    onPress={() => setSelectedColor(c)}
-                                >
-                                    {active && <View style={styles.colorDotActive} />}
-                                </Pressable>
-                            );
-                        })}
+                        {COLOR_OPTIONS.map((c) => (
+                            <Pressable key={c} style={[styles.colorDot, { backgroundColor: c }]} onPress={() => setSelectedColor(c)}>
+                                {selectedColor === c && <View style={styles.colorDotActive} />}
+                            </Pressable>
+                        ))}
                     </View>
                 </>)}
 
@@ -305,7 +297,7 @@ export default function ContextConfigScreen() {
                         </View>
                     )) : (
                         <Text style={{color: 'rgba(255,255,255,0.5)', padding: 10, fontStyle: 'italic'}}>
-                            No moods selected
+                            {fetchingDetail ? "Loading moods..." : "No moods selected"}
                         </Text>
                     )}
                 </LinearGradient>
@@ -355,6 +347,7 @@ export default function ContextConfigScreen() {
                             setDisplayContextColor(selectedColor);
                             setMode("config");
                             console.log("Saving context:", {
+                                id: contextId,
                                 name: contextName,
                                 icon: selectedIcon,
                                 color: selectedColor,
@@ -363,7 +356,7 @@ export default function ContextConfigScreen() {
                         }}
                     >
                         <Text style={styles.createBtnText}>
-                            {isEdit === "true" ? "Save Changes" : "Create"}
+                            {contextId ? "Save Changes" : "Create"}
                         </Text>
                     </Pressable>
                 )}
