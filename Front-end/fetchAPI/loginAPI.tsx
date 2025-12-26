@@ -80,29 +80,98 @@ const loginAPI = async (username: string, password: string): Promise<LoginRespon
     throw error;
   }
 };
-export const refreshTokenUse = async (): Promise<string>=>{
-  const refreshtoken = await SecureStore.getItemAsync('refreshToken');
-  try{
-    const response = await fetch(`${BASE_URL}/api/user/refreshToken`,{
-      method: 'POST',
-      headers:{
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${refreshtoken}`
-      }
-    });
-    if(!response.ok){
-       throw new Error('Refresh thất bại');
+
+let isRefreshing = false;
+let refreshPromise: Promise<string> | null = null; // lưu Promise đang chạy
+
+export const refreshTokenUse = async (): Promise<string> => {
+  if (isRefreshing && refreshPromise) {
+    console.log('[REFRESH TOKEN] Đang có refresh khác chạy → chờ chung...');
+    return refreshPromise;
+  }
+  isRefreshing = true;
+  refreshPromise = (async () => {
+    const refreshToken = await SecureStore.getItemAsync('refreshToken');
+    
+    if (!refreshToken) {
+      throw new Error('Không tìm thấy refresh token');
     }
-    const data : RefreshTokenResponse = await response.json();
-    await SecureStore.setItemAsync('accessToken',data.accessToken);
-    await SecureStore.setItemAsync('refreshToken',data.refreshToken)
-    return data.accessToken
-  } 
-  catch (error){
-    console.error('[REFRESH TOKEN] Lỗi khi refresh token:', error);
+
+    console.log('[REFRESH TOKEN] Đang gửi request refresh token...');
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/user/refreshToken`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${refreshToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Refresh thất bại');
+      }
+
+      const data: RefreshTokenResponse = await response.json();
+
+      await SecureStore.setItemAsync('accessToken', data.accessToken);
+      await SecureStore.setItemAsync('refreshToken', data.refreshToken);
+
+      console.log('[REFRESH TOKEN] Refresh thành công! Access token mới đã được lưu.');
+
+      return data.accessToken;
+    } catch (error) {
+      console.error('[REFRESH TOKEN] Lỗi khi refresh token:', error);
+      
+      
+      throw error; 
+    } finally {
+      // Luôn reset trạng thái sau khi xong (thành công hay thất bại)
+      isRefreshing = false;
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+};
+export const logoutAPI = async ()=>{
+  try{
+    console.log("Thực hiện đăng xuất.......");
+    const accessToken = await SecureStore.getItemAsync("accessToken");
+    if(accessToken){
+      const response = await fetch(`${BASE_URL}/api/user/logout`,{
+        method: "POST",
+        headers:{
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        }
+      })
+      const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Đăng xuất thất bại');
+    }
+
+    console.log('[LOGOUT API] Thành công:', data.message);
+
+    // Xóa toàn bộ dữ liệu lưu trữ sau khi gọi API thành công
+    await SecureStore.deleteItemAsync('accessToken');
+    await SecureStore.deleteItemAsync('refreshToken');
+    await SecureStore.deleteItemAsync('userEmail');
+    await SecureStore.deleteItemAsync('userPhone');
+
+    // return data.message; // { message: "Đăng xuất thành công" }
+  }} catch (error) {
+    console.error('Logout error:', error);
+    // Tùy trường hợp, bạn vẫn có thể xóa token local để force logout
+    await SecureStore.deleteItemAsync('accessToken');
+    await SecureStore.deleteItemAsync('refreshToken');
+    await SecureStore.deleteItemAsync('userEmail');
+    await SecureStore.deleteItemAsync('userPhone');
     throw error;
   }
 }
-
 export default loginAPI;

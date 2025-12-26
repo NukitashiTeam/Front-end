@@ -30,7 +30,10 @@ export default function EmailScreen() {
     setLoading(true);
     try {
         await signupStep2({ contact: email.trim() });
-        router.push("/src/signin/Otpsign");
+        router.push({
+          pathname: "/src/signin/Otpsign",
+          params: { email: email.trim() } // Truyền email qua params
+        });
     } catch (error: any) {
         Alert.alert("Gửi OTP thất bại", error.message);
     } finally {

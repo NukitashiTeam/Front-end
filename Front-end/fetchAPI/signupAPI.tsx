@@ -9,13 +9,15 @@ type SignupStep1Payload = {
 };
 
 type SignupStep2Payload = {
-  contact: string; // email
+  contact: string;
 };
 
 type VerifyOTPPayload = {
   otp: string;
 };
-
+type ResendOTPPayload = {
+  contact: string; 
+};
 export const signupStep1 = async (payload: SignupStep1Payload) => {
   const response = await fetch(`${BASE_URL}/api/user/signup/step1`, {
     method: 'POST',
@@ -32,7 +34,7 @@ export const signupStep1 = async (payload: SignupStep1Payload) => {
     throw new Error(data.message || 'Signup step 1 failed');
   }
 
-  return data; // { message: "Bước 1 hoàn tất" }
+  return data; 
 };
 
 export const signupStep2 = async (payload: SignupStep2Payload) => {
@@ -51,7 +53,7 @@ export const signupStep2 = async (payload: SignupStep2Payload) => {
     throw new Error(data.message || 'Failed to send OTP');
   }
 
-  return data; // { message: "OTP đã được gửi đến email của bạn" }
+  return data;
 };
 
 export const verifyOTP = async (payload: VerifyOTPPayload) => {
@@ -70,5 +72,24 @@ export const verifyOTP = async (payload: VerifyOTPPayload) => {
     throw new Error(data.message || 'OTP không hợp lệ hoặc đã hết hạn');
   }
 
-  return data; // Thành công thì thường trả về token hoặc thông tin user
+  return data; 
+};
+export const resendOTP = async (payload: ResendOTPPayload) => {
+  const response = await fetch(`${BASE_URL}/api/user/resendOTP`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      // KHÔNG cần Authorization
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Gửi lại OTP thất bại');
+  }
+
+  return data;
 };
