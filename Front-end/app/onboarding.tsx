@@ -12,6 +12,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  StatusBar,
 } from "react-native";
 import "react-native-gesture-handler";
 
@@ -121,6 +122,7 @@ function Onboarding() {
           }, 100);
         }}
       />
+      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
       <View style={{marginTop: -50 }}>
         <Paginator data={onboardingData} scrollX={scrollX} index={index} />
 

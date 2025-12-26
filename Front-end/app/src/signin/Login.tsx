@@ -1,5 +1,5 @@
 import React,{ useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, StatusBar, Image, TextInput } from "react-native";
 import { useRouter } from "expo-router";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import loginAPI from "@/fetchAPI/loginAPI";
@@ -28,6 +28,7 @@ export default function LoginScreen() {
     };
     return (
         <Background>
+            <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
             <Text style={styles.signinlogo}>MoodyBlue</Text>
             <Text style={styles.signinsubtitle}>All your music in one place.</Text>
             <TextInput
