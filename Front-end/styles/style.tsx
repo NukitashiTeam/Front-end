@@ -7,6 +7,9 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  userinfocontainer: {
+    flex: 1,
+  },
   maincontainer: {
     flex: 1,
   },

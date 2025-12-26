@@ -7,10 +7,12 @@ import {
     Easing, 
     Pressable,
     useWindowDimensions,
+    Alert
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "../styles/UserOptionsSheetStyles";
-
+import { useRouter } from "expo-router";
+import { logoutAPI } from "@/fetchAPI/loginAPI";
 type Props = {
     visible: boolean;
     onClose: () => void;
@@ -18,19 +20,26 @@ type Props = {
     email?: string;
 };
 
-function MenuItem({ icon, label, last }: {icon: any; label: string; last?: boolean }) {
+function MenuItem({ icon, label, last, onPress }: {icon: any; label: string; last?: boolean; onPress?: () => void }) {
     return (
-        <View style={[styles.item, last && {
-            marginTop: 16,
-            borderTopWidth: StyleSheet.hairlineWidth,
-            borderTopColor: "#FFFFFF22",
-            paddingTop: 12,
-        }]}>
+        <Pressable
+            onPress={onPress}
+            style={({ pressed }) => [
+                styles.item,
+                last && {
+                    marginTop: 16,
+                    borderTopWidth: StyleSheet.hairlineWidth,
+                    borderTopColor: "#FFFFFF22",
+                    paddingTop: 12,
+                },
+                pressed && { opacity: 0.7 }, // hiệu ứng nhấn nhẹ (tùy chọn)
+            ]}
+        >
             <Ionicons name={icon} size={20} color="#FFF" style={{ marginRight: 12 }} />
             <Text style={styles.itemText}>{label}</Text>
             <View style={{ flex: 1 }} />
             <Ionicons name="chevron-forward" size={18} color="#FFF" />
-        </View>
+        </Pressable>
     );
 }
 
@@ -39,7 +48,7 @@ export default function UserOptionsSheet({ visible, onClose, name="Name", email=
     const panelW = Math.min(300, Math.round(width * 0.8));
     const tx = useRef(new Animated.Value(panelW)).current;
     const fade = useRef(new Animated.Value(0)).current;
-
+    const router = useRouter();
     useEffect(() => {
         if(visible) {
             Animated.parallel([
@@ -73,7 +82,14 @@ export default function UserOptionsSheet({ visible, onClose, name="Name", email=
     }, [visible, panelW, tx, fade]);
 
     const pointerEvents = useMemo(() => (visible ? "auto" : "none"), [visible]);
-
+    const handleLogout = async()=>{
+        try{
+            await logoutAPI();
+            router.navigate('/src/signin/Login')
+        }
+        catch (error) {
+    Alert.alert('Thông báo', 'Đã đăng xuất (local), nhưng có lỗi kết nối server');}
+    }
     return (
         <View pointerEvents={pointerEvents as any} style={[StyleSheet.absoluteFill]}>
             <Pressable style={[StyleSheet.absoluteFill]} onPress={onClose}>
@@ -93,10 +109,17 @@ export default function UserOptionsSheet({ visible, onClose, name="Name", email=
                 </View>
 
                 <View style={styles.menu}>
+                    <MenuItem icon="person-outline" label="Change Info" 
+                        onPress={()=>{
+                            console.log("ĐMM")
+                            router.navigate("/ProfileUser")
+                            onClose();
+                        }}
+                    />
                     <MenuItem icon="cloud-download-outline" label="Download" />
                     <MenuItem icon="musical-notes-outline" label="Playlist" />
                     <MenuItem icon="time-outline" label="History" />
-                    <MenuItem icon="log-out-outline" label="Log Out" />
+                    <MenuItem icon="log-out-outline" label="Log Out"  onPress={handleLogout}/>
                 </View>
             </Animated.View>
         </View>
