@@ -63,7 +63,7 @@ const getAllMoods = async (token: string): Promise<IMood[] | null> => {
                     return [];
                 }
             } else {
-                console.error(`[MOOD API] Lỗi HTTP ${response.status}:`, responseJson);
+                console.log(`[MOOD API] Lỗi HTTP ${response.status}:`, responseJson);
                 return null;
             }
         } catch (e) {

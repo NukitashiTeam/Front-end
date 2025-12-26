@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
     View,
     Text,
@@ -9,6 +9,8 @@ import {
     StatusBar,
     Platform,
     ActivityIndicator,
+    Animated,
+    Easing
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
@@ -38,7 +40,23 @@ export default function CreateMoodPlaylistScreen() {
     const [isLoading, setIsLoading] = useState(false);
     
     const displayMoodName = moodNameParam || "happy";
+    const rotateAnim = useRef(new Animated.Value(0)).current;
 
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(rotateAnim, {
+        toValue: 1,
+        duration: 1000, // 2 giây quay 1 vòng, giống Spotify
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    ).start();
+  }, [rotateAnim]);
+
+  const rotate = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
     let [fontsMontserratLoaded] = useMontserrat({
         Montserrat_400Regular,
         Montserrat_700Bold,
@@ -158,8 +176,25 @@ export default function CreateMoodPlaylistScreen() {
 
             {isLoading ? (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <ActivityIndicator size="large" color="#fff" />
-                    <Text style={{ color: 'white', marginTop: 10 }}>Generating "{displayMoodName}" playlist...</Text>
+                    <View style={{alignItems: "center", justifyContent: "center",}}>
+                        <Text style={{fontSize:24, fontWeight:600}}>Playlist in progress</Text>
+                        <Text style={{fontSize:24, fontWeight:600}}>please wait</Text>
+                    </View>
+                    {/* <ActivityIndicator size="large" color="#fff" /> */}
+                    {/* <Text style={{ color: 'white', marginTop: 10 }}>Generating "{displayMoodName}" playlist...</Text> */}
+                    <Animated.View style={{ transform: [{ rotate }] }}>
+        <View style={styles.spinner}>
+          {/* 8 đoạn nhỏ tạo hiệu ứng fade dần (chỉ hiện ~3/4 vòng) */}
+          <View style={[styles.segment, { opacity: 1 }]} />
+          <View style={[styles.segment, { opacity: 0.9, transform: [{ rotate: '45deg' }] }]} />
+          <View style={[styles.segment, { opacity: 0.8, transform: [{ rotate: '90deg' }] }]} />
+          <View style={[styles.segment, { opacity: 0.7, transform: [{ rotate: '135deg' }] }]} />
+          <View style={[styles.segment, { opacity: 0.5, transform: [{ rotate: '180deg' }] }]} />
+          <View style={[styles.segment, { opacity: 0.3, transform: [{ rotate: '225deg' }] }]} />
+          <View style={[styles.segment, { opacity: 0.2, transform: [{ rotate: '270deg' }] }]} />
+          <View style={[styles.segment, { opacity: 0.1, transform: [{ rotate: '315deg' }] }]} />
+        </View>
+      </Animated.View>
                 </View>
             ) : (
                 <FlatList

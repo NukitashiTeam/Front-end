@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
         letterSpacing: 0.1,
         marginBottom: 12,
         fontStyle: "italic",
-        lineHeight: 20,
+        lineHeight: 50,
         fontFamily: "Montserrat_700Bold",
     },
 

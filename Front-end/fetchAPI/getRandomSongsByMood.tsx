@@ -57,7 +57,7 @@ const getRandomSongsByMood = async (token: string, moodName: string): Promise<IR
                 console.log(`[MOOD API] Thành công! Tìm thấy ${songCount} bài.`);
                 return result as IRandomMoodResponse;
             } else {
-                console.error(`[MOOD API] Lỗi HTTP ${response.status}:`, result);
+                console.log(`[MOOD API] Lỗi HTTP ${response.status}:`, result);
                 return null;
             }
         } catch (jsonError) {
