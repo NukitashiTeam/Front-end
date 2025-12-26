@@ -229,10 +229,23 @@ export default function SearchScreen() {
 
         return (
             <Animated.View style={[{ width: CONTEXT_ITEM_WIDTH, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 10 }, animatedStyle]}>
-                <View style={[styles.contextCard, { backgroundColor: item.bgColor }]}>
-                    <Text style={{ fontSize: 40, marginBottom: 8 }}>{item.icon}</Text>
-                    <Text style={[styles.contextTitle]}>{item.title}</Text>
-                </View>
+                <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() => {
+                        router.push({
+                            pathname: "/ContextConfigScreen",
+                            params: {
+                                mode: "config",
+                                contextId: item.id, 
+                            }
+                        });
+                    }}
+                >
+                    <View style={[styles.contextCard, { backgroundColor: item.bgColor }]}>
+                        <Text style={{ fontSize: 40, marginBottom: 8 }}>{item.icon}</Text>
+                        <Text style={[styles.contextTitle]}>{item.title}</Text>
+                    </View>
+                </TouchableOpacity>
             </Animated.View>
         );
     };
