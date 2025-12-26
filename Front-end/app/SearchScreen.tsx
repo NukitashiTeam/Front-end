@@ -109,7 +109,7 @@ export default function SearchScreen() {
     const onScroll = useAnimatedScrollHandler((event) => {
         scrollX.value = event.contentOffset.x;
     });
-
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -200,7 +200,12 @@ export default function SearchScreen() {
     const renderMoodItem = ({ item }: { item: IMood }) => (
         <TouchableOpacity 
             style={styles.moodItemWrapper}
-            onPress={() => console.log("Selected mood:", item.name)}
+            onPress={() => {
+                router.push({
+                    pathname: "/CreateMoodPlaylistScreen",
+                    params: {moodName:item.name}
+                });
+            }}
         >
             <View style={[styles.moodAvatarCircle, { backgroundColor: item.colorCode || '#E0E0E0' }]}>
                 <Text style={styles.moodEmojiText}>{item.icon}</Text>

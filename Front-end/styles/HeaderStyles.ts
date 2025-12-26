@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     },
     headerLeaf: {},
     appName: {
-        color: "white",
+        color: "#5349C6",
         fontSize: 24,
         fontWeight: "400",
         fontFamily: 'IrishGrover_400Regular',

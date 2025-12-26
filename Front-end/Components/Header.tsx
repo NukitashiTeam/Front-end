@@ -8,12 +8,14 @@ type HeaderProps = {
     appName?: string;
     isModEnabled: boolean;
     onToggleMod: (value: boolean) => void;
+    appNameColor?:string
 };
 
 export default function Header({
     appName = "MoodyBlue",
     isModEnabled,
     onToggleMod,
+    appNameColor
 }: HeaderProps) {
     const [showSheet, setShowSheet] = useState(false);
     const [mountSheet, setMountSheet] = useState(false);
@@ -33,7 +35,7 @@ export default function Header({
     return (
         <View style={styles.headerRow}>
             <View style={styles.headerLeaf}>
-                <Text style={styles.appName}>{appName}</Text>
+                <Text style={[styles.appName, appNameColor ? { color: appNameColor } : null]}>{appName}</Text>
             </View>
             
             <View style={styles.headerRight}>
