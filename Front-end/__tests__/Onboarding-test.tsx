@@ -88,7 +88,7 @@ describe("Onboarding", () => {
         "hasSeenOnboarding",
         "true"
       );
-      expect(mockReplace).toHaveBeenCalledWith("/HomeScreen");
+      expect(mockReplace).toHaveBeenCalledWith("/src/signin/Login");
       expect(mockReplace).toHaveReturnedWith("test");
     });
   });
