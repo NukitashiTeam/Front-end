@@ -18,7 +18,7 @@ import {usePlayer} from "./PlayerContext";
 
 export default function NowPlayingScreen({ style, onClose }: { style?: any, onClose?: () => void }) {
     const insets = useSafeAreaInsets();
-    const { isPlaying, setIsPlaying, progressVal: progress, setProgress } = usePlayer();
+    const { isPlaying, setIsPlaying, progressVal: progress, setProgress, currentSong } = usePlayer();
     const [isModEnabled, setIsModEnabled] = useState(true);
     const [volume, setVolume] = useState(0.8);
     const muteAnim = useRef(new RNAnimated.Value(volume > 0 ? 0 : 1)).current;
@@ -32,6 +32,14 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
             useNativeDriver: true,
         }).start();
     }, [volume, muteAnim]);
+
+    if (!currentSong) {
+        return (
+            <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text style={{ color: 'white' }}>No song selected</Text>
+            </View>
+        );
+    }
 
     return (
         <Animated.View
@@ -51,7 +59,7 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
 
                 <View style={styles.artWrapper}>
                     <Image
-                        source={require("../assets/images/artNowPlayingMusic.jpg")}
+                        source={currentSong.image_url ? { uri: currentSong.image_url } : require("../assets/images/artNowPlayingMusic.jpg")}
                         style={styles.artImage}
                         resizeMode="cover"
                     />
@@ -64,8 +72,10 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
                     </TouchableOpacity>
 
                     <View style={styles.titleCenter}>
-                        <Text style={styles.songTitle}>Shape of You</Text>
-                        <Text style={styles.songSubtitle}>Ed Sheeran - Happy Playlist</Text>
+                        <Text style={styles.songTitle} numberOfLines={1}>{currentSong.title}</Text>
+                        <Text style={styles.songSubtitle} numberOfLines={1}>
+                            {currentSong.artist} {currentSong.album ? `- ${currentSong.album}` : ''}
+                        </Text>
                     </View>
 
                     <TouchableOpacity accessibilityLabel="Share">

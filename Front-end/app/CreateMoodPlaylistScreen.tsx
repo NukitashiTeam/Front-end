@@ -27,10 +27,12 @@ import styles from "../styles/CreateMoodPlaylistScreenStyles";
 import Header from "../Components/Header";
 import getRandomSongsByMood, { ISongPreview } from "../fetchAPI/getRandomSongsByMood";
 import { refreshTokenUse } from "../fetchAPI/loginAPI";
+import { usePlayer } from "./PlayerContext";
 
 export default function CreateMoodPlaylistScreen() {
     const router = useRouter();
     const insets = useSafeAreaInsets();
+    const { playTrack, miniPlayerRef } = usePlayer();
     
     const params = useLocalSearchParams();
     const moodNameParam = params.moodName as string; 
@@ -91,8 +93,23 @@ export default function CreateMoodPlaylistScreen() {
 
     if (!fontsMontserratLoaded) return null;
 
+    const handlePlaySong = async (songId: string) => {
+        // 1. Fetch và set bài hát vào context
+        await playTrack(songId);
+
+        // 2. Thay vì chuyển trang, ta mở rộng MiniPlayer
+        // router.push('/NowPlayingScreen'); // <-- XÓA DÒNG NÀY
+        
+        if (miniPlayerRef.current) {
+            miniPlayerRef.current.expand(); // <-- THÊM DÒNG NÀY
+        }
+    };
+
     const renderSong = ({ item }: { item: ISongPreview }) => (
-        <View style={styles.songRow}>
+        <TouchableOpacity 
+            style={styles.songRow} 
+            onPress={() => handlePlaySong(item.songId)}
+        >
             <Image 
                 source={item.image_url ? { uri: item.image_url } : require("../assets/images/song4.jpg")} 
                 style={styles.songCover} 
@@ -101,7 +118,9 @@ export default function CreateMoodPlaylistScreen() {
                 <Text style={styles.songTitle} numberOfLines={1}>{item.title}</Text>
                 <Text style={styles.songArtist} numberOfLines={1}>{item.artist}</Text>
             </View>
-        </View>
+            
+            <Ionicons name="play-circle-outline" size={24} color="#ccc" style={{marginLeft: 'auto'}}/>
+        </TouchableOpacity>
     );
 
     return (
