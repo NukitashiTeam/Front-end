@@ -11,20 +11,18 @@ import {
     FlatList,
     ScrollView as RNScrollView,
     ActivityIndicator,
-    Alert, // Import thêm Alert
+    Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as SecureStore from 'expo-secure-store';
-
 import Header from "../Components/Header";
 import styles from "../styles/ContextConfigScreenStyles";
 import getAllMoods, { IMood } from "../fetchAPI/getAllMoods";
 import { refreshTokenUse } from "../fetchAPI/loginAPI";
 import getDetailContext from "../fetchAPI/getDetailContext";
-// 1. Import API mới
 import getRandomSongsByContext from "../fetchAPI/getRandomSongsByContext";
 
 type Mode = "config" | "create";
@@ -64,7 +62,6 @@ export default function ContextConfigScreen() {
     const [loadingMoods, setLoadingMoods] = useState(true);
     
     const [fetchingDetail, setFetchingDetail] = useState(false);
-    // 2. State loading cho nút Create Playlist
     const [isCreatingPlaylist, setIsCreatingPlaylist] = useState(false);
 
     const [contextName, setContextName] = useState<string>("");
@@ -143,7 +140,6 @@ export default function ContextConfigScreen() {
 
     }, [contextId, paramMode, isEdit]);
 
-    // 3. Hàm xử lý logic gọi API tạo Playlist theo Context
     const handleCreateContextPlaylist = async () => {
         if (isCreatingPlaylist) return;
         setIsCreatingPlaylist(true);
@@ -155,12 +151,8 @@ export default function ContextConfigScreen() {
                 return;
             }
 
-            // Gọi API với tên Context đang hiển thị
             const result = await getRandomSongsByContext(token, displayContextName);
-
             if (result && result.success && result.data && result.data.length > 0) {
-                // Chuyển hướng sang trang CreatePlaylist và truyền dữ liệu bài hát
-                // Giả sử CreatePlaylist nhận params là songsData (string JSON) và defaultTitle
                 router.push({
                     pathname: "/CreatePlaylist",
                     params: {
