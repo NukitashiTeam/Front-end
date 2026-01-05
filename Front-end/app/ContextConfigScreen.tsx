@@ -11,6 +11,7 @@ import {
     FlatList,
     ScrollView as RNScrollView,
     ActivityIndicator,
+    Alert, // Import thêm Alert
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
@@ -23,6 +24,8 @@ import styles from "../styles/ContextConfigScreenStyles";
 import getAllMoods, { IMood } from "../fetchAPI/getAllMoods";
 import { refreshTokenUse } from "../fetchAPI/loginAPI";
 import getDetailContext from "../fetchAPI/getDetailContext";
+// 1. Import API mới
+import getRandomSongsByContext from "../fetchAPI/getRandomSongsByContext";
 
 type Mode = "config" | "create";
 
@@ -61,6 +64,8 @@ export default function ContextConfigScreen() {
     const [loadingMoods, setLoadingMoods] = useState(true);
     
     const [fetchingDetail, setFetchingDetail] = useState(false);
+    // 2. State loading cho nút Create Playlist
+    const [isCreatingPlaylist, setIsCreatingPlaylist] = useState(false);
 
     const [contextName, setContextName] = useState<string>("");
     const [selectedIcon, setSelectedIcon] = useState<string>("book-outline");
@@ -137,6 +142,42 @@ export default function ContextConfigScreen() {
         }
 
     }, [contextId, paramMode, isEdit]);
+
+    // 3. Hàm xử lý logic gọi API tạo Playlist theo Context
+    const handleCreateContextPlaylist = async () => {
+        if (isCreatingPlaylist) return;
+        setIsCreatingPlaylist(true);
+
+        try {
+            const token = await SecureStore.getItemAsync("accessToken");
+            if (!token) {
+                Alert.alert("Lỗi", "Bạn cần đăng nhập để thực hiện chức năng này.");
+                return;
+            }
+
+            // Gọi API với tên Context đang hiển thị
+            const result = await getRandomSongsByContext(token, displayContextName);
+
+            if (result && result.success && result.data && result.data.length > 0) {
+                // Chuyển hướng sang trang CreatePlaylist và truyền dữ liệu bài hát
+                // Giả sử CreatePlaylist nhận params là songsData (string JSON) và defaultTitle
+                router.push({
+                    pathname: "/CreatePlaylist",
+                    params: {
+                        songsData: JSON.stringify(result.data),
+                        defaultTitle: `Context: ${displayContextName}`
+                    }
+                });
+            } else {
+                Alert.alert("Thông báo", "Không tìm thấy bài hát phù hợp cho ngữ cảnh này.");
+            }
+        } catch (error) {
+            console.error("Lỗi khi tạo playlist context:", error);
+            Alert.alert("Lỗi", "Đã xảy ra lỗi khi tạo playlist.");
+        } finally {
+            setIsCreatingPlaylist(false);
+        }
+    };
 
     const selectedMoodsList = useMemo(() => 
         allMoods.filter((m) => selectedMoodIds.includes(m._id)), 
@@ -225,21 +266,24 @@ export default function ContextConfigScreen() {
                                     </Pressable>
                                     
                                     <Pressable
-                                        onPress={() => {
-                                            // Logic tạo playlist
-                                        }}
+                                        onPress={handleCreateContextPlaylist}
+                                        disabled={isCreatingPlaylist}
                                         style={({ pressed }) => [
                                             styles.pillBtn,
                                             { backgroundColor: "#4C38CA" },
-                                            { opacity: pressed ? 0.7 : selectedMoodIds.length ? 1 : 0.6 }
+                                            { opacity: pressed ? 0.7 : 1 }
                                         ]}
                                     >
-                                        <Text style={styles.pillBtnText}>Create Playlist</Text>
+                                        {isCreatingPlaylist ? (
+                                            <ActivityIndicator size="small" color="#FFF" />
+                                        ) : (
+                                            <Text style={styles.pillBtnText}>Create Playlist</Text>
+                                        )}
                                     </Pressable>
 
                                     <Pressable
                                         onPress={() => {
-                                            // Logic xóa
+                                            Alert.alert("Coming Soon", "Chức năng xóa sẽ sớm được cập nhật!");
                                         }}
                                         style={({ pressed }) => [
                                             styles.pillBtn,
