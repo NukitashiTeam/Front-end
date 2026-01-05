@@ -52,8 +52,7 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
     bottomInset,
     bottomGap = 8
 }, ref) => {
-    const { isPlaying, setIsPlaying, progressVal, setProgress: setProgressVal } = usePlayer();
-    // const { height: SCREEN_H, width: SCREEN_W } = useWindowDimensions();
+    const { isPlaying, setIsPlaying, progressVal, setProgress: setProgressVal, currentSong } = usePlayer();
     const insets = useSafeAreaInsets();
     const safeBottom = bottomInset ?? insets.bottom;
     
@@ -207,6 +206,11 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
 
     if (hidden) return null;
 
+    const displayTitle = currentSong ? currentSong.title : "Not Playing";
+    const displayArtist = currentSong 
+        ? `${currentSong.artist} ${currentSong.album ? '- ' + currentSong.album : ''}` 
+        : "Select a song to play";
+
     return (
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "transparent", height: "106%"}]} pointerEvents="box-none">
             <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: 'black' }, backdropStyle]} pointerEvents="none" />
@@ -248,9 +252,9 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
                             <View style={{display: "flex", flexDirection: 'column', alignItems: 'center', flex: 1}}>
                                 <View style={styles.miniHeaderRow}>
                                     <Ionicons name="notifications-outline" size={34} color="white" />
-                                    <View>
-                                        <Text style={styles.miniTitle}>Shape of You</Text>
-                                        <Text style={styles.miniSubtitle}>Ed Sherran - Happy Playlist</Text>
+                                    <View style={{ flex: 1, alignItems: 'center', marginHorizontal: 10 }}> 
+                                        <Text style={styles.miniTitle} numberOfLines={1}>{displayTitle}</Text>
+                                        <Text style={styles.miniSubtitle} numberOfLines={1}>{displayArtist}</Text>
                                     </View>
                                     <Ionicons name="share-social-outline" size={34} color="white" />
                                 </View>
