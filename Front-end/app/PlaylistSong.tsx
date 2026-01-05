@@ -21,6 +21,7 @@ import getPlaylistDetail, { IPlaylistDetail, ISong } from "../fetchAPI/getPlayli
 import deletePlaylist from "../fetchAPI/deletePlaylist";
 import removeSongFromPlaylist from "../fetchAPI/removeSongFromPlaylist";
 import * as SecureStore from 'expo-secure-store';
+import { usePlayer } from "./PlayerContext";
 
 const CACHE_KEY_TOKEN = 'CACHE_USER_TOKEN';
 
@@ -28,7 +29,7 @@ export default function PlaylistSong() {
     const [isModEnabled, setIsModEnabled] = useState(false);
     const insets = useSafeAreaInsets();
     const router = useRouter();
-    
+    const { playTrack, miniPlayerRef } = usePlayer();
     const params = useLocalSearchParams();
     const playlistId = params.id as string;
     const playlistTitle = params.title as string || "Unknown Playlist";
@@ -57,6 +58,14 @@ export default function PlaylistSong() {
         };
         fetchData();
     }, [playlistId]);
+
+    const handlePlaySong = async (songId: string) => {
+        await playTrack(songId);
+        console.log(`Playing Song ID: ${songId}`);
+        if (miniPlayerRef.current) {
+            miniPlayerRef.current.expand();
+        }
+    };
 
     const handleRemoveSong = (songId: string) => {
         Alert.alert(
@@ -87,7 +96,10 @@ export default function PlaylistSong() {
     };
 
     const renderSongItem = ({ item }: { item: ISong }) => (
-        <View style={[styles.songItem, { flexDirection: 'row', alignItems: 'center' }]}>
+        <TouchableOpacity 
+            style={[styles.songItem, { flexDirection: 'row', alignItems: 'center' }]}
+            onPress={() => handlePlaySong(item.songId)}
+        >
             <Image 
                 source={(item.image_url && item.image_url !== "") ? { uri: item.image_url } : require('../assets/images/song5.jpg')}
                 style={styles.songImage} 
@@ -104,7 +116,7 @@ export default function PlaylistSong() {
             >
                 <Ionicons name="trash-outline" size={24} color="white" />
             </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
     );
 
     const handleVectorPress = () => console.log('Vector icon pressed');
@@ -139,7 +151,14 @@ export default function PlaylistSong() {
             ]
         );
     };
-    const handlePlayPress = () => console.log('Play icon pressed');
+
+    const handlePlayPress = () => {
+        if (playlistData?.songs && playlistData.songs.length > 0) {
+            handlePlaySong(playlistData.songs[0].songId);
+        } else {
+            Alert.alert("Thông báo", "Playlist này chưa có bài hát nào.");
+        }
+    };
 
     return (
         <Background>
