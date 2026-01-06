@@ -256,7 +256,8 @@ export default function HomeScreen() {
     if(!fontsLoaded) return null;
 
     const moodDisplayName = quickStartMood?.name ? quickStartMood.name.charAt(0).toUpperCase() + quickStartMood.name.slice(1) : "Happy";
-    const moodIcon = quickStartMood?.icon || "🎵"; 
+    const moodIcon = quickStartMood?.icon || "🎵";
+    const moodColor = quickStartMood?.colorCode || "#FFE082";
 
     return (
         <View style={styles.container}>
@@ -302,7 +303,7 @@ export default function HomeScreen() {
                                 <View style={styles.quickStartTopRow}>
                                     <Text style={styles.quickStartLabel}>Last Mood</Text>
                                     <View style={styles.quickStartLeftDown}>
-                                        <View style={styles.moodAvatarCircle}>
+                                        <View style={[styles.moodAvatarCircle, , { backgroundColor: moodColor }]}>
                                             <Text style={styles.moodEmojiText}>{moodIcon}</Text>
                                         </View>
                                         <Text style={styles.moodNameText}>{moodDisplayName}</Text>
