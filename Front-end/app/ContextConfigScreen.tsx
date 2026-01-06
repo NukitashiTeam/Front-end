@@ -19,13 +19,14 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as SecureStore from 'expo-secure-store';
 import EmojiPicker, { type EmojiType } from 'rn-emoji-keyboard';
-import Header from "../Components/Header";
-import styles from "../styles/ContextConfigScreenStyles";
-import getAllMoods, { IMood } from "../fetchAPI/getAllMoods";
-import { refreshTokenUse } from "../fetchAPI/loginAPI";
-import getDetailContext from "../fetchAPI/getDetailContext";
-import getRandomSongsByContext from "../fetchAPI/getRandomSongsByContext";
-import createContext, { ICreateContextInput } from "../fetchAPI/createContext";
+import Header from "@/Components/Header";
+import styles from "@/styles/ContextConfigScreenStyles";
+import getAllMoods, { IMood } from "@/fetchAPI/getAllMoods";
+import { refreshTokenUse } from "@/fetchAPI/loginAPI";
+import getDetailContext from "@/fetchAPI/getDetailContext";
+import getRandomSongsByContext from "@/fetchAPI/getRandomSongsByContext";
+import createContext, { ICreateContextInput } from "@/fetchAPI/createContext";
+import updateContext, { IUpdateContextInput } from "@/fetchAPI/updateContext";
 
 type Mode = "config" | "create";
 
@@ -198,29 +199,48 @@ export default function ContextConfigScreen() {
                 return;
             }
 
-            const inputData: ICreateContextInput = {
+            const inputData = {
                 name: contextName.trim(),
                 icon: selectedIcon,
                 color: selectedColor,
                 moods: selectedMoodIds
             };
 
-            const newContext = await createContext(token, inputData);
-            if (newContext) {
-                Alert.alert("Thành công", "Đã tạo Context mới!", [
-                    {
+            if (contextId) {
+                const result = await updateContext(token, contextId, inputData);
+                if (result) {
+                    Alert.alert("Thành công", "Cập nhật Context thành công!", [{
+                        text: "OK",
+                        onPress: () => {
+                            setDisplayContextName(result.name);
+                            setDisplayContextIcon(result.icon);
+                            setDisplayContextColor(result.color);
+                            if (result._id !== contextId) {
+                                console.log("Context đã được Fork sang ID mới:", result._id);
+                            }
+                            setMode("config");
+                        }
+                    }]);
+                } else {
+                    Alert.alert("Thất bại", "Không thể cập nhật Context. Vui lòng thử lại.");
+                }
+
+            } else {
+                const newContext = await createContext(token, inputData);
+                if (newContext) {
+                    Alert.alert("Thành công", "Đã tạo Context mới!", [{
                         text: "OK",
                         onPress: () => {
                             setDisplayContextName(newContext.name);
                             setDisplayContextIcon(newContext.icon);
                             setDisplayContextColor(newContext.color);
                             setMode("config");
+                            router.navigate('/ContextUserListScreen');
                         }
-                    }
-                ]);
-                router.navigate('/ContextUserListScreen');
-            } else {
-                Alert.alert("Thất bại", "Không thể tạo Context. Vui lòng thử lại.");
+                    }]);
+                } else {
+                    Alert.alert("Thất bại", "Không thể tạo Context. Vui lòng thử lại.");
+                }
             }
         } catch (error) {
             console.error("Lỗi khi lưu context:", error);
@@ -249,7 +269,7 @@ export default function ContextConfigScreen() {
 
     return (
         <View style={styles.container}>
-            <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+            <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
 
             <LinearGradient
                 colors={["#8C84FF", "#6E5ED1"]}
