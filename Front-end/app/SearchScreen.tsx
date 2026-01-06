@@ -41,6 +41,7 @@ import { refreshTokenUse } from '@/fetchAPI/loginAPI';
 import { IMusicDetail } from "@/fetchAPI/getMusicById";
 import { usePlayer } from "./PlayerContext";
 
+const CACHE_KEY_LAST_MOOD = 'CACHE_LAST_MOOD';
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CONTEXT_ITEM_WIDTH = SCREEN_WIDTH * 0.3;
 const CONTEXT_ITEM_SIZE = CONTEXT_ITEM_WIDTH;
@@ -228,10 +229,17 @@ export default function SearchScreen() {
     const renderMoodItem = ({ item }: { item: IMood }) => (
         <TouchableOpacity 
             style={styles.moodItemWrapper}
-            onPress={() => {
+            onPress={async () => {
+                try {
+                    await AsyncStorage.setItem(CACHE_KEY_LAST_MOOD, JSON.stringify(item));
+                    console.log("Saved last mood from Search:", item.name);
+                } catch (error) {
+                    console.error("Failed to save last mood:", error);
+                }
+
                 router.push({
                     pathname: "/CreateMoodPlaylistScreen",
-                    params: {moodName:item.name}
+                    params: {moodName: item.name}
                 });
             }}
         >
