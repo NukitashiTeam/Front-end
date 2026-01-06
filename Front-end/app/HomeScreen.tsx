@@ -39,6 +39,7 @@ import getAllMoods, { IMood } from "../fetchAPI/getAllMoods";
 
 const CACHE_KEY_PLAYLIST = 'CACHE_HOME_PLAYLIST';
 const CACHE_KEY_HISTORY = 'CACHE_PLAYLIST_HISTORY_IDS';
+const CACHE_KEY_LAST_MOOD = 'CACHE_LAST_MOOD';
 const NUM_COLS = 2;
 const H_PADDING = 20;
 const GAP = 16;
@@ -100,6 +101,29 @@ export default function HomeScreen() {
         }
     };
 
+    const loadLastMood = useCallback(async (token: string | null) => {
+        try {
+            const lastMoodJson = await AsyncStorage.getItem(CACHE_KEY_LAST_MOOD);
+            if (lastMoodJson) {
+                const parsedMood: IMood = JSON.parse(lastMoodJson);
+                setQuickStartMood(parsedMood);
+                return;
+            }
+
+            if (token) {
+                const moods = await getAllMoods(token);
+                if (moods && moods.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * moods.length);
+                    const randomMood = moods[randomIndex];
+                    setQuickStartMood(randomMood);
+                    await AsyncStorage.setItem(CACHE_KEY_LAST_MOOD, JSON.stringify(randomMood));
+                }
+            }
+        } catch (error) {
+            console.error("Error loading mood:", error);
+        }
+    }, []);
+
     const loadData = useCallback(async () => {
         try {
             const cachedData = await AsyncStorage.getItem(CACHE_KEY_PLAYLIST);
@@ -123,7 +147,6 @@ export default function HomeScreen() {
                         await AsyncStorage.setItem(CACHE_KEY_PLAYLIST, JSON.stringify(sortedData));
                     }
                 } else {
-                    console.log("Token cũ có thể đã hết hạn, đang thử đăng nhập lại...");
                     needRefreshLogin = true; 
                 }
 
@@ -135,6 +158,8 @@ export default function HomeScreen() {
                         console.log("Random Mood selected:", moods[randomIndex].name);
                     }
                 }
+
+                await loadLastMood(token);
             }
 
             if (needRefreshLogin) {
@@ -154,6 +179,8 @@ export default function HomeScreen() {
                         setQuickStartMood(moodsRetry[randomIndex]);
                         console.log("Random Mood selected (retry):", moodsRetry[randomIndex].name);
                     }
+
+                    await loadLastMood(newToken);
                 }
             }
         } catch (error) {
@@ -208,6 +235,24 @@ export default function HomeScreen() {
         });
     };
 
+    useFocusEffect(
+        useCallback(() => {
+            const checkMoodUpdate = async () => {
+                const lastMoodJson = await AsyncStorage.getItem(CACHE_KEY_LAST_MOOD);
+                if (lastMoodJson) {
+                    const parsedMood = JSON.parse(lastMoodJson);
+                    setQuickStartMood(prev => {
+                        if (prev?._id !== parsedMood._id) return parsedMood;
+                        return prev;
+                    });
+                }
+            };
+            
+            checkMoodUpdate();
+            loadData();
+        }, [loadData])
+    );
+
     if(!fontsLoaded) return null;
 
     const moodDisplayName = quickStartMood?.name ? quickStartMood.name.charAt(0).toUpperCase() + quickStartMood.name.slice(1) : "Happy";
@@ -255,7 +300,7 @@ export default function HomeScreen() {
                                 style={styles.quickStartCard}
                             >
                                 <View style={styles.quickStartTopRow}>
-                                    <Text style={styles.quickStartLabel}>Best Mood</Text>
+                                    <Text style={styles.quickStartLabel}>Last Mood</Text>
                                     <View style={styles.quickStartLeftDown}>
                                         <View style={styles.moodAvatarCircle}>
                                             <Text style={styles.moodEmojiText}>{moodIcon}</Text>
