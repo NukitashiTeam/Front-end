@@ -52,7 +52,15 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
     bottomInset,
     bottomGap = 8
 }, ref) => {
-    const { isPlaying, setIsPlaying, progressVal, setProgress: setProgressVal, currentSong } = usePlayer();
+    const { 
+        isPlaying, 
+        togglePlayPause, 
+        progressVal, 
+        currentSong, 
+        seekTo,
+        duration,
+        position,
+    } = usePlayer();
     const insets = useSafeAreaInsets();
     const safeBottom = bottomInset ?? insets.bottom;
     
@@ -67,6 +75,13 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
     const HANDLE_PEEK = Platform.OS === "ios" ? verticalScale(-80) : verticalScale(-100);
     const MINIMIZED_TRANSLATE_Y = MINI_HEIGHT - HANDLE_PEEK;
     const MAX_TRAVEL = Math.max(1, SCREEN_H - (MINI_HEIGHT + MINI_BOTTOM_OFFSET));
+
+    const formatTime = (millis: number) => {
+        if (!millis) return "0:00";
+        const minutes = Math.floor(millis / 60000);
+        const seconds = ((millis % 60000) / 1000).toFixed(0);
+        return minutes + ":" + (Number(seconds) < 10 ? '0' : '') + seconds;
+    };
 
     const notifyStateChange = (expanded: boolean) => {
         if (onStateChange) {
@@ -266,9 +281,8 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
 
                                     <TouchableOpacity
                                         style={[styles.miniIconBtn, { marginHorizontal: 24 }]}
-                                        onPress={() => setIsPlaying((p) => !p)}
+                                        onPress={togglePlayPause}
                                         accessibilityRole="button"
-                                        accessibilityLabel={isPlaying ? "Pause" : "play"}
                                     >
                                         <Ionicons name={isPlaying ? "pause" : "play"} size={28} color="white" />
                                     </TouchableOpacity>
@@ -279,18 +293,19 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
                                 </View>
 
                                 <View style={styles.miniProgressRow}>
-                                    <Text style={styles.miniTimeText}>1:02</Text>
+                                    <Text style={styles.miniTimeText}>{formatTime(position)}</Text>
                                     <Slider
                                         containerStyle={styles.miniSliderContainer}
                                         trackStyle={styles.miniSliderTrack}
                                         minimumTrackStyle={styles.miniSliderMinTrack}
                                         thumbStyle={styles.miniSliderThumb}
                                         value={progressVal}
-                                        onValueChange={(v) => setProgressVal(Array.isArray(v) ? v[0] : v)}
+                                        onSlidingComplete={(v) => seekTo(Array.isArray(v) ? v[0] : v)}
                                         minimumValue={0}
                                         maximumValue={1}
                                     />
-                                    <Text style={styles.miniTimeText}>4:08</Text>
+                                    
+                                    <Text style={styles.miniTimeText}>{formatTime(duration)}</Text>
                                 </View>
                             </View>
                         </Animated.View>

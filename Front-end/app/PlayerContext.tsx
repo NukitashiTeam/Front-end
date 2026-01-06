@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode, useRef } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useRef, useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
+import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from 'expo-av';
 import getMusicById, { IMusicDetail } from '../fetchAPI/getMusicById';
 import { MiniPlayerRef } from '../Components/MiniPlayer';
 
@@ -10,34 +11,106 @@ interface PlayerContextType {
     setProgress: React.Dispatch<React.SetStateAction<number>>;
     currentSong: IMusicDetail | null;
     playTrack: (songId: string) => Promise<void>;
+    togglePlayPause: () => Promise<void>;
+    seekTo: (value: number) => Promise<void>;
     miniPlayerRef: React.RefObject<MiniPlayerRef | null>;
+    duration: number;
+    position: number;
 }
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
+
 export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [progressVal, setProgress] = useState(0);
     const [currentSong, setCurrentSong] = useState<IMusicDetail | null>(null);
+    const [sound, setSound] = useState<Audio.Sound | null>(null);
+    const [duration, setDuration] = useState(0);
+    const [position, setPosition] = useState(0);
     const miniPlayerRef = useRef<MiniPlayerRef>(null);
+
+    useEffect(() => {
+        Audio.setAudioModeAsync({
+            allowsRecordingIOS: false,
+            staysActiveInBackground: true,
+            interruptionModeIOS: InterruptionModeIOS.DuckOthers,
+            playsInSilentModeIOS: true,
+            shouldDuckAndroid: true,
+            interruptionModeAndroid: InterruptionModeAndroid.DuckOthers,
+            playThroughEarpieceAndroid: false
+        });
+    }, []);
+
     const playTrack = async (songId: string) => {
         try {
-            setIsPlaying(false);
             const token = await SecureStore.getItemAsync('accessToken');
-            if (!token) {
-                console.warn('No access token found');
-                return;
-            }
+            if (!token) return;
 
             const songDetails = await getMusicById(songId, token);
-            if (songDetails) {
+            if (songDetails && songDetails.mp3_url) {
+                if (sound) {
+                    await sound.unloadAsync();
+                }
+
                 setCurrentSong(songDetails);
+                console.log("Loading Sound:", songDetails.mp3_url);
+                const { sound: newSound } = await Audio.Sound.createAsync(
+                    { uri: songDetails.mp3_url },
+                    { shouldPlay: true },
+                    onPlaybackStatusUpdate
+                );
+
+                setSound(newSound);
                 setIsPlaying(true);
-                console.log('Now playing:', songDetails.title);
+            } else {
+                console.warn("Bài hát không có MP3 URL hoặc không lấy được thông tin");
             }
         } catch (error) {
             console.error('Error playing track:', error);
         }
     };
+
+    const togglePlayPause = async () => {
+        if (!sound) return;
+        if (isPlaying) {
+            await sound.pauseAsync();
+            setIsPlaying(false);
+        } else {
+            await sound.playAsync();
+            setIsPlaying(true);
+        }
+    };
+
+    const seekTo = async (value: number) => {
+        if (sound && duration) {
+            const seekPosition = value * duration;
+            await sound.setPositionAsync(seekPosition);
+        }
+    };
+
+    const onPlaybackStatusUpdate = (status: any) => {
+        if (status.isLoaded) {
+            setDuration(status.durationMillis || 0);
+            setPosition(status.positionMillis || 0);
+            
+            if (status.durationMillis) {
+                setProgress(status.positionMillis / status.durationMillis);
+            }
+
+            if (status.didJustFinish) {
+                setIsPlaying(false);
+            }
+        }
+    };
+
+    useEffect(() => {
+        return () => {
+            if (sound) {
+                console.log('Unloading Sound');
+                sound.unloadAsync();
+            }
+        };
+    }, [sound]);
 
     return (
         <PlayerContext.Provider value={{ 
@@ -47,7 +120,11 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
             setProgress,
             currentSong,
             playTrack,
-            miniPlayerRef
+            togglePlayPause,
+            seekTo,
+            miniPlayerRef,
+            duration,
+            position
         }}>
             {children}
         </PlayerContext.Provider>

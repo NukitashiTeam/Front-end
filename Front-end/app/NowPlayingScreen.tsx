@@ -20,7 +20,21 @@ import { useRouter } from "expo-router";
 export default function NowPlayingScreen({ style, onClose }: { style?: any, onClose?: () => void }) {
     const insets = useSafeAreaInsets();
     const router = useRouter();
-    const { isPlaying, setIsPlaying, progressVal: progress, setProgress, currentSong } = usePlayer();
+    const { 
+        isPlaying, 
+        togglePlayPause,
+        progressVal, 
+        seekTo,
+        currentSong,
+        duration,
+        position
+    } = usePlayer();
+    const formatTime = (millis: number) => {
+        if (!millis) return "0:00";
+        const minutes = Math.floor(millis / 60000);
+        const seconds = ((millis % 60000) / 1000).toFixed(0);
+        return minutes + ":" + (Number(seconds) < 10 ? '0' : '') + seconds;
+    };
     const [isModEnabled, setIsModEnabled] = useState(true);
     const [volume, setVolume] = useState(0.8);
     const muteAnim = useRef(new RNAnimated.Value(volume > 0 ? 0 : 1)).current;
@@ -111,7 +125,7 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            onPress={() => setIsPlaying((v) => !v)}
+                            onPress={togglePlayPause}
                             style={styles.playBtn}
                             accessibilityLabel="Play/Pause"
                         >
@@ -134,18 +148,24 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
                 {/* Progress + Volume bars */}
                 <View style={styles.slidersBlock}>
                     <View style={styles.progressSliderContainer}>
-                        <Text style={[styles.timeText, { textAlign: "left" }]}>1:02</Text>
+                        <Text style={[styles.timeText, { textAlign: "left" }]}>
+                            {formatTime(position)}
+                        </Text>
+                        
                         <Slider
                             containerStyle={styles.sliderContainer}
                             trackStyle={styles.sliderTrack}
                             minimumTrackStyle={styles.sliderMinTrack}
                             thumbStyle={styles.sliderThumb}
-                            value={progress}
-                            onValueChange={(value) => setProgress(normalize(value))}
+                            value={progressVal}
+                            onSlidingComplete={(value) => seekTo(Array.isArray(value) ? value[0] : value)}
                             minimumValue={0}
                             maximumValue={1}
                         />
-                        <Text style={[styles.timeText, { textAlign: "right" }]}>4:08</Text>
+                        
+                        <Text style={[styles.timeText, { textAlign: "right" }]}>
+                            {formatTime(duration)}
+                        </Text>
                     </View>
 
                     <View style={styles.volumeSliderContainer}>
