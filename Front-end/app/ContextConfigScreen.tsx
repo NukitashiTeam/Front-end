@@ -18,6 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as SecureStore from 'expo-secure-store';
+import EmojiPicker, { type EmojiType } from 'rn-emoji-keyboard';
 import Header from "../Components/Header";
 import styles from "../styles/ContextConfigScreenStyles";
 import getAllMoods, { IMood } from "../fetchAPI/getAllMoods";
@@ -65,6 +66,7 @@ export default function ContextConfigScreen() {
     const [fetchingDetail, setFetchingDetail] = useState(false);
     const [isCreatingPlaylist, setIsCreatingPlaylist] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isOpenEmoji, setIsOpenEmoji] = useState(false);
 
     const [contextName, setContextName] = useState<string>("");
     const [selectedIcon, setSelectedIcon] = useState<string>("📚"); 
@@ -141,6 +143,10 @@ export default function ContextConfigScreen() {
         }
 
     }, [contextId, paramMode, isEdit]);
+
+    const handlePickEmoji = (emojiObject: EmojiType) => {
+        setSelectedIcon(emojiObject.emoji);
+    };
 
     const handleCreateContextPlaylist = async () => {
         if (isCreatingPlaylist) return;
@@ -359,28 +365,20 @@ export default function ContextConfigScreen() {
 
                         <View style={styles.logoCard}>
                             <Text style={styles.formLabel}>Context Logo</Text>
-                            <View style={[styles.logoBox, { backgroundColor: selectedColor || "#9fb1ff" }]}>
+                            <Pressable 
+                                onPress={() => setIsOpenEmoji(true)}
+                                style={[styles.logoBox, { backgroundColor: selectedColor || "#9fb1ff" }]}
+                            >
                                 {isUrlOrEmoji(selectedIcon) ? (
                                     <Text style={{fontSize: 40}}>{selectedIcon}</Text>
                                 ) : (
                                     <Ionicons name={selectedIcon as any} size={40} color="#FFFFFF" />
                                 )}
-                            </View>
+                            </Pressable>
                         </View>
                     </View>
 
-                    <Text style={[styles.sectionLabel, { marginTop: 12 }]}>Type Context Icon (Emoji)</Text>
-                    <View style={{ marginTop: 8 }}>
-                        <TextInput 
-                            value={selectedIcon}
-                            onChangeText={(text) => setSelectedIcon(text)}
-                            placeholder="Type an emoji..."
-                            placeholderTextColor="rgba(255,255,255,0.5)"
-                            style={[styles.input, { textAlign: 'center', fontSize: 24 }]}
-                            maxLength={2}
-                        />
-                    </View>
-
+                    <Text style={[{ marginTop: 12, fontStyle: "italic", textAlign: "right" }]}>*Tap icon above to change Emoji</Text>                    
                     <Text style={[styles.sectionLabel, { marginTop: 12 }]}>Choose Background Color</Text>
                     <View style={styles.colorPickerRow}>
                         {COLOR_OPTIONS.map((c) => (
@@ -462,6 +460,25 @@ export default function ContextConfigScreen() {
                     </Pressable>
                 )}
             </ScrollView>
+
+            <EmojiPicker
+                onEmojiSelected={handlePickEmoji}
+                open={isOpenEmoji}
+                onClose={() => setIsOpenEmoji(false)}
+                theme={{
+                    backdrop: '#16161888',
+                    knob: '#766dfc',
+                    container: '#282829',
+                    header: '#fff',
+                    skinTonesContainer: '#252427',
+                    category: {
+                        icon: '#766dfc',
+                        iconActive: '#fff',
+                        container: '#252427',
+                        containerActive: '#766dfc',
+                    },
+                }}
+            />
         </View>
     );
 }
