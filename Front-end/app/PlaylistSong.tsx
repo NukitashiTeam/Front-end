@@ -215,7 +215,7 @@ export default function PlaylistSong() {
                         data={playlistData?.songs || []}
                         renderItem={renderSongItem}
                         keyExtractor={(item) => item.songId}
-                        contentContainerStyle={{ paddingVertical: 5, marginBottom: "5%", paddingHorizontal: 20 }}
+                        contentContainerStyle={{ paddingTop: 5, marginBottom: "5%", paddingHorizontal: 20, paddingBottom: "30%" }}
                         ListEmptyComponent={
                             <Text style={{color: 'white', textAlign: 'center', marginTop: 20}}>
                                 No songs in this playlist
