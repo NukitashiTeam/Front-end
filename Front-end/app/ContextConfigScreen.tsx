@@ -219,6 +219,7 @@ export default function ContextConfigScreen() {
                                 console.log("Context đã được Fork sang ID mới:", result._id);
                             }
                             setMode("config");
+                            router.navigate('/ContextUserListScreen');
                         }
                     }]);
                 } else {
