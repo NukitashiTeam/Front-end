@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Front-end",
-    "slug": "Front-end",
+    "slug": "front-end",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -41,6 +41,7 @@
         }
       ],
       "expo-font",
+      "expo-secure-store",
       [
         "@sentry/react-native/expo",
         {
@@ -48,17 +49,7 @@
           "project": "nukitashiteam",
           "organization": "nukitashiteam"
         }
-      ],
-      "sentry-expo",
-      [
-        "@sentry/react-native/expo",
-        {
-          "url": "https://sentry.io/",
-          "project": "nukitashiteam",
-          "organization": "nukitashiteam"
-        }
-      ],
-      "expo-secure-store"
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
@@ -67,14 +58,11 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "86833122-3b27-43f9-b020-1ba3208b1072"
+        "projectId": "36329cf8-18e4-40f8-8ec6-b1300809aa46"
       }
     },
     "runtimeVersion": {
       "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/86833122-3b27-43f9-b020-1ba3208b1072"
     }
   }
 }
