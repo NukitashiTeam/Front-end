@@ -200,7 +200,7 @@ export default function SearchScreen() {
             style={styles.songRow}
             onPress={async () => {
                 const songData: IMusicDetail = {
-                    _id: item.track_id,
+                    _id: item._id,
                     track_id: item.track_id,
                     title: item.title,
                     artist: item.artist,
