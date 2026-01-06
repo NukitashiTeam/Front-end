@@ -1,6 +1,7 @@
 const BASE_URL = 'https://moody-blue-597542124573.asia-southeast2.run.app';
 
 export interface IMusicDetail {
+    _id: string;
     track_id: string;
     title: string;
     artist: string;
@@ -15,7 +16,7 @@ export interface IMusicDetail {
 
 const getMusicById = async (id: string, token: string): Promise<IMusicDetail | null> => {
     try {
-        console.log(`--- [MUSIC DETAIL API] Đang lấy thông tin bài hát ID: ${id}... ---`);
+        console.log(`--- [MUSIC DETAIL API] Đang lấy thông tin bài hát ID: ${id} ---`);
         if (!id) {
             console.error('[MUSIC DETAIL API] Lỗi: ID bài hát không hợp lệ hoặc bị rỗng.');
             return null;

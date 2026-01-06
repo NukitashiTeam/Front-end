@@ -15,9 +15,11 @@ import { Slider } from "@miblanchard/react-native-slider";
 import styles from "../styles/NowPlayingScreenStyles";
 import Header from "../Components/Header";
 import {usePlayer} from "./PlayerContext";
+import { useRouter } from "expo-router";
 
 export default function NowPlayingScreen({ style, onClose }: { style?: any, onClose?: () => void }) {
     const insets = useSafeAreaInsets();
+    const router = useRouter();
     const { isPlaying, setIsPlaying, progressVal: progress, setProgress, currentSong } = usePlayer();
     const [isModEnabled, setIsModEnabled] = useState(true);
     const [volume, setVolume] = useState(0.8);
@@ -85,7 +87,21 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
 
                 {/* Action row */}
                 <View style={styles.actionRow}>
-                    <TouchableOpacity style={styles.smallIconBtn} accessibilityLabel="Add">
+                    <TouchableOpacity 
+                        style={styles.smallIconBtn} 
+                        accessibilityLabel="Add"
+                        onPress={() => {
+                            if (currentSong) {
+                                const idToSend = currentSong._id || currentSong.track_id;
+                                console.log("ID bài hát gửi đi:", idToSend);
+                                if (onClose) onClose(); 
+                                router.push({
+                                    pathname: "/AddMusicToPlaylistScreen",
+                                    params: { songId: idToSend } 
+                                });
+                            }
+                        }}
+                    >
                         <Ionicons name="add" size={20} color="#EADDFF" />
                     </TouchableOpacity>
 
