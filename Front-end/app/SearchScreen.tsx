@@ -41,19 +41,16 @@ import { refreshTokenUse } from '@/fetchAPI/loginAPI';
 import { IMusicDetail } from "@/fetchAPI/getMusicById";
 import { usePlayer } from "./PlayerContext";
 
+// Key để lưu lịch sử vào bộ nhớ máy
+const RECENT_SONGS_KEY = 'RECENT_PLAYED_SONGS_HISTORY';
 const CACHE_KEY_LAST_MOOD = 'CACHE_LAST_MOOD';
+
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CONTEXT_ITEM_WIDTH = SCREEN_WIDTH * 0.3;
 const CONTEXT_ITEM_SIZE = CONTEXT_ITEM_WIDTH;
 const SPACER = (SCREEN_WIDTH - CONTEXT_ITEM_SIZE) / 2;
 
-type Song = {
-    id: string;
-    cover: any;
-    title: string;
-    artist: string;
-};
-
+// Xóa type Song cũ, dùng chung SongPreview cho thống nhất
 type ContextItem = {
     id: string;
     title: string;
@@ -62,10 +59,9 @@ type ContextItem = {
     uniqueKey?: string;
 };
 
-type ListItem = Song | SongPreview;
-
 export default function SearchScreen() {
     const router = useRouter();
+    // Giữ nguyên state nút switch nhưng không xử lý logic phức tạp nữa
     const [isModEnabled, setIsModEnabled] = useState(false);
     const insets = useSafeAreaInsets();
     const { playTrack, miniPlayerRef } = usePlayer();
@@ -85,14 +81,8 @@ export default function SearchScreen() {
     const [contexts, setContexts] = useState<IContextData[]>([]);
     const [loadingData, setLoadingData] = useState<boolean>(true);
 
-    const data: Song[] = [
-        { id: `song-1`, cover: require("../assets/images/weebooSong.jpg"), title: "Name of the song", artist: "Artist Name" },
-        { id: `song-2`, cover: require("../assets/images/lonelySong.jpg"), title: "Name of the song", artist: "Artist Name" },
-        { id: `song-3`, cover: require("../assets/images/allegoryOfTheCaveSong.jpg"), title: "Name of the song", artist: "Artist Name" },
-        { id: `song-4`, cover: require("../assets/images/song4.jpg"), title: "Name of the song", artist: "Artist Name" },
-        { id: `song-5`, cover: require("../assets/images/song5.jpg"), title: "Name of the song", artist: "Artist Name" },
-        { id: `song-6`, cover: require("../assets/images/song6.jpg"), title: "Name of the song", artist: "Artist Name" },
-    ];
+    // --- THAY ĐỔI: State cho danh sách bài hát gần đây ---
+    const [recentSongs, setRecentSongs] = useState<SongPreview[]>([]);
 
     const infiniteContextData = useMemo(() => {
         if (contexts.length === 0) return [];
@@ -115,10 +105,54 @@ export default function SearchScreen() {
         scrollX.value = event.contentOffset.x;
     });
     
+    // --- THAY ĐỔI: Hàm load lịch sử từ AsyncStorage ---
+    const loadRecentSongs = async () => {
+        try {
+            const savedSongs = await AsyncStorage.getItem(RECENT_SONGS_KEY);
+            if (savedSongs) {
+                setRecentSongs(JSON.parse(savedSongs));
+            }
+        } catch (error) {
+            console.error("Failed to load recent songs", error);
+        }
+    };
+
+    // --- THAY ĐỔI: Hàm thêm bài hát vào lịch sử ---
+    const addToHistory = async (song: SongPreview) => {
+        try {
+            // 1. Lấy danh sách hiện tại
+            let currentList = [...recentSongs];
+            
+            // 2. Kiểm tra nếu bài hát đã tồn tại thì xóa đi (để đưa lên đầu)
+            // Dùng track_id hoặc _id để so sánh
+            currentList = currentList.filter(item => 
+                (item.track_id && item.track_id !== song.track_id) || 
+                (item._id && item._id !== song._id)
+            );
+
+            // 3. Thêm bài mới vào đầu danh sách
+            currentList.unshift(song);
+
+            // 4. Cắt danh sách chỉ lấy 10 bài
+            if (currentList.length > 10) {
+                currentList = currentList.slice(0, 10);
+            }
+
+            // 5. Cập nhật state và lưu vào AsyncStorage
+            setRecentSongs(currentList);
+            await AsyncStorage.setItem(RECENT_SONGS_KEY, JSON.stringify(currentList));
+        } catch (error) {
+            console.error("Failed to save history", error);
+        }
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoadingData(true);
+                // Load danh sách nhạc gần đây
+                await loadRecentSongs();
+
                 let token = await SecureStore.getItemAsync("accessToken");
                 const fetchAll = async (currentToken: string) => {
                     const [moodsData, contextsData] = await Promise.all([
@@ -182,25 +216,14 @@ export default function SearchScreen() {
         setIsSearching(false);
     };
 
-    const renderSong = ({ item }: { item: Song }) => (
-        <TouchableOpacity 
-            style={styles.songRow}
-            onPress={() => {
-                console.log("Play dummy song:", item.title);
-            }}
-        >
-            <Image source={item.cover} style={styles.songCover} />
-            <View style={styles.songMeta}>
-                <Text style={styles.songTitle} numberOfLines={1}>{item.title}</Text>
-                <Text style={styles.songArtist} numberOfLines={1}>{item.artist}</Text>
-            </View>
-        </TouchableOpacity>
-    );
-
-    const renderSearchResult = ({ item }: { item: SongPreview }) => (
+    // Một hàm render chung cho cả bài hát tìm kiếm và bài hát gần đây
+    const renderSongItem = ({ item }: { item: SongPreview }) => (
         <TouchableOpacity 
             style={styles.songRow}
             onPress={async () => {
+                // Lưu vào lịch sử
+                addToHistory(item);
+
                 const songData: IMusicDetail = {
                     _id: item._id,
                     track_id: item.track_id,
@@ -233,7 +256,6 @@ export default function SearchScreen() {
             onPress={async () => {
                 try {
                     await AsyncStorage.setItem(CACHE_KEY_LAST_MOOD, JSON.stringify(item));
-                    console.log("Saved last mood from Search:", item.name);
                 } catch (error) {
                     console.error("Failed to save last mood:", error);
                 }
@@ -306,9 +328,9 @@ export default function SearchScreen() {
                 style={StyleSheet.absoluteFill}
             />
             
-            <FlatList<ListItem>
-                data={isSearchMode ? searchResult : data}
-                keyExtractor={(item) => ("track_id" in item ? item.track_id : item.id)}
+            <FlatList<SongPreview>
+                data={isSearchMode ? searchResult : recentSongs}
+                keyExtractor={(item) => item.track_id || item._id}
                 ListHeaderComponent={
                     <View style={styles.headerBlock}>
                         {!isSearchMode && (
@@ -414,11 +436,8 @@ export default function SearchScreen() {
                         </>)}
                     </View>
                 }
-
-                renderItem={({ item }) => {
-                    if ("track_id" in item) return renderSearchResult({ item: item as SongPreview });
-                    return renderSong({ item: item as Song });
-                }}
+                
+                renderItem={renderSongItem}
                 contentContainerStyle={{ paddingBottom: 96 }}
                 showsVerticalScrollIndicator={false}
                 ListEmptyComponent={
@@ -427,7 +446,11 @@ export default function SearchScreen() {
                             <Ionicons name="musical-notes-outline" size={60} color="#DDD" />
                             <Text style={{ color: "#FFF", marginTop: 10 }}>Không tìm thấy kết quả</Text>
                         </View>
-                    ) : null
+                    ) : (!isSearchMode && recentSongs.length === 0 ? (
+                         <View style={{ alignItems: "center", marginTop: 20 }}>
+                            <Text style={{ color: "#EEE", fontStyle: 'italic' }}>Bạn chưa nghe bài nào gần đây</Text>
+                        </View>
+                    ) : null)
                 }
             />
         </View>

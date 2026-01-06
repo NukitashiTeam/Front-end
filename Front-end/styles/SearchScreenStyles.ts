@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
         marginBottom:20
     },
     ownerName: {
-        color: "#000000",
+        color: "#ffffffff",
         fontSize: 16,
         fontWeight: "700",
     },
