@@ -4,7 +4,6 @@ import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from 'expo-av';
 import getMusicById, { IMusicDetail } from '../fetchAPI/getMusicById';
 import { MiniPlayerRef } from '../Components/MiniPlayer';
 
-// Định nghĩa kiểu dữ liệu cho callback tiến độ
 type ProgressCallback = (position: number, duration: number) => void;
 
 interface PlayerContextType {
@@ -16,9 +15,7 @@ interface PlayerContextType {
     seekTo: (value: number) => Promise<void>;
     miniPlayerRef: React.RefObject<MiniPlayerRef | null>;
     setSoundVolume: (value: number) => Promise<void>;
-    // Hàm mới: Đăng ký nhận cập nhật tiến độ
     subscribeToProgress: (callback: ProgressCallback) => () => void;
-    // Hàm mới: Lấy thời gian hiện tại (nếu cần)
     getCurrentProgress: () => { position: number, duration: number };
 }
 
@@ -33,9 +30,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     const soundRef = useRef<Audio.Sound | null>(null);
     const playRequestRef = useRef<number>(0);
 
-    // Dùng Ref để lưu trữ tiến độ mà KHÔNG gây re-render Context
     const progressRef = useRef({ position: 0, duration: 0 });
-    // Danh sách các component đang lắng nghe (subscribers)
     const subscribersRef = useRef<ProgressCallback[]>([]);
 
     useEffect(() => {
@@ -50,10 +45,8 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         });
     }, []);
 
-    // Hàm để component con đăng ký lắng nghe
     const subscribeToProgress = useCallback((callback: ProgressCallback) => {
         subscribersRef.current.push(callback);
-        // Trả về hàm cleanup để hủy đăng ký khi component unmount
         return () => {
             subscribersRef.current = subscribersRef.current.filter(cb => cb !== callback);
         };
@@ -63,16 +56,13 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         return progressRef.current;
     }, []);
 
-    // Callback cập nhật từ Expo AV
     const onPlaybackStatusUpdate = useCallback((status: any) => {
         if (status.isLoaded) {
-            // Cập nhật vào Ref (không gây render lại Context)
             progressRef.current = {
                 position: status.positionMillis || 0,
                 duration: status.durationMillis || 0
             };
 
-            // Thông báo cho các subscribers (MiniPlayer, NowPlayingScreen)
             subscribersRef.current.forEach(callback => {
                 callback(progressRef.current.position, progressRef.current.duration);
             });
@@ -87,11 +77,18 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     const playTrack = useCallback(async (input: string | IMusicDetail) => {
         const currentRequestId = ++playRequestRef.current;
         try {
+            if (typeof input !== 'string') {
+                setCurrentSong(input);
+                setIsPlaying(true);
+                setIsFinished(false);
+            }
+
             let songDetails: IMusicDetail | null = null;
             if (typeof input === 'string') {
                 const token = await SecureStore.getItemAsync('accessToken');
                 if (!token) return;
                 songDetails = await getMusicById(input, token);
+                if (songDetails) setCurrentSong(songDetails);
             } else {
                 songDetails = input;
             }
@@ -101,22 +98,17 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
             if (songDetails && songDetails.mp3_url) {
                 if (soundRef.current) {
                     try {
-                        await soundRef.current.unloadAsync();
+                        await soundRef.current.unloadAsync(); 
                     } catch (e) { console.log(e); }
                 }
 
                 if (playRequestRef.current !== currentRequestId) return;
 
-                setCurrentSong(songDetails);
-                setIsFinished(false); 
-                
-                // Reset progress về 0
                 progressRef.current = { position: 0, duration: 0 };
                 subscribersRef.current.forEach(cb => cb(0, 0));
-
                 const { sound: newSound } = await Audio.Sound.createAsync(
                     { uri: songDetails.mp3_url },
-                    { shouldPlay: false, progressUpdateIntervalMillis: 500 }, // Cập nhật 500ms/lần
+                    { shouldPlay: false, progressUpdateIntervalMillis: 500 },
                     onPlaybackStatusUpdate
                 );
 
@@ -131,6 +123,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
             }
         } catch (error) {
             console.error('Error playing track:', error);
+            setIsPlaying(false);
         }
     }, [onPlaybackStatusUpdate]);
 
@@ -154,8 +147,6 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         if (soundRef.current && currentDuration) {
             const seekPosition = value * currentDuration;
             await soundRef.current.setPositionAsync(seekPosition);
-            
-            // Cập nhật UI ngay lập tức cho mượt
             progressRef.current.position = seekPosition;
             subscribersRef.current.forEach(cb => cb(seekPosition, currentDuration));
 
@@ -188,8 +179,8 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         seekTo,
         miniPlayerRef,
         setSoundVolume,
-        subscribeToProgress, // Export hàm này
-        getCurrentProgress   // Export hàm này
+        subscribeToProgress,
+        getCurrentProgress  
     }), [isPlaying, currentSong, playTrack, togglePlayPause, seekTo, setSoundVolume, subscribeToProgress, getCurrentProgress]);
 
     return (

@@ -58,12 +58,15 @@ export default function PlaylistSong() {
     }, [playlistId]);
 
     const handlePlaySong = async (item: ISong) => {
-        await addToHistory(item);
-        await playTrack(item.songId);
-        console.log(`Playing Song ID: ${item.songId}`);
         if (miniPlayerRef.current) {
             miniPlayerRef.current.expand();
         }
+
+        Promise.all([
+            addToHistory(item),
+            playTrack(item.songId)
+        ]).catch(err => console.error("Play error:", err));
+        console.log(`Requested Play Song ID: ${item.songId}`);
     };
 
     const handleRemoveSong = (songId: string) => {

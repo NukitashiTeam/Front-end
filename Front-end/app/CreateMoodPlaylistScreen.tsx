@@ -110,12 +110,13 @@ export default function CreateMoodPlaylistScreen() {
 
     if (!fontsMontserratLoaded) return null;
 
-    const handlePlaySong = async (item: ISongPreview) => {
-        await addToHistory(item);
-        await playTrack(item.songId);
+    const handlePlaySong = (item: ISongPreview) => {
         if (miniPlayerRef.current) {
             miniPlayerRef.current.expand();
         }
+        
+        addToHistory(item);
+        playTrack(item.songId);
     };
 
     const renderSong = ({ item }: { item: ISongPreview }) => (

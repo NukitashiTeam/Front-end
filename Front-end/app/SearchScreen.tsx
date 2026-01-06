@@ -216,14 +216,10 @@ export default function SearchScreen() {
         setIsSearching(false);
     };
 
-    // Một hàm render chung cho cả bài hát tìm kiếm và bài hát gần đây
     const renderSongItem = ({ item }: { item: SongPreview }) => (
         <TouchableOpacity 
             style={styles.songRow}
-            onPress={async () => {
-                // Lưu vào lịch sử
-                addToHistory(item);
-
+            onPress={() => {
                 const songData: IMusicDetail = {
                     _id: item._id,
                     track_id: item.track_id,
@@ -236,10 +232,11 @@ export default function SearchScreen() {
                     release_date: item.release_date,
                     mood: item.moods && item.moods.length > 0 ? item.moods[0].name : ""
                 };
-                await playTrack(songData);
                 if (miniPlayerRef.current) {
                     miniPlayerRef.current.expand();
                 }
+                addToHistory(item); 
+                playTrack(songData); 
             }}
         >
             <Image source={{ uri: item.image_url }} style={styles.songCover} resizeMode="cover"/>
