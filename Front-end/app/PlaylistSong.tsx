@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import styles from "../styles/style";
 import Header from "../Components/Header";
@@ -22,8 +21,6 @@ import deletePlaylist from "../fetchAPI/deletePlaylist";
 import removeSongFromPlaylist from "../fetchAPI/removeSongFromPlaylist";
 import * as SecureStore from 'expo-secure-store';
 import { usePlayer } from "./PlayerContext";
-
-const CACHE_KEY_TOKEN = 'CACHE_USER_TOKEN';
 
 export default function PlaylistSong() {
     const [isModEnabled, setIsModEnabled] = useState(false);
@@ -78,15 +75,18 @@ export default function PlaylistSong() {
                     style: "destructive", 
                     onPress: async () => {
                         setIsLoading(true);
-                        const token = await AsyncStorage.getItem(CACHE_KEY_TOKEN);
+                        const token = await SecureStore.getItemAsync("accessToken");
                         if (token && playlistId) {
                             const updatedPlaylist = await removeSongFromPlaylist(token, playlistId, songId);
                             
                             if (updatedPlaylist) {
                                 setPlaylistData(updatedPlaylist); 
+                                Alert.alert("Thành công", "Đã xóa bài hát khỏi playlist.");
                             } else {
-                                Alert.alert("Lỗi", "Không thể xóa bài hát. Vui lòng thử lại.");
+                                Alert.alert("Lỗi", "Không thể xóa bài hát. Có thể bạn không phải chủ sở hữu.");
                             }
+                        } else {
+                            Alert.alert("Lỗi", "Phiên đăng nhập không hợp lệ.");
                         }
                         setIsLoading(false);
                     }
@@ -131,8 +131,7 @@ export default function PlaylistSong() {
                     style: "destructive", 
                     onPress: async () => {
                         setIsLoading(true);
-                        const token = await AsyncStorage.getItem(CACHE_KEY_TOKEN);
-                        
+                        const token = await SecureStore.getItemAsync("accessToken");
                         if (token && playlistId) {
                             const success = await deletePlaylist(token, playlistId);
                             if (success) {
