@@ -36,7 +36,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import searchSongsByKeyword, { SongPreview } from "@/fetchAPI/SearchMusic";
 import getAllMoods, { IMood } from "@/fetchAPI/getAllMoods";
-import getUserContexts, { IContext } from "@/fetchAPI/getUserContexts"; 
+import getContextUser, { IContextData } from "@/fetchAPI/getContextUserHome"; 
 import { refreshTokenUse } from '@/fetchAPI/loginAPI';
 import { IMusicDetail } from "@/fetchAPI/getMusicById";
 import { usePlayer } from "./PlayerContext";
@@ -81,7 +81,8 @@ export default function SearchScreen() {
     const [searchedKeyword, setSearchedKeyword] = useState<string>("");
     const [isSearchMode, setIsSearchMode] = useState(false);
     const [moods, setMoods] = useState<IMood[]>([]);
-    const [contexts, setContexts] = useState<IContext[]>([]);
+    
+    const [contexts, setContexts] = useState<IContextData[]>([]);
     const [loadingData, setLoadingData] = useState<boolean>(true);
 
     const data: Song[] = [
@@ -122,7 +123,7 @@ export default function SearchScreen() {
                 const fetchAll = async (currentToken: string) => {
                     const [moodsData, contextsData] = await Promise.all([
                         getAllMoods(currentToken),
-                        getUserContexts(currentToken)
+                        getContextUser(currentToken)
                     ]);
                     return { moodsData, contextsData };
                 };
