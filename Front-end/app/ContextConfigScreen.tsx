@@ -225,7 +225,6 @@ export default function ContextConfigScreen() {
                 } else {
                     Alert.alert("Thất bại", "Không thể cập nhật Context. Vui lòng thử lại.");
                 }
-
             } else {
                 const newContext = await createContext(token, inputData);
                 if (newContext) {
@@ -334,7 +333,7 @@ export default function ContextConfigScreen() {
                                             { opacity: pressed ? 0.7 : 1 }
                                         ]}
                                     >
-                                        <Text style={styles.pillBtnText}>Edit / Add more</Text>
+                                        <Text style={styles.pillBtnText}>Edit Context</Text>
                                     </Pressable>
                                     
                                     <Pressable
@@ -431,6 +430,7 @@ export default function ContextConfigScreen() {
                 </LinearGradient>
 
                 <Text style={[styles.sectionLabel, { marginTop: 16 }]}>Choose Context's Mood</Text>
+                <Text style={[{ fontStyle: "italic", textAlign: "right", color: "white"}]}>*Need at least 3 moods</Text>
                 <LinearGradient
                     colors={["#4C38CA", "#392997", "#261B64"]}
                     start={{ x: 0, y: 0 }}
