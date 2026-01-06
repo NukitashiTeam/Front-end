@@ -67,7 +67,7 @@ export default function ContextConfigScreen() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [contextName, setContextName] = useState<string>("");
-    const [selectedIcon, setSelectedIcon] = useState<string>("book-outline");
+    const [selectedIcon, setSelectedIcon] = useState<string>("📚"); 
     const [selectedColor, setSelectedColor] = useState<string>("#9fb1ff");
     const [selectedMoodIds, setSelectedMoodIds] = useState<string[]>([]);
 
@@ -133,7 +133,7 @@ export default function ContextConfigScreen() {
         setMode(targetMode);
         if (targetMode === "create" && isEdit !== "true") {
             setContextName("");
-            setSelectedIcon("book-outline");
+            setSelectedIcon("📚");
             setSelectedColor("#9fb1ff");
             setSelectedMoodIds([]);
         } else if (contextId) {
@@ -369,20 +369,17 @@ export default function ContextConfigScreen() {
                         </View>
                     </View>
 
-                    <Text style={[styles.sectionLabel, { marginTop: 12 }]}>Choose Context Icon</Text>
-                    <RNScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.iconPickerRow}>
-                        {ICON_OPTIONS.map((icon) => {
-                            const active = selectedIcon === icon.name;
-                            return (
-                                <Pressable key={icon.id} style={[styles.iconOption, active && styles.iconOptionActive]} onPress={() => setSelectedIcon(icon.name)}>
-                                    <View style={styles.iconOptionIconWrap}>
-                                        <Ionicons name={icon.name} size={24} color="#FFFFFF" />
-                                    </View>
-                                    <Text style={styles.iconOptionLabel}>{icon.label}</Text>
-                                </Pressable>
-                            );
-                        })}
-                    </RNScrollView>
+                    <Text style={[styles.sectionLabel, { marginTop: 12 }]}>Type Context Icon (Emoji)</Text>
+                    <View style={{ marginTop: 8 }}>
+                        <TextInput 
+                            value={selectedIcon}
+                            onChangeText={(text) => setSelectedIcon(text)}
+                            placeholder="Type an emoji..."
+                            placeholderTextColor="rgba(255,255,255,0.5)"
+                            style={[styles.input, { textAlign: 'center', fontSize: 24 }]}
+                            maxLength={2}
+                        />
+                    </View>
 
                     <Text style={[styles.sectionLabel, { marginTop: 12 }]}>Choose Background Color</Text>
                     <View style={styles.colorPickerRow}>
