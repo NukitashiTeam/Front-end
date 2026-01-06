@@ -22,7 +22,6 @@ import {
     Montserrat_400Regular,
     Montserrat_700Bold
 } from "@expo-google-fonts/montserrat";
-
 import styles from "../styles/CreateMoodPlaylistScreenStyles";
 import Header from "../Components/Header";
 import getRandomSongsByMood, { ISongPreview } from "../fetchAPI/getRandomSongsByMood";
@@ -44,21 +43,22 @@ export default function CreateMoodPlaylistScreen() {
     const displayMoodName = moodNameParam || "happy";
     const rotateAnim = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    Animated.loop(
-      Animated.timing(rotateAnim, {
-        toValue: 1,
-        duration: 1000, // 2 giây quay 1 vòng, giống Spotify
-        easing: Easing.linear,
-        useNativeDriver: true,
-      })
-    ).start();
-  }, [rotateAnim]);
+    useEffect(() => {
+        Animated.loop(
+        Animated.timing(rotateAnim, {
+            toValue: 1,
+            duration: 1000,
+            easing: Easing.linear,
+            useNativeDriver: true,
+        })
+        ).start();
+    }, [rotateAnim]);
 
-  const rotate = rotateAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
-  });
+    const rotate = rotateAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '360deg'],
+    });
+
     let [fontsMontserratLoaded] = useMontserrat({
         Montserrat_400Regular,
         Montserrat_700Bold,
@@ -94,14 +94,9 @@ export default function CreateMoodPlaylistScreen() {
     if (!fontsMontserratLoaded) return null;
 
     const handlePlaySong = async (songId: string) => {
-        // 1. Fetch và set bài hát vào context
         await playTrack(songId);
-
-        // 2. Thay vì chuyển trang, ta mở rộng MiniPlayer
-        // router.push('/NowPlayingScreen'); // <-- XÓA DÒNG NÀY
-        
         if (miniPlayerRef.current) {
-            miniPlayerRef.current.expand(); // <-- THÊM DÒNG NÀY
+            miniPlayerRef.current.expand();
         }
     };
 
@@ -199,21 +194,19 @@ export default function CreateMoodPlaylistScreen() {
                         <Text style={{fontSize:24, fontWeight:600}}>Playlist in progress</Text>
                         <Text style={{fontSize:24, fontWeight:600}}>please wait</Text>
                     </View>
-                    {/* <ActivityIndicator size="large" color="#fff" /> */}
-                    {/* <Text style={{ color: 'white', marginTop: 10 }}>Generating "{displayMoodName}" playlist...</Text> */}
+                    
                     <Animated.View style={{ transform: [{ rotate }] }}>
-        <View style={styles.spinner}>
-          {/* 8 đoạn nhỏ tạo hiệu ứng fade dần (chỉ hiện ~3/4 vòng) */}
-          <View style={[styles.segment, { opacity: 1 }]} />
-          <View style={[styles.segment, { opacity: 0.9, transform: [{ rotate: '45deg' }] }]} />
-          <View style={[styles.segment, { opacity: 0.8, transform: [{ rotate: '90deg' }] }]} />
-          <View style={[styles.segment, { opacity: 0.7, transform: [{ rotate: '135deg' }] }]} />
-          <View style={[styles.segment, { opacity: 0.5, transform: [{ rotate: '180deg' }] }]} />
-          <View style={[styles.segment, { opacity: 0.3, transform: [{ rotate: '225deg' }] }]} />
-          <View style={[styles.segment, { opacity: 0.2, transform: [{ rotate: '270deg' }] }]} />
-          <View style={[styles.segment, { opacity: 0.1, transform: [{ rotate: '315deg' }] }]} />
-        </View>
-      </Animated.View>
+                        <View style={styles.spinner}>
+                            <View style={[styles.segment, { opacity: 1 }]} />
+                            <View style={[styles.segment, { opacity: 0.9, transform: [{ rotate: '45deg' }] }]} />
+                            <View style={[styles.segment, { opacity: 0.8, transform: [{ rotate: '90deg' }] }]} />
+                            <View style={[styles.segment, { opacity: 0.7, transform: [{ rotate: '135deg' }] }]} />
+                            <View style={[styles.segment, { opacity: 0.5, transform: [{ rotate: '180deg' }] }]} />
+                            <View style={[styles.segment, { opacity: 0.3, transform: [{ rotate: '225deg' }] }]} />
+                            <View style={[styles.segment, { opacity: 0.2, transform: [{ rotate: '270deg' }] }]} />
+                            <View style={[styles.segment, { opacity: 0.1, transform: [{ rotate: '315deg' }] }]} />
+                        </View>
+                    </Animated.View>
                 </View>
             ) : (
                 <FlatList
