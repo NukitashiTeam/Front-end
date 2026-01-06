@@ -23,12 +23,10 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
     const { 
         isPlaying, 
         togglePlayPause,
-        progressVal, 
         seekTo,
         currentSong,
-        duration,
-        position,
-        setSoundVolume
+        setSoundVolume,
+        subscribeToProgress
     } = usePlayer();
     const formatTime = (millis: number) => {
         if (!millis) return "0:00";
@@ -43,6 +41,10 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
     const lastVolumeUpdateTimestamp = useRef<number>(0);
     const normalize = (v: number | number[]) => (Array.isArray(v) ? v[0] : v);
 
+    const [position, setPosition] = useState(0);
+    const [duration, setDuration] = useState(0);
+    const progressVal = duration > 0 ? position / duration : 0;
+
     useEffect(() => {
         RNAnimated.timing(muteAnim, {
             toValue: volume === 0 ? 1 : 0,
@@ -50,6 +52,14 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
             useNativeDriver: true,
         }).start();
     }, [volume, muteAnim]);
+
+    useEffect(() => {
+        const unsubscribe = subscribeToProgress((pos, dur) => {
+            setPosition(pos);
+            setDuration(dur);
+        });
+        return unsubscribe;
+    }, [subscribeToProgress]);
 
     if (!currentSong) {
         return (

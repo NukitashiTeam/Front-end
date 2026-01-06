@@ -1,4 +1,4 @@
-import React, { useEffect, useImperativeHandle, forwardRef, useMemo } from "react";
+import React, { useEffect, useImperativeHandle, forwardRef, useMemo, useState } from "react";
 import { View, TouchableOpacity, Text, Dimensions, StyleSheet, BackHandler, useWindowDimensions, Platform, StatusBar} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -55,15 +55,15 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
     const { 
         isPlaying, 
         togglePlayPause, 
-        progressVal, 
         currentSong, 
         seekTo,
-        duration,
-        position,
+        subscribeToProgress
     } = usePlayer();
     const insets = useSafeAreaInsets();
     const safeBottom = bottomInset ?? insets.bottom;
-    
+    const [position, setPosition] = useState(0);
+    const [duration, setDuration] = useState(0);
+    const progressVal = duration > 0 ? position / duration : 0;
     const expandProgress = useSharedValue(0); 
     const context = useSharedValue(0);
 
@@ -116,6 +116,14 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
         const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
         return () => backHandler.remove();
     }, []);
+
+    useEffect(() => {
+        const unsubscribe = subscribeToProgress((pos, dur) => {
+            setPosition(pos);
+            setDuration(dur);
+        });
+        return unsubscribe;
+    }, [subscribeToProgress]);
     
     const panUp = Gesture.Pan().onStart(() => {
         context.value = expandProgress.value;
