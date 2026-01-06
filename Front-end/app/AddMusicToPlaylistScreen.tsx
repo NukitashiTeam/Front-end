@@ -200,7 +200,7 @@ export default function AddMusicToPlaylistScreen() {
 					<LinearGradient
 						colors={["transparent", "#3b2a89"]}
 						style={{
-						position: "absolute", bottom: 0, left: 0, right: 0, height: 100, pointerEvents: 'none'
+							position: "absolute", bottom: 0, left: 0, right: 0, height: 100, pointerEvents: 'none'
 						}}
 					/>
 				</View>
@@ -215,7 +215,12 @@ export default function AddMusicToPlaylistScreen() {
 						shadowColor: "#000", shadowOffset: { width: 0, height: 4 },
 						shadowOpacity: 0.3, shadowRadius: 4, elevation: 5,
 					}}
-					onPress={() => router.navigate("/CreatePlaylist")}
+					onPress={() => {
+						router.push({
+							pathname: "/CreatePlaylist",
+							params: { initialSongId: songId }
+						});
+					}}
 				>
 					<Image
 						source={require("../assets/images/pepicons-pop_plus-circle-filled.png")}
