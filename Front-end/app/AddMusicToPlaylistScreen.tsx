@@ -8,6 +8,7 @@ import {
 	Platform,
 	TouchableOpacity,
 	ActivityIndicator,
+	Alert,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -20,6 +21,7 @@ import Background from "../Components/MainBackground";
 import getAllPlaylist, { IPlaylist } from "../fetchAPI/getAllPlaylist";
 import { refreshTokenUse } from "../fetchAPI/loginAPI";
 import getMusicById, { IMusicDetail } from "../fetchAPI/getMusicById";
+import addSongToPlaylist from "../fetchAPI/addSongToPlaylist";
 
 export default function AddMusicToPlaylistScreen() {
 	const [isModEnabled, setIsModEnabled] = useState(false);
@@ -88,6 +90,39 @@ export default function AddMusicToPlaylistScreen() {
 		}, [loadData])
 	);
 
+	const handleAddToPlaylist = async (playlist: IPlaylist) => {
+		if (!songId) {
+			Alert.alert("Lỗi", "Không tìm thấy thông tin bài hát để thêm.");
+			return;
+		}
+
+		try {
+			const token = await SecureStore.getItemAsync("accessToken");
+			if (!token) {
+				Alert.alert("Lỗi", "Bạn cần đăng nhập lại.");
+				return;
+			}
+
+			const result = await addSongToPlaylist(token, playlist._id, songId as string);
+			if (result) {
+				Alert.alert(
+					"Thành công",
+					`Đã thêm bài hát vào playlist "${playlist.title}"`, [{
+						text: "OK", 
+						onPress: () => {
+							router.back(); 
+						}
+					}]
+				);
+			} else {
+				Alert.alert("Thất bại", "Không thể thêm bài hát vào playlist này. Có thể bài hát đã tồn tại.");
+			}
+		} catch (error) {
+			console.error("Lỗi khi thêm bài hát:", error);
+			Alert.alert("Lỗi", "Đã xảy ra lỗi hệ thống.");
+		}
+	};
+
 	const renderItem = ({ item }: { item: IPlaylist }) => {
 		let imageSource = require("../assets/images/song4.jpg");
 		if (item.songs && item.songs.length > 0 && item.songs[0].image_url) {
@@ -97,9 +132,7 @@ export default function AddMusicToPlaylistScreen() {
 		return (
 			<TouchableOpacity
 				style={styles.playlistItem}
-				onPress={() => {
-					console.log(`Add song ${songId} to playlist ${item._id}`);
-				}}
+				onPress={() => handleAddToPlaylist(item)}
 			>
 				<Image source={imageSource} style={styles.playlistImage} />
 				<Text style={styles.playlistTitle} numberOfLines={1}>{item.title}</Text>
