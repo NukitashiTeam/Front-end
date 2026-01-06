@@ -66,14 +66,15 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "86833122-3b27-43f9-b020-1ba3208b1072"
+        "projectId": "25ee5744-c6ab-448b-8aac-08d19c5c7b32"
       }
     },
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/86833122-3b27-43f9-b020-1ba3208b1072"
-    }
+      "url": "https://u.expo.dev/25ee5744-c6ab-448b-8aac-08d19c5c7b32"
+    },
+    "owner": "khanhpear"
   }
 }

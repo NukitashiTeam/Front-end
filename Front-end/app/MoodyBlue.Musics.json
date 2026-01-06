@@ -1,0 +1,3536 @@
+[{
+  "_id": {
+    "$oid": "693af7cf7cd2a44ad906802a"
+  },
+  "track_id": "1791845748",
+  "title": "Original Me",
+  "artist": "Sān-Z & HOYO-MiX",
+  "album": "Stars of Lyra+",
+  "genre": "Indie Pop",
+  "duration": 223,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/be/47/a1/be47a1d2-a56b-ab45-5d9c-c5d0ccccca4f/mzaf_143415377201131102.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/1c/fa/c8/1cfac88c-a004-3cdd-e12a-c53998efa8e1/cover.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-01-23T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T16:56:47.030Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T16:56:47.030Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693af8367cd2a44ad906802e"
+  },
+  "track_id": "1089186523",
+  "title": "Blue Bird",
+  "artist": "Ikimonogakari",
+  "album": "Chou Ikimonobakari Tennen Kinen Members Best Selection",
+  "genre": "J-Pop",
+  "duration": 215,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/63/4b/b2/634bb252-1e58-37f8-449e-2f2f4340c021/mzaf_9221704373718497901.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/48/f2/f7/48f2f77a-1229-2f65-87da-5efa9dab85b1/886445760033.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2008-07-09T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T16:58:30.187Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T16:58:30.187Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693af8b67cd2a44ad9068033"
+  },
+  "track_id": "977085945",
+  "title": "Again (ep.1-13 OP)",
+  "artist": "Ogawa Mika",
+  "album": "Netsuretsu! Anison Spirits the Best - Cover Music Selection - TV Anime Series \"Fullmetal Alchemist Brotherhood\", Vol. 1",
+  "genre": "J-Pop",
+  "duration": 252,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/40/c2/fa/40c2fade-cca1-cfed-dbb0-0887a524b5a0/mzaf_12726539677371819888.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music3/v4/44/50/e3/4450e35a-4384-a240-116e-44de4e6e0aab/dj.xhmplrkq.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2009-12-16T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:00:38.784Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:00:38.784Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693af9177cd2a44ad9068037"
+  },
+  "track_id": "1585632436",
+  "title": "Inazuma",
+  "artist": "Yu-Peng Chen & HOYO-MiX",
+  "album": "Genshin Impact - Realm of Tranquil Eternity (Original Game Soundtrack)",
+  "genre": "Soundtrack",
+  "duration": 329,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/02/24/c7/0224c715-173c-4e33-a4f4-3790398f52e0/mzaf_8275706264407333514.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/31/e5/ca/31e5caaf-3dfe-0123-3e0a-6d0859fa2142/cover.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2021-09-22T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b79"
+      },
+      "name": "cinematic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6c"
+      },
+      "name": "passionate",
+      "confidence": 0.25
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:02:15.670Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:02:15.670Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afac0b6e90be760ab8aea"
+  },
+  "track_id": "1536381419",
+  "title": "Rain",
+  "artist": "Sid",
+  "album": "Rain - Single",
+  "genre": "J-Pop",
+  "duration": 256,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/34/89/88/34898819-87dc-96f8-f150-171536fe9795/mzaf_6330886071901157978.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/66/59/3a/66593ad9-1f8a-035c-f8c5-86769e93782e/jacket_KSCL01597B00Z_550.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2010-06-02T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:09:20.841Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:09:20.841Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afb07b6e90be760ab8aee"
+  },
+  "track_id": "1837658529",
+  "title": "IRIS OUT",
+  "artist": "Kenshi Yonezu",
+  "album": "IRIS OUT - Single",
+  "genre": "J-Pop",
+  "duration": 151,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/63/d4/d3/63d4d309-d2af-e1cf-f5c8-52566e36bfc1/mzaf_17216505190548647784.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/e0/f9/f1/e0f9f1f3-a088-b28d-6760-a28accabc705/4547366775181.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-09-15T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:10:31.806Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:10:31.806Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afb15b6e90be760ab8af1"
+  },
+  "track_id": "1537460612",
+  "title": "Lemon",
+  "artist": "Kenshi Yonezu",
+  "album": "Lemon - Single",
+  "genre": "J-Pop",
+  "duration": 256,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview112/v4/ae/4f/2c/ae4f2cec-ff1a-5aaa-b7c3-e3d6395bc599/mzaf_5136527227979827468.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/86/b0/9d/86b09d63-367a-563a-1e24-d5d62c220ac8/jacket_SRCL09749B00Z_550.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2018-02-12T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:10:45.221Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:10:45.221Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afb2fb6e90be760ab8af5"
+  },
+  "track_id": "1538158367",
+  "title": "KNOW KNOW KNOW",
+  "artist": "DOES",
+  "album": "INNOCENCE",
+  "genre": "Rock",
+  "duration": 201,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/76/c3/e3/76c3e3fa-5c98-585f-e9ef-3378dab4968d/mzaf_751031206313911787.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/31/17/13/311713e1-bc2c-c5eb-f7ba-dca9d3f90561/jacket_KSCL02715B00Z_550.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2016-04-27T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b71"
+      },
+      "name": "powerful",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b72"
+      },
+      "name": "rebellious",
+      "confidence": 0.25
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:11:11.705Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:11:11.705Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afb4bb6e90be760ab8af9"
+  },
+  "track_id": "1771603031",
+  "title": "Otonoke",
+  "artist": "Creepy Nuts",
+  "album": "Otonoke - Single",
+  "genre": "Hip-Hop/Rap",
+  "duration": 185,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/8e/34/70/8e3470cd-bf6a-e7b1-8450-1393926cb425/mzaf_18201838929653010561.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/2c/66/b5/2c66b5b5-a46f-1064-4802-fe82c0e56200/4547366705638.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2024-10-04T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6d"
+      },
+      "name": "confident",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:11:39.541Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:11:39.541Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afb54b6e90be760ab8afc"
+  },
+  "track_id": "1845989056",
+  "title": "Nod-Krai",
+  "artist": "HOYO-MiX & AURORA",
+  "album": "Genshin Impact - Outside It Is Growing Dark (Original Game Soundtrack)",
+  "genre": "Soundtrack",
+  "duration": 260,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/be/fd/52/befd5201-79da-ed38-cc5c-676512a6991f/mzaf_580973041226973053.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/ae/f7/31/aef73104-d957-34ce-9fb0-ced3eebd6abe/cover.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-10-16T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b79"
+      },
+      "name": "cinematic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6c"
+      },
+      "name": "passionate",
+      "confidence": 0.25
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:11:48.999Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:11:48.999Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afbd5b6e90be760ab8b02"
+  },
+  "track_id": "1442496373",
+  "title": "Precious Time, Glory Days (2018 Version)",
+  "artist": "Psychic Lover",
+  "album": "Psychic Lover 15th Anniversary Re-Recording Tracks - Crush & Build -",
+  "genre": "Anime",
+  "duration": 256,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/44/da/8e/44da8e87-b045-0eac-57cd-376790be6fa3/mzaf_16261510311827491740.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music118/v4/ce/9a/bc/ce9abcad-e3bb-9c6d-28de-b07c279d3aec/COCX-40598.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2018-11-21T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:13:57.067Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:13:57.067Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afbeeb6e90be760ab8b06"
+  },
+  "track_id": "1529543135",
+  "title": "Gurenge",
+  "artist": "LiSA",
+  "album": "LEO-NiNE",
+  "genre": "J-Pop",
+  "duration": 237,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/6d/55/33/6d5533a1-0947-bfd6-6317-c7fc6b084e5d/mzaf_6967022353274433301.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/51/b3/58/51b35899-bda2-50d2-2c00-b2b95999b3c3/4547366473681.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2019-04-21T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:14:22.930Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:14:22.930Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afbf8b6e90be760ab8b09"
+  },
+  "track_id": "1537909393",
+  "title": "From the Edge (feat. LiSA)",
+  "artist": "FictionJunction",
+  "album": "From the Edge (feat. LiSA) - Single",
+  "genre": "Anime",
+  "duration": 278,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/51/b9/81/51b9815a-7946-f835-eec1-6ae154e6fce5/mzaf_726106001836488991.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/fb/8c/50/fb8c5074-9f14-0149-4fe9-158269743006/jacket_VVXX00465B00Z_550.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2019-09-02T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:14:32.185Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:14:32.185Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afc3cb6e90be760ab8b0e"
+  },
+  "track_id": "1842433066",
+  "title": "Brighter",
+  "artist": "Christian Borle, Sam Haft & Andrew Underberg",
+  "album": "Hazbin Hotel: Season Two (Original Soundtrack)",
+  "genre": "Soundtrack",
+  "duration": 158,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/72/3b/36/723b360f-e09c-8b5b-bd91-27d640aa6f6a/mzaf_2979820358678338911.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e0/7d/47/e07d4785-e466-e1a6-78c4-ddb0069b6d1e/075679597373.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-11-19T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b79"
+      },
+      "name": "cinematic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6c"
+      },
+      "name": "passionate",
+      "confidence": 0.25
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:15:40.215Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:15:40.215Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afc59b6e90be760ab8b12"
+  },
+  "track_id": "1591640885",
+  "title": "Enemy (From Arcane: League of Legends)",
+  "artist": "Imagine Dragons & JID",
+  "album": "Enemy (From Arcane: League of Legends) - Single",
+  "genre": "Alternative",
+  "duration": 173,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/9e/78/fe/9e78fef5-549d-5311-ea0c-00b34ad44432/mzaf_6807470961019257969.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/76/77/08/767708a7-ec93-3b3d-3bac-40086e5a265c/21UM1IM29634.rgb.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2021-10-28T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7e"
+      },
+      "name": "edgy",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b78"
+      },
+      "name": "introspective",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6f"
+      },
+      "name": "melancholic",
+      "confidence": 0.25
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:16:09.772Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:16:09.772Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afc77b6e90be760ab8b16"
+  },
+  "track_id": "1542180247",
+  "title": "Kaikai Kitan",
+  "artist": "EVE",
+  "album": "Kaikai Kitan - Single",
+  "genre": "J-Pop",
+  "duration": 219,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/f8/f2/20/f8f22000-ee98-4724-3a86-ffb96586f123/mzaf_12558476643062899763.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/00/f7/77/00f77709-2f23-8698-f35b-a3e7685b3d17/4988061912820.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2020-10-03T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:16:39.966Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:16:39.966Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afc85b6e90be760ab8b19"
+  },
+  "track_id": "1249608136",
+  "title": "Shinzou wo Sasageyo! (From \"Attack on Titan\") [Japanese Version]",
+  "artist": "Miura Jam",
+  "album": "Shinzou wo Sasageyo! (From \"Attack on Titan\") - Single",
+  "genre": "Rock",
+  "duration": 89,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/d6/a4/11/d6a411db-7be8-5dcf-1a32-63898c89a724/mzaf_8962357708499511048.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music127/v4/82/7a/3b/827a3b18-741d-0d02-7ed9-ef359dbb8215/6bda430f-52bd-4172-ba7b-1345a59ac4be.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2017-06-04T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b71"
+      },
+      "name": "powerful",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b72"
+      },
+      "name": "rebellious",
+      "confidence": 0.25
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:16:53.937Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:16:53.937Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afc94b6e90be760ab8b1c"
+  },
+  "track_id": "1493760307",
+  "title": "Gekkouka (Blackjack)",
+  "artist": "Jyousei Nagatomo",
+  "album": "Netsuretsu! Anison Spirits the Artist Selection -Jyosei Nagatomo [infix]- Anime Music Cover Collection - EP",
+  "genre": "Anime",
+  "duration": 295,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/0f/0c/93/0f0c934b-8bfb-d205-d93f-106650f76538/mzaf_16325732088227756330.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/62/7b/39/627b3940-e1ec-76dd-ecfe-7b4951834fee/4538182859988_cov.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2009-03-07T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:17:08.348Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:17:08.348Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afca4b6e90be760ab8b1f"
+  },
+  "track_id": "1563670998",
+  "title": "GEKKOUKA Original by Janne Da Arc KARAOKE No Guide melody",
+  "artist": "Uta-Cha-Oh",
+  "album": "GEKKOUKA KARAOKE No Guide melody Original by Janne Da Arc",
+  "genre": "Karaoke",
+  "duration": 292,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/9d/aa/b5/9daab521-6779-f68c-bb1c-e1b95e25e2b5/mzaf_8511257016458910957.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/6e/fe/97/6efe9722-2f7e-ecad-c3ad-da76278e60d2/4570063046124.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2021-04-27T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:17:24.543Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:17:24.543Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afce1b6e90be760ab8b2c"
+  },
+  "track_id": "1679278167",
+  "title": "Idol",
+  "artist": "YOASOBI",
+  "album": "Idol - Single",
+  "genre": "J-Pop",
+  "duration": 213,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/2b/20/c2/2b20c2c9-fd58-39d1-942c-076a7278fcf2/mzaf_18128640199287121360.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/3a/17/eb/3a17eb30-eacb-82eb-51df-d1321dbb55bc/197188492205.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2023-04-12T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:18:25.911Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:18:25.911Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afce8b6e90be760ab8b2f"
+  },
+  "track_id": "1707001466",
+  "title": "Yuusha",
+  "artist": "YOASOBI",
+  "album": "Yuusha - Single",
+  "genre": "J-Pop",
+  "duration": 194,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview116/v4/79/80/96/7980962a-cda9-d891-bccc-1e7ed1f6bc7e/mzaf_2651914992703565566.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/d5/fb/70/d5fb7086-9fbe-feca-215e-da448bcf4596/197189862939.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2023-09-29T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:18:32.869Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:18:32.869Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afcf1b6e90be760ab8b32"
+  },
+  "track_id": "1542182776",
+  "title": "Yoru ni kakeru",
+  "artist": "YOASOBI",
+  "album": "THE BOOK",
+  "genre": "J-Pop",
+  "duration": 258,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/0e/c1/c3/0ec1c306-abe6-9f29-2efb-ae5df908480d/mzaf_2757623543673456999.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/7f/8c/90/7f8c90dd-e11f-30d5-271d-4b72eee970bd/195497666737.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2019-12-15T08:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:18:41.672Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:18:41.672Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afcfeb6e90be760ab8b35"
+  },
+  "track_id": "1656433548",
+  "title": "FightSong",
+  "artist": "EVE",
+  "album": "FightSong - Single",
+  "genre": "J-Pop",
+  "duration": 208,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/97/d1/39/97d139bf-7aef-20cb-1e0a-6c97cea1d91b/mzaf_4988942771424567732.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/47/28/66/472866c4-cb82-e958-f017-3756d206c38e/4988061916972.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2022-12-28T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:18:54.449Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:18:54.449Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afd16b6e90be760ab8b38"
+  },
+  "track_id": "937664437",
+  "title": "Seven Doors",
+  "artist": "ZAQ",
+  "album": "Seven Doors - EP",
+  "genre": "Anime",
+  "duration": 236,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/d5/f6/8f/d5f68f0f-2fdd-b99d-2dfc-56da64752553/mzaf_13258260101016833320.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/22/7d/41/227d41de-c1fd-fd0b-3446-168a80722a74/EYCA-10095.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2014-11-19T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:19:18.259Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:19:18.259Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afd2ab6e90be760ab8b3b"
+  },
+  "track_id": "1822719680",
+  "title": "Flares of the Blazing Sun",
+  "artist": "HOYO-MiX & YMIR",
+  "album": "Flares of the Blazing Sun (Honkai: Star Rail Phainon Animated Short Single) - Single",
+  "genre": "Rock",
+  "duration": 213,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/02/63/e1/0263e1c8-5eb0-d557-3929-f2f62d7382a5/mzaf_2551982503321470534.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/f4/02/f0/f402f068-9000-4b31-97f2-8c25648d2fd9/199538080223.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-07-03T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b71"
+      },
+      "name": "powerful",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b72"
+      },
+      "name": "rebellious",
+      "confidence": 0.25
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:19:38.597Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:19:38.597Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afd37b6e90be760ab8b3e"
+  },
+  "track_id": "1434513147",
+  "title": "Clattanoia",
+  "artist": "OxT",
+  "album": "Hello New World",
+  "genre": "Anime",
+  "duration": 236,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/0f/d6/31/0fd63142-fbc1-2fee-79f6-447cc53da258/mzaf_1838652439256499772.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music128/v4/3d/64/2d/3d642d85-7107-6215-0d10-a1b596b0ed18/JK_ZMCZ-12411.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2015-08-26T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:19:51.586Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:19:51.586Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afd4fb6e90be760ab8b41"
+  },
+  "track_id": "1112836624",
+  "title": "Bye Bye Yesterday",
+  "artist": "3年E組うた担(渚&茅野&業&磯貝&前原)",
+  "album": "Bye Bye Yesterday - EP",
+  "genre": "Anime",
+  "duration": 248,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/a9/8a/f3/a98af366-a9a0-25c3-ebf1-6b8b60e795ad/mzaf_3350394656917396127.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/01/aa/57/01aa57d8-703d-6ecb-d76e-850a92cea9c9/EYCA-10927.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2016-05-25T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:20:15.675Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:20:15.675Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afd62b6e90be760ab8b44"
+  },
+  "track_id": "1827140040",
+  "title": "Shine in the Cruel Night",
+  "artist": "LiSA",
+  "album": "Shine in the Cruel Night - Single",
+  "genre": "Anime",
+  "duration": 383,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/cb/da/d4/cbdad44f-2a1f-3c98-ff02-a1bbd576879e/mzaf_8826347882559434596.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/71/31/0f/71310f7d-0cfd-d2b9-3daa-93a1a722e576/4547366759624.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-07-19T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:20:34.104Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:20:34.104Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693afd80b6e90be760ab8b47"
+  },
+  "track_id": "1538098094",
+  "title": "Unravel",
+  "artist": "TK from Ling tosite sigure",
+  "album": "Fantastic Magic",
+  "genre": "Rock",
+  "duration": 238,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/35/f4/2d/35f42dd9-abe9-161c-8eac-99dd348f99e6/mzaf_5386318182593403976.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/b5/28/30/b5283070-a9c6-29ba-6644-635f566f26a4/jacket_AICL02717B00Z_550.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2014-07-23T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b71"
+      },
+      "name": "powerful",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b72"
+      },
+      "name": "rebellious",
+      "confidence": 0.25
+    }
+  ],
+  "__v": 0,
+  "createdAt": {
+    "$date": "2025-12-11T17:21:04.159Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-11T17:21:04.159Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6949a09b9a7061b60f084d78"
+  },
+  "track_id": "1546125792",
+  "title": "Blue Bird (From \"Naruto Shippuden\")",
+  "artist": "Akano",
+  "album": "Blue Bird (From \"Naruto Shippuden\") - Single",
+  "genre": "Anime",
+  "duration": 100,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/0b/0f/51/0b0f516f-084f-3bcb-aebd-8b081c52ff71/mzaf_11570239471909246733.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/46/28/5b/46285b08-057f-1052-1b8e-007d352cdac6/194152838656.png/100x100bb.jpg",
+  "release_date": {
+    "$date": "2020-12-22T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:48:44.016Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:48:44.016Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a09c9a7061b60f084d7a"
+  },
+  "track_id": "1703282222",
+  "title": "Blue Bird (English)",
+  "artist": "Richard Fairlie",
+  "album": "Blue Bird (English) - Single",
+  "genre": "Alternative",
+  "duration": 137,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/98/2e/90/982e9007-51c3-89f7-17d0-7c3b45d6e521/mzaf_14073288012803514555.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/13/55/60/135560b4-348d-cf73-cc55-d2e890a293f7/196925424226.png/100x100bb.jpg",
+  "release_date": {
+    "$date": "2022-08-05T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7e"
+      },
+      "name": "edgy",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b78"
+      },
+      "name": "introspective",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6f"
+      },
+      "name": "melancholic",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:48:44.029Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:48:44.029Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a09c9a7061b60f084d7c"
+  },
+  "track_id": "1545027770",
+  "title": "Blue Bird (From \"Naruto Shippuden\")",
+  "artist": "Miura Jam",
+  "album": "Blue Bird (From \"Naruto Shippuden\") - Single",
+  "genre": "Anime",
+  "duration": 214,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/7c/d4/a1/7cd4a1f6-e6ff-fee9-86ca-c5234ba38e80/mzaf_14916246545994688338.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/f5/e3/61/f5e36109-bafb-ca26-3f84-1d4a82503dbe/194152813387.png/100x100bb.jpg",
+  "release_date": {
+    "$date": "2020-12-15T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:48:44.033Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:48:44.033Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a09c9a7061b60f084d7e"
+  },
+  "track_id": "1500824680",
+  "title": "Bluebird",
+  "artist": "Miranda Lambert",
+  "album": "Wildcard",
+  "genre": "Country",
+  "duration": 209,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/5d/cd/40/5dcd4083-2b38-ec6b-1811-74f447988c1b/mzaf_2253336311204974294.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/5c/79/5d/5c795d58-969e-619c-0abb-8facfdd31f31/886448309468.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2019-08-15T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b76"
+      },
+      "name": "nostalgic",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7c"
+      },
+      "name": "storytelling",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:48:44.039Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:48:44.039Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0b59a7061b60f084d8c"
+  },
+  "track_id": "1587334182",
+  "title": "Hero's Come Back!!",
+  "artist": "Nobodyknows+",
+  "genre": "Hip-Hop/Rap",
+  "duration": 275,
+  "mp3_url": "https://video-ssl.itunes.apple.com/itunes-assets/Video115/v4/9a/39/e9/9a39e948-9bc7-9cc8-d1ab-1322e430dbc0/mzvf_10753920438730191182.1920w.h264lc.U.p.m4v",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Video115/v4/8e/d6/3a/8ed63a53-dd49-3650-3904-b31e2d052692/45474030275940101.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2007-04-25T07:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6d"
+      },
+      "name": "confident",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:49:09.344Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:49:09.344Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0b59a7061b60f084d8e"
+  },
+  "track_id": "1535505963",
+  "title": "Hero's Come Back!!",
+  "artist": "Nobodyknows+",
+  "album": "best of nobodyknows+",
+  "genre": "Hip-Hop/Rap",
+  "duration": 273,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/b0/4f/bf/b04fbf0d-0b25-8a6e-96b1-3c0979cbf2d5/mzaf_8432734421697357976.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/44/ea/a2/44eaa2a4-360c-5df6-e88f-3d449cd9c0f3/jacket_AICL01999B00Z_550.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2007-04-25T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6d"
+      },
+      "name": "confident",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:49:09.349Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:49:09.349Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0b59a7061b60f084d90"
+  },
+  "track_id": "1613519289",
+  "title": "Hero's Come Back!!",
+  "artist": "Nobodyknows+",
+  "album": "Kokoro Odoru / Hero's Come Back!! Best Tag - Single",
+  "genre": "Hip-Hop/Rap",
+  "duration": 274,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview116/v4/5d/c4/eb/5dc4ebcf-c3b2-165f-869d-e168fa0d2bbd/mzaf_5738658017183454276.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/5e/51/64/5e5164b7-72a2-2c2c-e3d0-e550e58766ae/4560427468518.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2007-04-25T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6d"
+      },
+      "name": "confident",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:49:09.353Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:49:09.353Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0b59a7061b60f084d92"
+  },
+  "track_id": "1536898529",
+  "title": "Hero's Come Back!!",
+  "artist": "Nobodyknows+",
+  "album": "Hero's Come Back!! - EP",
+  "genre": "Hip-Hop/Rap",
+  "duration": 274,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/cf/d0/ea/cfd0ea78-acfb-4f34-02c8-92b258ac66aa/mzaf_14737274479330507818.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/ec/93/17/ec93175d-db47-e816-37f4-98bdd4900b27/jacket_MHXX00820B00Z_550.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2007-04-25T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6d"
+      },
+      "name": "confident",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:49:09.358Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:49:09.358Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0b59a7061b60f084d94"
+  },
+  "track_id": "1535496920",
+  "title": "Hero's Come Back!!",
+  "artist": "Nobodyknows+",
+  "album": "vulgarhythm",
+  "genre": "Hip-Hop/Rap",
+  "duration": 273,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/09/78/25/0978253b-13b5-5b6f-daf1-239f96c0c65e/mzaf_11869608775753345997.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/38/f2/b3/38f2b362-d851-eaae-f503-5757e4453f50/jacket_AICL01853B00Z_550.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2007-04-25T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6d"
+      },
+      "name": "confident",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:49:09.363Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:49:09.363Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0b59a7061b60f084d96"
+  },
+  "track_id": "941043463",
+  "title": "Hero's Come Back!! (ep.1-30)",
+  "artist": "Junichi Sakamoto",
+  "album": "Netsuretsu! Anison Spirits the Best - Cover Music Selection - TV Anime Series \"Naruto\", Vol. 5",
+  "genre": "J-Pop",
+  "duration": 272,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/43/a0/b8/43a0b8c4-e281-0eaa-4a71-ef28b35d986a/mzaf_14381065596573622340.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music5/v4/f9/23/e7/f923e7fd-3d51-81e8-db84-d511932014a6/NARUTO-vol.5.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2008-10-01T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:49:09.366Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:49:09.366Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0c39a7061b60f084da4"
+  },
+  "track_id": "1581188154",
+  "title": "Pokémon",
+  "artist": "Tina Guo & Budapest Symphony Orchestra",
+  "genre": "Classical Crossover",
+  "duration": 183,
+  "mp3_url": "https://video-ssl.itunes.apple.com/itunes-assets/Video125/v4/2e/d5/b5/2ed5b540-9167-1234-20c8-9aa869fa5703/mzvf_6932133533806566404.1920w.h264lc.U.p.m4v",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Video115/v4/a8/6b/1c/a86b1c55-9af9-3b23-aedf-add7eff06bea/8864463652440101.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2021-08-13T07:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:49:23.500Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:49:23.500Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0c39a7061b60f084da6"
+  },
+  "track_id": "1802918496",
+  "title": "pokemon",
+  "artist": "Wet Leg",
+  "album": "moisturizer",
+  "genre": "Alternative",
+  "duration": 206,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/88/78/c4/8878c492-1070-3a56-5219-6b99d72f6afd/mzaf_1021321315815759857.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/62/de/57/62de5769-2422-4cfe-69d3-3cec4cb94d14/887828053063.png/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-07-11T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7e"
+      },
+      "name": "edgy",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b78"
+      },
+      "name": "introspective",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6f"
+      },
+      "name": "melancholic",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:49:23.505Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:49:23.505Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0c39a7061b60f084da8"
+  },
+  "track_id": "1504402211",
+  "title": "Pokémon (Lavender Town)",
+  "artist": "Blue Brew Music",
+  "album": "Pokémon (Lavender Town) - Single",
+  "genre": "Electronica",
+  "duration": 180,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/fc/51/1b/fc511b99-cf30-b752-229a-508e32831f3a/mzaf_4884140097093494587.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/c1/da/b8/c1dab857-e145-c7d4-9e8b-febbe0ef3808/artwork.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2020-03-20T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:49:23.508Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:49:23.508Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0c39a7061b60f084daa"
+  },
+  "track_id": "1833897952",
+  "title": "The Journey Starts Today (Theme from Pokémon Journeys)",
+  "artist": "Pokémon & Walk Off the Earth",
+  "album": "The Journey Starts Today (Theme from Pokémon Journeys) - Single",
+  "genre": "Soundtrack",
+  "duration": 142,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/ea/02/fd/ea02fd3f-3524-9c26-7b2d-9a19ee82afa6/mzaf_4513511990098159932.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/2b/97/fd/2b97fdc2-6f24-047d-feef-cf21f01fc1c9/8721215926511.png/100x100bb.jpg",
+  "release_date": {
+    "$date": "2020-06-12T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b79"
+      },
+      "name": "cinematic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6c"
+      },
+      "name": "passionate",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:49:23.511Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:49:23.511Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0c39a7061b60f084dac"
+  },
+  "track_id": "1833899283",
+  "title": "Pokérap",
+  "artist": "Pokémon",
+  "album": "Pokémon X : Ten Years Of Pokémon (Original Soundtrack)",
+  "genre": "Soundtrack",
+  "duration": 182,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/55/02/80/5502803f-99f9-5376-3bc1-d5c62cdd58a2/mzaf_8107174246374018942.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/33/a7/44/33a74428-56ca-1ed5-8a61-5999fef6d815/8721215934721.png/100x100bb.jpg",
+  "release_date": {
+    "$date": "1999-06-29T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b79"
+      },
+      "name": "cinematic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6c"
+      },
+      "name": "passionate",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:49:23.516Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:49:23.516Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0c39a7061b60f084dae"
+  },
+  "track_id": "1833899281",
+  "title": "Pokémon Theme",
+  "artist": "Pokémon",
+  "album": "Pokémon X : Ten Years Of Pokémon (Original Soundtrack)",
+  "genre": "Soundtrack",
+  "duration": 196,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/19/a8/ab/19a8ab12-05bd-a58a-7408-b19837e729d8/mzaf_14926858262574398906.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/33/a7/44/33a74428-56ca-1ed5-8a61-5999fef6d815/8721215934721.png/100x100bb.jpg",
+  "release_date": {
+    "$date": "1999-06-29T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b79"
+      },
+      "name": "cinematic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6c"
+      },
+      "name": "passionate",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:49:23.519Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:49:23.519Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0d29a7061b60f084dba"
+  },
+  "track_id": "666788983",
+  "title": "Guren No Yumiya",
+  "artist": "Linked Horizon",
+  "album": "Jiyuu E No Shingeki - Single",
+  "genre": "Anime",
+  "duration": 316,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/22/1d/22/221d2214-a420-3f2d-f79d-55fa9fafe662/mzaf_17485129805549556349.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/68/3d/2b/683d2b87-f72d-9aa1-c6a5-956d3d25c80e/PCCA_03837_itunes.png/100x100bb.jpg",
+  "release_date": {
+    "$date": "2013-07-10T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:49:38.691Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:49:38.691Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0d29a7061b60f084dbc"
+  },
+  "track_id": "1383313865",
+  "title": "anime",
+  "artist": "nobigdyl.",
+  "album": "SOLAR",
+  "genre": "Hip-Hop/Rap",
+  "duration": 156,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/3d/7d/53/3d7d5318-71c7-dd9f-9193-55e024d1ee87/mzaf_14922930678930671956.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/5e/05/95/5e0595d6-1e39-1549-3702-16e167e72e4a/00602567522621.rgb.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2018-06-15T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6d"
+      },
+      "name": "confident",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:49:38.695Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:49:38.695Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0d29a7061b60f084dbe"
+  },
+  "track_id": "1538157315",
+  "title": "Silhouette",
+  "artist": "KANA-BOON",
+  "album": "TIME",
+  "genre": "Rock",
+  "duration": 240,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/05/38/5e/05385ed0-e385-d721-8c48-4dacf0ea2db3/mzaf_3060968370677241856.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/32/6b/cc/326bcc4d-5c22-1451-4935-4d693cde2ad1/jacket_KSCL02535B00Z_550.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2014-11-26T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b71"
+      },
+      "name": "powerful",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b72"
+      },
+      "name": "rebellious",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:49:38.698Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:49:38.698Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0d29a7061b60f084dc0"
+  },
+  "track_id": "1552682825",
+  "title": "Boku no Sensou",
+  "artist": "Shinsei kamattechan",
+  "album": "Boku no Sensou - Single",
+  "genre": "J-Pop",
+  "duration": 280,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/bf/0c/f8/bf0cf833-e16a-2116-d9b3-4f512e9a16df/mzaf_17288336455743199115.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/bd/3a/0d/bd3a0d84-ffb0-28b1-fe57-25d2739ebdf4/PCSP_03410.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2021-02-22T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:49:38.702Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:49:38.702Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0e99a7061b60f084dce"
+  },
+  "track_id": "1661607434",
+  "title": "first death",
+  "artist": "TK from Ling tosite sigure",
+  "genre": "Rock",
+  "duration": 248,
+  "mp3_url": "https://video-ssl.itunes.apple.com/itunes-assets/Video113/v4/0b/f2/2a/0bf22a47-e24a-8cef-74ec-0c72f6dfe27f/mzvf_15800175273415318626.1920w.h264lc.U.p.m4v",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Video123/v4/9e/de/4d/9ede4dd2-6cf7-05af-a0d8-720ab369bbd4/45473666012370101.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2022-11-30T08:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b71"
+      },
+      "name": "powerful",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b72"
+      },
+      "name": "rebellious",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:50:01.354Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:50:01.354Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0e99a7061b60f084dd0"
+  },
+  "track_id": "1665526283",
+  "title": "first death (Chainsaw Man)",
+  "artist": "Mattyyym",
+  "album": "MattyyyM does Anime!, Vol. 8",
+  "genre": "Rock",
+  "duration": 240,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview123/v4/c8/95/25/c89525a1-04f1-7b70-463f-514f44e58f32/mzaf_2408026638963102831.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/27/d6/b2/27d6b213-352d-a129-ad14-b5c5358f7433/artwork.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2023-01-12T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b71"
+      },
+      "name": "powerful",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b72"
+      },
+      "name": "rebellious",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:50:01.360Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:50:01.360Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0e99a7061b60f084dd2"
+  },
+  "track_id": "1658614803",
+  "title": "First Death (From \"Chainsaw Man\") [Full English Version]",
+  "artist": "PelleK",
+  "album": "First Death (From \"Chainsaw Man\") [Full Japanese and English Versions] - Single",
+  "genre": "Anime",
+  "duration": 238,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/8d/ff/1e/8dff1e24-8d51-d003-be91-81dee2b42217/mzaf_2732892509594660472.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/51/d6/56/51d6569d-ef82-6700-ee01-3191574c5749/198009010837.png/100x100bb.jpg",
+  "release_date": {
+    "$date": "2022-12-07T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:50:01.364Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:50:01.364Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0e99a7061b60f084dd4"
+  },
+  "track_id": "1657144003",
+  "title": "first death (Slushii Remix)",
+  "artist": "TK from Ling tosite sigure & Slushii",
+  "album": "first death (Slushii Remix) - Single",
+  "genre": "Dance",
+  "duration": 193,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/5d/2a/af/5d2aaff3-0a05-2604-b562-e7ef4dfcf69e/mzaf_11682947427125811258.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/c2/fe/54/c2fe543c-b561-47b6-370d-c886c30d4527/4547366599862.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2022-12-21T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b62"
+      },
+      "name": "uplifting",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:50:01.368Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:50:01.368Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0e99a7061b60f084dd6"
+  },
+  "track_id": "1661841316",
+  "title": "First Death (From \"Chainsaw Man\")",
+  "artist": "Dima Lancaster",
+  "album": "First Death (From \"Chainsaw Man\") - Single",
+  "genre": "Rock",
+  "duration": 241,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview113/v4/df/de/8a/dfde8aa3-cd7a-12cf-6ac0-64647c6fec71/mzaf_4314051425201234824.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/09/f9/ac/09f9ac19-eb57-6ec9-7e80-a8b618b2a081/198009024711.png/100x100bb.jpg",
+  "release_date": {
+    "$date": "2023-01-20T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b71"
+      },
+      "name": "powerful",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b72"
+      },
+      "name": "rebellious",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:50:01.374Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:50:01.374Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a0e99a7061b60f084dd8"
+  },
+  "track_id": "1653891413",
+  "title": "first death",
+  "artist": "TK from Ling tosite sigure",
+  "album": "first death - Single",
+  "genre": "Rock",
+  "duration": 241,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/9c/b6/bc/9cb6bcc3-a0c0-64a5-593b-a2c24bcb15b9/mzaf_7337899538019820429.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/33/a0/67/33a067cb-48e0-cf1d-e64b-13393dbbded9/4547366594591.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2022-11-30T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b71"
+      },
+      "name": "powerful",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b72"
+      },
+      "name": "rebellious",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:50:01.378Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:50:01.378Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a10f9a7061b60f084de6"
+  },
+  "track_id": "1710347007",
+  "title": "Ichizu",
+  "artist": "King Gnu",
+  "genre": "Alternative",
+  "duration": 189,
+  "mp3_url": "https://video-ssl.itunes.apple.com/itunes-assets/Video116/v4/ed/84/82/ed8482e3-b093-3b04-a96c-f2524e6fae2e/mzvf_13150563089062015065.1920w.h264lc.U.p.m4v",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Video126/v4/27/af/49/27af49de-f966-c1dd-0160-d93317dcc705/45473665453330101.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2021-12-10T08:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7e"
+      },
+      "name": "edgy",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b78"
+      },
+      "name": "introspective",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6f"
+      },
+      "name": "melancholic",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:50:39.392Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:50:39.392Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a10f9a7061b60f084de8"
+  },
+  "track_id": "1770456605",
+  "title": "Ichizu (King Gnu Dome Tour THE GREATEST UNKNOWN at TOKYO DOME)",
+  "artist": "King Gnu",
+  "album": "King Gnu Dome Tour THE GREATEST UNKNOWN at TOKYO DOME",
+  "genre": "Alternative",
+  "duration": 222,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/b9/b4/ca/b9b4ca55-72ac-847f-4c6b-09f86d9fd9a4/mzaf_14614782696760372283.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/06/58/ed/0658ed8e-c987-1e86-9b9b-ad36dc14f83e/4547366711691.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2024-10-04T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7e"
+      },
+      "name": "edgy",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b78"
+      },
+      "name": "introspective",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6f"
+      },
+      "name": "melancholic",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:50:39.399Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:50:39.399Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a10f9a7061b60f084dea"
+  },
+  "track_id": "1600742606",
+  "title": "Ichizu (Jujutsu Kaisen 0)",
+  "artist": "Curserino",
+  "album": "Ichizu (Jujutsu Kaisen 0) - Single",
+  "genre": "Rock",
+  "duration": 187,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/46/cc/0c/46cc0c6a-33bb-2f3e-8ec9-76d3513478d9/mzaf_13977564713599111114.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/8a/15/66/8a1566a2-2bfc-3211-1a77-4befda2bd6f3/artwork.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2021-12-14T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b71"
+      },
+      "name": "powerful",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b72"
+      },
+      "name": "rebellious",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:50:39.403Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:50:39.403Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a10f9a7061b60f084dec"
+  },
+  "track_id": "1613803720",
+  "title": "Ichizu (Jujutsu Kaisen 0\" Movie Theme)",
+  "artist": "Nanaru",
+  "album": "Ichizu (Jujutsu Kaisen 0\" Movie Theme) - Single",
+  "genre": "J-Pop",
+  "duration": 187,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview116/v4/8d/c0/33/8dc0335f-8f3a-0c96-4301-6d900c65e1ea/mzaf_3077562504216523333.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6d/1e/1f/6d1e1f09-5a02-cc78-cd9d-29f18c979a3f/198001697791.png/100x100bb.jpg",
+  "release_date": {
+    "$date": "2022-03-10T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:50:39.405Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:50:39.405Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a10f9a7061b60f084dee"
+  },
+  "track_id": "1716523334",
+  "title": "Ichizu (ALBUM ver.)",
+  "artist": "King Gnu",
+  "album": "THE GREATEST UNKNOWN",
+  "genre": "Alternative",
+  "duration": 220,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/57/71/b2/5771b219-7bed-4587-64fa-3fd25361c01d/mzaf_11782497038411746013.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/b1/26/69/b1266981-eabb-65ef-9180-18960e2e7dee/4547366657081.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2023-11-29T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7e"
+      },
+      "name": "edgy",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b78"
+      },
+      "name": "introspective",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6f"
+      },
+      "name": "melancholic",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:50:39.409Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:50:39.409Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6949a10f9a7061b60f084df0"
+  },
+  "track_id": "1597279110",
+  "title": "Ichizu",
+  "artist": "King Gnu",
+  "album": "Ichizu - Single",
+  "genre": "Alternative",
+  "duration": 190,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview116/v4/16/d0/4c/16d04c0d-5f12-7175-0500-89597e57d382/mzaf_13675840853692910453.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/64/d7/73/64d77339-d682-5903-611f-cf59ab928750/4547366542400.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2021-12-10T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7e"
+      },
+      "name": "edgy",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b78"
+      },
+      "name": "introspective",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6f"
+      },
+      "name": "melancholic",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-22T19:50:39.414Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T19:50:39.414Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694cafb0c4eb8c79dcf41ae8"
+  },
+  "track_id": "1452798425",
+  "title": "Lady",
+  "artist": "Styx",
+  "album": "The Complete Wooden Nickel Recordings",
+  "genre": "Rock",
+  "duration": 177,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/95/66/5b/95665bf1-ba06-50b0-c415-e0284df45c8a/mzaf_15226317527203519892.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/8d/b6/db/8db6dbdf-14fa-e8b5-67cd-173b5e37042e/00075021034310.rgb.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "1973-07-01T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b71"
+      },
+      "name": "powerful",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b72"
+      },
+      "name": "rebellious",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-25T03:29:52.193Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T03:29:52.193Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694cafb0c4eb8c79dcf41af0"
+  },
+  "track_id": "692624266",
+  "title": "Lady (Hear Me Tonight)",
+  "artist": "Modjo",
+  "album": "Modjo (Remastered)",
+  "genre": "Pop",
+  "duration": 307,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/e1/d0/14/e1d0146f-703a-90d8-e6b6-92ba68235a49/mzaf_6393716162450916839.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/f5/25/2b/f5252b6e-0659-890b-7e9d-0e691944b95b/cover.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2000-09-04T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b62"
+      },
+      "name": "uplifting",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-25T03:29:52.204Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T03:29:52.204Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694cafb0c4eb8c79dcf41aee"
+  },
+  "track_id": "1562367407",
+  "title": "Lady",
+  "artist": "Brett Young",
+  "album": "Weekends Look a Little Different These Days",
+  "genre": "Country",
+  "duration": 194,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/ee/b9/d9/eeb9d9c0-7806-5b63-2fab-4e92a76b82e4/mzaf_10444902192038135644.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/fa/e2/cb/fae2cbbd-54a8-7542-0d85-953b85476d38/21BMR0002382.rgb.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2020-05-01T07:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b76"
+      },
+      "name": "nostalgic",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7c"
+      },
+      "name": "storytelling",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-25T03:29:52.202Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T03:29:52.202Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694cafb0c4eb8c79dcf41aea"
+  },
+  "track_id": "1440842313",
+  "title": "Lady",
+  "artist": "D'Angelo",
+  "album": "Brown Sugar",
+  "genre": "R&B/Soul",
+  "duration": 345,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/6a/d4/7b/6ad47bd8-451a-d466-8351-c56cc14fba5a/mzaf_6313399617560044738.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/3d/b7/01/3db701ab-9511-83e3-54d6-a6ccfcf560a2/13UABIM50177.rgb.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "1995-07-03T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6a"
+      },
+      "name": "romantic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6b"
+      },
+      "name": "sensual",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b80"
+      },
+      "name": "soulful",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-25T03:29:52.197Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T03:29:52.197Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694cafb0c4eb8c79dcf41aec"
+  },
+  "track_id": "724414936",
+  "title": "Lady",
+  "artist": "Kenny Rogers",
+  "album": "Love Songs",
+  "genre": "Country",
+  "duration": 234,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/33/db/1b/33db1b68-07bf-0a97-b1e9-33bb831fe271/mzaf_14152114734203143868.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/ea/64/5b/ea645b74-f4f5-95f3-b5b8-48546f35cd55/13ULAIM49221.rgb.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "1991-01-01T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b76"
+      },
+      "name": "nostalgic",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7c"
+      },
+      "name": "storytelling",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-25T03:29:52.199Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T03:29:52.199Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694cb8cbc4eb8c79dcf41b95"
+  },
+  "track_id": "1500345552",
+  "title": "Hallelujah (Bonus Track)",
+  "artist": "HAIM",
+  "album": "Women In Music Pt. III",
+  "genre": "Alternative",
+  "duration": 190,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/ed/07/71/ed077167-e44e-4305-495b-dfdc0ddbbd4f/mzaf_15716921548177646003.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/82/93/e6/8293e604-dae8-71e6-cd66-72e7308488f9/886448286899.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2019-11-18T08:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7e"
+      },
+      "name": "edgy",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b78"
+      },
+      "name": "introspective",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6f"
+      },
+      "name": "melancholic",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-25T04:08:43.282Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T04:08:43.282Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694cb8cbc4eb8c79dcf41b97"
+  },
+  "track_id": "5123567",
+  "title": "Kawaipunahele",
+  "artist": "Keali`i Reichel",
+  "album": "Kawaipunahele",
+  "genre": "Worldwide",
+  "duration": 287,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/c9/f8/cd/c9f8cda6-0117-fd9a-803d-31d144132109/mzaf_18187160809390720303.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Features124/v4/76/6b/0c/766b0cf3-aa2b-5622-ec64-8e5e15bca982/dj.fqanxiis.tif/100x100bb.jpg",
+  "release_date": {
+    "$date": "1994-01-01T08:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-25T04:08:43.285Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T04:08:43.285Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694cb8cbc4eb8c79dcf41b99"
+  },
+  "track_id": "1500345553",
+  "title": "Summer Girl (Bonus Track)",
+  "artist": "HAIM",
+  "album": "Women In Music Pt. III",
+  "genre": "Alternative",
+  "duration": 205,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/f3/44/68/f34468b5-35fd-9ef2-2785-3514b7b2077e/mzaf_5047904561855755601.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/82/93/e6/8293e604-dae8-71e6-cd66-72e7308488f9/886448286899.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2019-07-31T07:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7e"
+      },
+      "name": "edgy",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b78"
+      },
+      "name": "introspective",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6f"
+      },
+      "name": "melancholic",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-25T04:08:43.286Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T04:08:43.286Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694cb9e4c4eb8c79dcf41bb8"
+  },
+  "track_id": "1582503419",
+  "title": "Haha",
+  "artist": "KID E$s",
+  "album": "Haha - Single",
+  "genre": "Hip-Hop/Rap",
+  "duration": 228,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/a1/0d/1c/a10d1cde-5463-2da8-11ac-eeca928f34e4/mzaf_4098909588977246422.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/83/84/90/8384900c-0ebd-6673-8615-b097d3b0c7f3/artwork.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2021-08-23T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6d"
+      },
+      "name": "confident",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-25T04:13:24.279Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T04:13:24.279Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e571ee39a85bb7d6e4e66"
+  },
+  "track_id": "1440737120",
+  "title": "Son Et Lumière",
+  "artist": "The Mars Volta",
+  "album": "Deloused In the Comatorium",
+  "genre": "Rock",
+  "duration": 95,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/a7/a7/97/a7a79709-06c5-9cea-4c28-fa767298972e/mzaf_12650667374313028349.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/12/16/f8/1216f815-43ac-17b8-b3b6-3a01322e2992/06UMGIM11285.rgb.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2003-06-24T07:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b79"
+      },
+      "name": "cinematic",
+      "confidence": 0.9
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b75"
+      },
+      "name": "hypnotic",
+      "confidence": 0.7
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7e"
+      },
+      "name": "edgy",
+      "confidence": 0.7
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:36:30.513Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:36:30.513Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e571ee39a85bb7d6e4e6c"
+  },
+  "track_id": "1249418560",
+  "title": "Une année sans lumière",
+  "artist": "Arcade Fire",
+  "album": "Funeral",
+  "genre": "Alternative",
+  "duration": 220,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/cd/3d/f1/cd3df17a-f551-c78c-9797-03f07134ed3e/mzaf_2341382131392411228.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/2b/09/6e/2b096e8c-ae65-fc42-a4b1-19abb4100433/886446576442.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2004-09-14T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7f"
+      },
+      "name": "intimate",
+      "confidence": 0.9
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6f"
+      },
+      "name": "melancholic",
+      "confidence": 0.7
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b75"
+      },
+      "name": "hypnotic",
+      "confidence": 0.7
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:36:30.529Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:36:30.529Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e571ee39a85bb7d6e4e6e"
+  },
+  "track_id": "893108673",
+  "title": "I See the Light/ Tangled (Piano)",
+  "artist": "Makiko Hirohashi",
+  "album": "Relaxing Piano - Best Disney Collection",
+  "genre": "Worldwide",
+  "duration": 276,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/81/26/a3/8126a363-16f0-d799-94f1-969454cfbf98/mzaf_9242055352292587153.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a3/26/9f/a3269f7a-5109-096c-92fd-757532cc7276/DLPW_803_4.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2014-06-27T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6a"
+      },
+      "name": "romantic",
+      "confidence": 0.9
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b66"
+      },
+      "name": "peaceful",
+      "confidence": 0.7
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7f"
+      },
+      "name": "intimate",
+      "confidence": 0.7
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:36:30.531Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:36:30.531Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e571ee39a85bb7d6e4e68"
+  },
+  "track_id": "1664497784",
+  "title": "Lumière",
+  "artist": "Izzy Flynn",
+  "album": "Solo Piano Sketches: I. Lumière - EP",
+  "genre": "Classical Crossover",
+  "duration": 191,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview113/v4/03/bc/76/03bc7642-5ad2-9367-bdc2-cc5e40308679/mzaf_3972125368115321552.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/2f/49/66/2f4966ff-2bbb-1992-3f76-049fbc041cb7/5059449106052.png/100x100bb.jpg",
+  "release_date": {
+    "$date": "2023-01-27T08:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b80"
+      },
+      "name": "soulful",
+      "confidence": 0.9
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b73"
+      },
+      "name": "sophisticated",
+      "confidence": 0.7
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7f"
+      },
+      "name": "intimate",
+      "confidence": 0.7
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:36:30.523Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:36:30.523Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e571ee39a85bb7d6e4e6a"
+  },
+  "track_id": "1808472864",
+  "title": "Lumière",
+  "artist": "Lorien Testard & Alice Duport-Percier",
+  "album": "Clair Obscur: Expedition 33 (Original Soundtrack)",
+  "genre": "Soundtrack",
+  "duration": 222,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/b9/53/1b/b9531bb7-7c66-dabe-34bf-aed28b6b12da/mzaf_3237399519133001532.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bb/57/50/bb5750a0-e786-c10b-1901-908fbc2d8f25/8721215081586.png/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-04-24T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b7f"
+      },
+      "name": "intimate",
+      "confidence": 0.9
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b75"
+      },
+      "name": "hypnotic",
+      "confidence": 0.7
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b67"
+      },
+      "name": "meditative",
+      "confidence": 0.7
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:36:30.526Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:36:30.526Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e5793e39a85bb7d6e4e84"
+  },
+  "track_id": "1832311646",
+  "title": "Moonpine Wisp (Nod-Krai Theme)",
+  "artist": "Sumes Music",
+  "album": "Moonpine Wisp (Nod-Krai Theme) - Single",
+  "genre": "Folk",
+  "duration": 136,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/49/23/57/49235711-b245-6a7c-2641-f33e13d9285a/mzaf_15792553453774659974.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/7f/52/94/7f5294a7-4352-9740-7550-742838a59540/artwork.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-08-09T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6f"
+      },
+      "name": "melancholic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b76"
+      },
+      "name": "nostalgic",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b77"
+      },
+      "name": "reflective",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:38:27.530Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:38:27.530Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e5793e39a85bb7d6e4e86"
+  },
+  "track_id": "1839744261",
+  "title": "Columbina's Lullaby",
+  "artist": "Chewie Melodies & Pealeaf",
+  "album": "Nod-Krai Piano Cover Collection",
+  "genre": "Pop",
+  "duration": 132,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/9d/b4/05/9db4053a-84b2-d381-493b-77728bf7892a/mzaf_6574684725150837924.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/c3/f7/09/c3f70991-f53b-b9e7-f30a-25882a929dab/631.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-09-16T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b62"
+      },
+      "name": "uplifting",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:38:27.533Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:38:27.533Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e5793e39a85bb7d6e4e88"
+  },
+  "track_id": "1836901869",
+  "title": "Nod Krai Main Theme ~ Lofi (From \"Genshin Impact\")",
+  "artist": "Lofi Link",
+  "album": "Nod Krai Mix Collection (Genshin Impact) - EP",
+  "genre": "Downtempo",
+  "duration": 190,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/8d/f0/88/8df088d5-351d-cf4d-8bba-44c7615b020e/mzaf_7478317523686353047.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/79/28/3e/79283e68-028f-fd27-2c6b-b2c1c51cb3ec/artwork.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-08-30T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:38:27.542Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:38:27.542Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e5793e39a85bb7d6e4e8a"
+  },
+  "track_id": "1833192939",
+  "title": "Columbina's Lullaby (Nod-Krai's Hiisi Island Vocal Theme) (From \"Genshin Impact)",
+  "artist": "Tiago Pereira",
+  "album": "Columbina's Lullaby (Nod-Krai's Hiisi Island Vocal Theme) (From \"Genshin Impact) - Single",
+  "genre": "Ambient",
+  "duration": 129,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/72/0f/9e/720f9e02-8b2e-501e-dd2c-4613eae6bf75/mzaf_14728735369745075921.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/17/1c/f8/171cf8e6-327a-ef7f-0e49-46f7e1014754/8590.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-08-16T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b75"
+      },
+      "name": "hypnotic",
+      "confidence": 0.9
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b79"
+      },
+      "name": "cinematic",
+      "confidence": 0.7
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6f"
+      },
+      "name": "melancholic",
+      "confidence": 0.7
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:38:27.552Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:38:27.552Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e5809e39a85bb7d6e4ea1"
+  },
+  "track_id": "1808472860",
+  "title": "Alicia",
+  "artist": "Lorien Testard & Alice Duport-Percier",
+  "album": "Clair Obscur: Expedition 33 (Original Soundtrack)",
+  "genre": "Soundtrack",
+  "duration": 170,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/1c/5a/b4/1c5ab457-886f-d593-d0dc-60b8ce03ea81/mzaf_16128965353297624194.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bb/57/50/bb5750a0-e786-c10b-1901-908fbc2d8f25/8721215081586.png/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-02-17T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b79"
+      },
+      "name": "cinematic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6c"
+      },
+      "name": "passionate",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:40:25.349Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:40:25.349Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e5809e39a85bb7d6e4ea5"
+  },
+  "track_id": "1808472863",
+  "title": "Gustave",
+  "artist": "Lorien Testard",
+  "album": "Clair Obscur: Expedition 33 (Original Soundtrack)",
+  "genre": "Soundtrack",
+  "duration": 228,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/00/c3/e8/00c3e8aa-3472-886c-d357-9ce3d52208da/mzaf_9006926876502451798.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bb/57/50/bb5750a0-e786-c10b-1901-908fbc2d8f25/8721215081586.png/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-01-24T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b79"
+      },
+      "name": "cinematic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6c"
+      },
+      "name": "passionate",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:40:25.361Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:40:25.361Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e5809e39a85bb7d6e4ea3"
+  },
+  "track_id": "1808472923",
+  "title": "Une Vie À T'aimer",
+  "artist": "Lorien Testard, Alice Duport-Percier & Victor Borba",
+  "album": "Clair Obscur: Expedition 33 (Original Soundtrack)",
+  "genre": "Soundtrack",
+  "duration": 660,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/a6/e2/62/a6e26256-e02a-4935-daee-8ea3befaf40a/mzaf_8368571198271262479.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/bb/57/50/bb5750a0-e786-c10b-1901-908fbc2d8f25/8721215081586.png/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-04-24T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b79"
+      },
+      "name": "cinematic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6c"
+      },
+      "name": "passionate",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:40:25.355Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:40:25.355Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e5809e39a85bb7d6e4ea7"
+  },
+  "track_id": "1863258365",
+  "title": "Expedition 33",
+  "artist": "Alessandro Faraone",
+  "album": "Expedition 33 - Single",
+  "genre": "Dance",
+  "duration": 300,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/58/ae/87/58ae8740-0731-5e1a-6b87-cee44995deee/mzaf_10561043330045775957.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/fb/79/e3/fb79e3fb-21a0-f06d-f6ad-55bf7e427b81/artwork.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-12-21T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b62"
+      },
+      "name": "uplifting",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:40:25.369Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:40:25.369Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e5825e39a85bb7d6e4eba"
+  },
+  "track_id": "953596655",
+  "title": "Fontaine",
+  "artist": "Koffi Olomidé",
+  "album": "Loi",
+  "genre": "African",
+  "duration": 398,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/a5/fb/1d/a5fb1de8-d9bc-cd13-3c54-20806c5f2cb2/mzaf_10499003713302528108.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/3c/d6/e2/3cd6e2da-1c2d-5acf-fe4d-350104a1729e/cover.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "1998-01-13T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:40:53.653Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:40:53.653Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e5825e39a85bb7d6e4ebc"
+  },
+  "track_id": "1816901787",
+  "title": "Fontaine",
+  "artist": "Tony X",
+  "album": "Fontaine - Single",
+  "genre": "Afro-Pop",
+  "duration": 129,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/07/fb/24/07fb24a0-a430-eb62-5439-b2184960c0d1/mzaf_11807351952588497443.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/19/fe/24/19fe24b0-7205-5ccf-87aa-0c296d1f60b6/cover.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2025-05-31T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b60"
+      },
+      "name": "happy",
+      "confidence": 0.5
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:40:53.658Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:40:53.658Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e5825e39a85bb7d6e4ebe"
+  },
+  "track_id": "1689056746",
+  "title": "Fontaine",
+  "artist": "Allah-Las",
+  "album": "Zuma 85",
+  "genre": "Rock",
+  "duration": 249,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview116/v4/0e/41/9c/0e419c8d-295c-b8ce-07c3-464606ea814c/mzaf_3195864804413229180.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/1b/4f/5f/1b4f5fb8-4805-3f7e-b242-615ae6744bc8/97200.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2023-10-13T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b61"
+      },
+      "name": "energetic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b71"
+      },
+      "name": "powerful",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b72"
+      },
+      "name": "rebellious",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:40:53.666Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:40:53.666Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694e5825e39a85bb7d6e4ec0"
+  },
+  "track_id": "1709633317",
+  "title": "Fontaine",
+  "artist": "HOYO-MiX",
+  "album": "Genshin Impact - Fountain of Belleau (Original Game Soundtrack)",
+  "genre": "Soundtrack",
+  "duration": 273,
+  "mp3_url": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/0f/7e/d7/0f7ed742-bf9b-ea41-3c05-b801c378a0e2/mzaf_14364922733662530376.plus.aac.p.m4a",
+  "image_url": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/59/66/00/59660056-ef0f-a78e-3a19-bd4a278382c9/cover.jpg/100x100bb.jpg",
+  "release_date": {
+    "$date": "2023-10-02T12:00:00.000Z"
+  },
+  "moods": [
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b79"
+      },
+      "name": "cinematic",
+      "confidence": 0.5
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b68"
+      },
+      "name": "focused",
+      "confidence": 0.25
+    },
+    {
+      "mood": {
+        "$oid": "6921ef56675584f6ec7d9b6c"
+      },
+      "name": "passionate",
+      "confidence": 0.25
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T09:40:53.683Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T09:40:53.683Z"
+  },
+  "__v": 0
+}]

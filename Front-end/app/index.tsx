@@ -67,20 +67,20 @@ export default function Index() {
            <Pressable
             className="w-full py-3 bg-textPrimary500 items-center justify-center text-white font-bold rounded-lg tracking-wide"
             onPress={() => {
-              console.log("=== TEST SENTRY: Crash tại nút + Đăng sách/tài liệu mới ===");
+              console.log("=== TEST SENTRY: Crash tại nút ở trang chủ của Moody Blue");
               // Gửi message
               Sentry.captureMessage(
-                "Test Sentry từ nút + Đăng sách/tài liệu mới – Nhóm 4 test crash"
+                "Test Sentry từ nút + Test OnBoarding – Nukitashi test crash"
               );
               // Gửi exception
               Sentry.captureException(
                 new Error(
-                  "SENTRY ERROR: Crash test – nút + Đăng sách/tài liệu mới (error + sourcemaps + performance)"
+                  "SENTRY ERROR: Crash Sentry từ nút + Test OnBoarding – Nukitashi test crash"
                 )
               );
               // Crash thật
               throw new Error(
-                "CRASHED: Crash test từ màn hình Đăng Sách/Tài Liệu – Sentry test"
+                "CRASHED: Crash test từ màn hình Test OnBoarding – Sentry test"
               );
             }}
           >

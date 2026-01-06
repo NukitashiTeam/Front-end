@@ -18,21 +18,28 @@ Sentry.init({
   // 2. QUAN TRỌNG: Phải thêm integration vào đây
   integrations: [
     navigationIntegration,
+    Sentry.hermesProfilingIntegration({
+        platformProfilers: false,
+    })
   ],
 
   tracePropagationTargets: ["https://myproject.org", /^\/api\//],
   debug: true,
+
+  
 
   // Performance Monitoring
   tracesSampleRate: 1.0,
   enableAutoSessionTracking: true,
   sessionTrackingIntervalMillis: 5000,
 
+  profilesSampleRate: 1.0,
+
   // User Interaction Tracking
   enableUserInteractionTracing: true,
 
   // Privacy
-  sendDefaultPii: false,
+  sendDefaultPii: true,
   maxBreadcrumbs: 150,
 
   // Enable native crash handling
