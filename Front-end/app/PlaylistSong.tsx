@@ -119,7 +119,26 @@ export default function PlaylistSong() {
         </TouchableOpacity>
     );
 
-    const handleVectorPress = () => console.log('Vector icon pressed');
+    const shuffleArray = (array: ISong[]) => {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
+    };
+
+    const handleShufflePress = () => {
+        if (playlistData?.songs && playlistData.songs.length > 0) {
+            const shuffledSongs = shuffleArray(playlistData.songs);
+            setPlaylistData(prev => prev ? { ...prev, songs: shuffledSongs } : null);
+            handlePlaySong(shuffledSongs[0].songId);
+            console.log("Playlist shuffled and playing first song:", shuffledSongs[0].title);
+        } else {
+            Alert.alert("Thông báo", "Playlist này chưa có bài hát nào để trộn.");
+        }
+    };
+
     const handleDeletePress = async () => {
         Alert.alert(
             "Xóa Playlist",
@@ -191,7 +210,7 @@ export default function PlaylistSong() {
 
                 <View style={{flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginBottom: 10, justifyContent: 'space-between'}}>
                     <View style={{flexDirection: 'row', alignItems: 'center', gap: 20}}>
-                        <TouchableOpacity onPress={handleVectorPress}>
+                        <TouchableOpacity onPress={handleShufflePress}>
                             <Ionicons name="shuffle" size={28} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleDeletePress}>
