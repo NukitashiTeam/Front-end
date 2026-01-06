@@ -28,13 +28,8 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     const [sound, setSound] = useState<Audio.Sound | null>(null);
     const [duration, setDuration] = useState(0);
     const [position, setPosition] = useState(0);
+    const [isFinished, setIsFinished] = useState(false); 
     const miniPlayerRef = useRef<MiniPlayerRef>(null);
-
-    const setSoundVolume = async (value: number) => {
-        if (sound) {
-            await sound.setVolumeAsync(value);
-        }
-    };
 
     useEffect(() => {
         Audio.setAudioModeAsync({
@@ -60,6 +55,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
                 }
 
                 setCurrentSong(songDetails);
+                setIsFinished(false); 
                 console.log("Loading Sound:", songDetails.mp3_url);
                 const { sound: newSound } = await Audio.Sound.createAsync(
                     { uri: songDetails.mp3_url },
@@ -83,6 +79,10 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
             await sound.pauseAsync();
             setIsPlaying(false);
         } else {
+            if (isFinished) {
+                await sound.setPositionAsync(0);
+                setIsFinished(false);
+            }
             await sound.playAsync();
             setIsPlaying(true);
         }
@@ -92,6 +92,17 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         if (sound && duration) {
             const seekPosition = value * duration;
             await sound.setPositionAsync(seekPosition);
+            if (isFinished) {
+                await sound.playAsync();
+                setIsPlaying(true);
+                setIsFinished(false);
+            }
+        }
+    };
+
+    const setSoundVolume = async (value: number) => {
+        if (sound) {
+            await sound.setVolumeAsync(value);
         }
     };
 
@@ -106,6 +117,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
 
             if (status.didJustFinish) {
                 setIsPlaying(false);
+                setIsFinished(true);
             }
         }
     };
