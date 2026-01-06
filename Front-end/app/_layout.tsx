@@ -66,7 +66,7 @@ const AppNavigation = () => {
         }
     }, [ref]);
 
-    const activeTab = isPlayerExpanded
+    const activeTab = isPlayerExpanded || pathname.startsWith("/NowPlayingScreen")
         ? "radio"
         : pathname.startsWith("/HomeScreen")
             ? "home"

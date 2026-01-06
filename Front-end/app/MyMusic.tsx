@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter, useFocusEffect } from "expo-router";
 import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import styles from "../styles/style";
 import Header from "../Components/Header";
@@ -21,6 +22,8 @@ import Background from "../Components/MainBackground";
 
 import getAllPlaylist, { IPlaylist } from "../fetchAPI/getAllPlaylist";
 import { refreshTokenUse } from "../fetchAPI/loginAPI";
+
+const CACHE_KEY_HISTORY = 'CACHE_PLAYLIST_HISTORY_IDS'; 
 
 export default function MyMusic() {
   const [isModEnabled, setIsModEnabled] = useState(false);
@@ -76,6 +79,34 @@ export default function MyMusic() {
     }, [loadData])
   );
 
+  const handlePressPlaylist = async (item: IPlaylist) => {
+    try {
+      const historyJson = await AsyncStorage.getItem(CACHE_KEY_HISTORY);
+      let historyIds: string[] = historyJson ? JSON.parse(historyJson) : [];
+      historyIds = historyIds.filter(id => id !== item._id);
+      historyIds.unshift(item._id);
+      if (historyIds.length > 10) historyIds.pop();
+      await AsyncStorage.setItem(CACHE_KEY_HISTORY, JSON.stringify(historyIds));
+      console.log("Saved history from MyMusic:", item.title);
+    } catch (e) {
+      console.error("Failed to save history", e);
+    }
+    
+    let imageSource = require("../assets/images/song4.jpg");
+    if (item.songs && item.songs.length > 0 && item.songs[0].image_url) {
+        imageSource = { uri: item.songs[0].image_url };
+    }
+
+    router.navigate({
+      pathname: "/PlaylistSong",
+      params: { 
+        id: item._id,
+        title: item.title, 
+        pic: (imageSource?.uri) ? imageSource.uri : ""
+      },
+    });
+  };
+
   const renderItem = ({ item }: { item: IPlaylist }) => {
     let imageSource = require("../assets/images/song4.jpg");
     if (item.songs && item.songs.length > 0 && item.songs[0].image_url) {
@@ -85,16 +116,7 @@ export default function MyMusic() {
     return (
       <TouchableOpacity
         style={styles.playlistItem}
-        onPress={() =>
-          router.navigate({
-            pathname: "/PlaylistSong",
-            params: { 
-                id: item._id,
-                title: item.title, 
-                pic: (imageSource?.uri) ? imageSource.uri : ""
-            },
-          })
-        }
+        onPress={() => handlePressPlaylist(item)}
       >
         <Image source={imageSource} style={styles.playlistImage} />
         <Text style={styles.playlistTitle} numberOfLines={1}>{item.title}</Text>

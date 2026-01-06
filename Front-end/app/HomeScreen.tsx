@@ -17,7 +17,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SecureStore from 'expo-secure-store';
@@ -38,6 +38,7 @@ import getAllPlaylist, { IPlaylist } from "../fetchAPI/getAllPlaylist";
 import getAllMoods, { IMood } from "../fetchAPI/getAllMoods";
 
 const CACHE_KEY_PLAYLIST = 'CACHE_HOME_PLAYLIST';
+const CACHE_KEY_HISTORY = 'CACHE_PLAYLIST_HISTORY_IDS';
 const NUM_COLS = 2;
 const H_PADDING = 20;
 const GAP = 16;
@@ -85,6 +86,20 @@ export default function HomeScreen() {
     const [quickStartMood, setQuickStartMood] = useState<IMood | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
+    const mergeHistoryWithData = async (apiData: IPlaylist[]) => {
+        try {
+            const historyJson = await AsyncStorage.getItem(CACHE_KEY_HISTORY);
+            const historyIds: string[] = historyJson ? JSON.parse(historyJson) : [];
+            const historyItems = historyIds.map(id => apiData.find(p => p._id === id)).filter((item): item is IPlaylist => !!item);
+            const otherItems = apiData.filter(p => !historyIds.includes(p._id));
+            const finalRecentList = [...historyItems, ...otherItems].slice(0, 4);
+            return finalRecentList;
+        } catch (e) {
+            console.error("Error merging history:", e);
+            return apiData.slice(0, 4);
+        }
+    };
+
     const loadData = useCallback(async () => {
         try {
             const cachedData = await AsyncStorage.getItem(CACHE_KEY_PLAYLIST);
@@ -101,13 +116,11 @@ export default function HomeScreen() {
 
             if (!needRefreshLogin && token) {
                 const data = await getAllPlaylist(token);
-                if (data) {
-                    if (Array.isArray(data)) {
-                        const top4 = data.slice(0, 4);
-                        if (JSON.stringify(top4) !== cachedData) {
-                            setRecentPlaylists(top4);
-                            await AsyncStorage.setItem(CACHE_KEY_PLAYLIST, JSON.stringify(top4));
-                        }
+                if (data && Array.isArray(data)) {
+                    const sortedData = await mergeHistoryWithData(data);
+                    if (JSON.stringify(sortedData) !== cachedData) {
+                        setRecentPlaylists(sortedData);
+                        await AsyncStorage.setItem(CACHE_KEY_PLAYLIST, JSON.stringify(sortedData));
                     }
                 } else {
                     console.log("Token cũ có thể đã hết hạn, đang thử đăng nhập lại...");
@@ -130,9 +143,9 @@ export default function HomeScreen() {
                     token = newToken;
                     const dataRetry = await getAllPlaylist(newToken);
                     if (dataRetry && Array.isArray(dataRetry)) {
-                        const top4 = dataRetry.slice(0, 4);
-                        setRecentPlaylists(top4);
-                        await AsyncStorage.setItem(CACHE_KEY_PLAYLIST, JSON.stringify(top4));
+                        const sortedDataRetry = await mergeHistoryWithData(dataRetry);
+                        setRecentPlaylists(sortedDataRetry);
+                        await AsyncStorage.setItem(CACHE_KEY_PLAYLIST, JSON.stringify(sortedDataRetry));
                     }
 
                     const moodsRetry = await getAllMoods(newToken);
@@ -160,7 +173,18 @@ export default function HomeScreen() {
         loadData();
     }, [loadData]);
 
-    const handlePressItem = useCallback((item: IPlaylist) => {
+    const handlePressItem = useCallback(async (item: IPlaylist) => {
+        try {
+            const historyJson = await AsyncStorage.getItem(CACHE_KEY_HISTORY);
+            let historyIds: string[] = historyJson ? JSON.parse(historyJson) : [];
+            historyIds = historyIds.filter(id => id !== item._id);
+            historyIds.unshift(item._id);
+            if (historyIds.length > 10) historyIds.pop();
+            await AsyncStorage.setItem(CACHE_KEY_HISTORY, JSON.stringify(historyIds));
+        } catch (e) {
+            console.error("Failed to save history", e);
+        }
+
         let validPic = "";
         if (item.songs && item.songs.length > 0 && item.songs[0].image_url) {
             validPic = item.songs[0].image_url;
