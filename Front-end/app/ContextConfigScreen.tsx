@@ -24,6 +24,7 @@ import getAllMoods, { IMood } from "../fetchAPI/getAllMoods";
 import { refreshTokenUse } from "../fetchAPI/loginAPI";
 import getDetailContext from "../fetchAPI/getDetailContext";
 import getRandomSongsByContext from "../fetchAPI/getRandomSongsByContext";
+import createContext, { ICreateContextInput } from "../fetchAPI/createContext";
 
 type Mode = "config" | "create";
 
@@ -63,6 +64,7 @@ export default function ContextConfigScreen() {
     
     const [fetchingDetail, setFetchingDetail] = useState(false);
     const [isCreatingPlaylist, setIsCreatingPlaylist] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [contextName, setContextName] = useState<string>("");
     const [selectedIcon, setSelectedIcon] = useState<string>("book-outline");
@@ -168,6 +170,57 @@ export default function ContextConfigScreen() {
             Alert.alert("Lỗi", "Đã xảy ra lỗi khi tạo playlist.");
         } finally {
             setIsCreatingPlaylist(false);
+        }
+    };
+
+    const handleSaveContext = async () => {
+        if (!contextName.trim()) {
+            Alert.alert("Thiếu thông tin", "Vui lòng nhập tên cho Context.");
+            return;
+        }
+
+        if (selectedMoodIds.length === 0) {
+            Alert.alert("Thiếu thông tin", "Vui lòng chọn ít nhất một Mood.");
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            const token = await SecureStore.getItemAsync("accessToken");
+            if (!token) {
+                Alert.alert("Lỗi", "Vui lòng đăng nhập lại.");
+                return;
+            }
+
+            const inputData: ICreateContextInput = {
+                name: contextName.trim(),
+                icon: selectedIcon,
+                color: selectedColor,
+                moods: selectedMoodIds
+            };
+
+            const newContext = await createContext(token, inputData);
+            if (newContext) {
+                Alert.alert("Thành công", "Đã tạo Context mới!", [
+                    {
+                        text: "OK",
+                        onPress: () => {
+                            setDisplayContextName(newContext.name);
+                            setDisplayContextIcon(newContext.icon);
+                            setDisplayContextColor(newContext.color);
+                            setMode("config");
+                        }
+                    }
+                ]);
+                router.navigate('/ContextUserListScreen');
+            } else {
+                Alert.alert("Thất bại", "Không thể tạo Context. Vui lòng thử lại.");
+            }
+        } catch (error) {
+            console.error("Lỗi khi lưu context:", error);
+            Alert.alert("Lỗi", "Đã xảy ra lỗi hệ thống.");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -398,25 +451,17 @@ export default function ContextConfigScreen() {
 
                 {mode === "create" && (
                     <Pressable
-                        style={[styles.createBtn, { opacity: contextName.trim() ? 1 : 0.6 }]}
-                        onPress={() => {
-                            if (!contextName.trim()) return;
-                            setDisplayContextName(contextName.trim());
-                            setDisplayContextIcon(selectedIcon);
-                            setDisplayContextColor(selectedColor);
-                            setMode("config");
-                            console.log("Saving context:", {
-                                id: contextId,
-                                name: contextName,
-                                icon: selectedIcon,
-                                color: selectedColor,
-                                moods: selectedMoodIds
-                            });
-                        }}
+                        style={[styles.createBtn, { opacity: (contextName.trim() && !isSubmitting) ? 1 : 0.6 }]}
+                        onPress={handleSaveContext}
+                        disabled={isSubmitting}
                     >
-                        <Text style={styles.createBtnText}>
-                            {contextId ? "Save Changes" : "Create"}
-                        </Text>
+                        {isSubmitting ? (
+                            <ActivityIndicator color="#FFF" />
+                        ) : (
+                            <Text style={styles.createBtnText}>
+                                {contextId ? "Save Changes" : "Create"}
+                            </Text>
+                        )}
                     </Pressable>
                 )}
             </ScrollView>
