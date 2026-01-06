@@ -6,8 +6,7 @@ import {
     Platform,
     Text,
     TouchableOpacity,
-    ActivityIndicator,
-    Alert
+    ActivityIndicator
 } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -57,6 +56,11 @@ export default function ChoosingMoodPlayScreen() {
 
     const handlePressMood = (item: IMood) => {
         console.log("Selected Mood:", item.displayName);
+        const moodNameTarget = item.name || "happy"; 
+        router.push({
+            pathname: "/CreateMoodPlaylistScreen",
+            params: { moodName: moodNameTarget }
+        });
     };
 
     const renderMoodItem = ({ item }: { item: IMood }) => (
