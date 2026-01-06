@@ -10,7 +10,7 @@ interface PlayerContextType {
     progressVal: number;
     setProgress: React.Dispatch<React.SetStateAction<number>>;
     currentSong: IMusicDetail | null;
-    playTrack: (songId: string) => Promise<void>;
+    playTrack: (song: string | IMusicDetail) => Promise<void>; 
     togglePlayPause: () => Promise<void>;
     seekTo: (value: number) => Promise<void>;
     miniPlayerRef: React.RefObject<MiniPlayerRef | null>;
@@ -43,12 +43,17 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         });
     }, []);
 
-    const playTrack = async (songId: string) => {
+    const playTrack = async (input: string | IMusicDetail) => {
         try {
-            const token = await SecureStore.getItemAsync('accessToken');
-            if (!token) return;
+            let songDetails: IMusicDetail | null = null;
+            if (typeof input === 'string') {
+                const token = await SecureStore.getItemAsync('accessToken');
+                if (!token) return;
+                songDetails = await getMusicById(input, token);
+            } else {
+                songDetails = input;
+            }
 
-            const songDetails = await getMusicById(songId, token);
             if (songDetails && songDetails.mp3_url) {
                 if (sound) {
                     await sound.unloadAsync();
@@ -66,7 +71,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
                 setSound(newSound);
                 setIsPlaying(true);
             } else {
-                console.warn("Bài hát không có MP3 URL hoặc không lấy được thông tin");
+                console.warn("Không thể phát nhạc: Thiếu thông tin hoặc MP3 URL.");
             }
         } catch (error) {
             console.error('Error playing track:', error);
@@ -110,7 +115,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         if (status.isLoaded) {
             setDuration(status.durationMillis || 0);
             setPosition(status.positionMillis || 0);
-            
+
             if (status.durationMillis) {
                 setProgress(status.positionMillis / status.durationMillis);
             }

@@ -38,6 +38,8 @@ import searchSongsByKeyword, { SongPreview } from "@/fetchAPI/SearchMusic";
 import getAllMoods, { IMood } from "@/fetchAPI/getAllMoods";
 import getUserContexts, { IContext } from "@/fetchAPI/getUserContexts"; 
 import { refreshTokenUse } from '@/fetchAPI/loginAPI';
+import { IMusicDetail } from "@/fetchAPI/getMusicById";
+import { usePlayer } from "./PlayerContext";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CONTEXT_ITEM_WIDTH = SCREEN_WIDTH * 0.3;
@@ -65,6 +67,7 @@ export default function SearchScreen() {
     const router = useRouter();
     const [isModEnabled, setIsModEnabled] = useState(false);
     const insets = useSafeAreaInsets();
+    const { playTrack, miniPlayerRef } = usePlayer();
 
     let [fontsMontserratLoaded] = useMontserrat({
         Montserrat_400Regular,
@@ -159,7 +162,7 @@ export default function SearchScreen() {
         setIsSearchMode(true);
         setSearchedKeyword(keyword);
         try {
-            const results = await searchSongsByKeyword(keyword, 5);
+            const results = await searchSongsByKeyword(keyword, 40);
             setSearchResults(results);
         } catch (error) {
             console.error("Search error:", error);
@@ -178,23 +181,48 @@ export default function SearchScreen() {
     };
 
     const renderSong = ({ item }: { item: Song }) => (
-        <View style={styles.songRow}>
+        <TouchableOpacity 
+            style={styles.songRow}
+            onPress={() => {
+                console.log("Play dummy song:", item.title);
+            }}
+        >
             <Image source={item.cover} style={styles.songCover} />
             <View style={styles.songMeta}>
                 <Text style={styles.songTitle} numberOfLines={1}>{item.title}</Text>
                 <Text style={styles.songArtist} numberOfLines={1}>{item.artist}</Text>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 
     const renderSearchResult = ({ item }: { item: SongPreview }) => (
-        <View style={styles.songRow}>
+        <TouchableOpacity 
+            style={styles.songRow}
+            onPress={async () => {
+                const songData: IMusicDetail = {
+                    _id: item.track_id,
+                    track_id: item.track_id,
+                    title: item.title,
+                    artist: item.artist,
+                    album: item.album,
+                    genre: item.genre,
+                    mp3_url: item.mp3_url,
+                    image_url: item.image_url,
+                    release_date: item.release_date,
+                    mood: item.moods && item.moods.length > 0 ? item.moods[0].name : ""
+                };
+                await playTrack(songData);
+                if (miniPlayerRef.current) {
+                    miniPlayerRef.current.expand();
+                }
+            }}
+        >
             <Image source={{ uri: item.image_url }} style={styles.songCover} resizeMode="cover"/>
             <View style={styles.songMeta}>
                 <Text style={styles.songTitle} numberOfLines={1}>{item.title || "Unknown Title"}</Text>
                 <Text style={styles.songArtist} numberOfLines={1}>{item.artist || "Unknown Artist"}</Text>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 
     const renderMoodItem = ({ item }: { item: IMood }) => (
@@ -307,7 +335,7 @@ export default function SearchScreen() {
                                 <TouchableOpacity onPress={handleBack} style={{ marginLeft: 5, marginBottom: 10 }}>
                                     <Ionicons name="arrow-back" size={35} color="#FFF" style={{ width: 50 }} />
                                 </TouchableOpacity>
-                                <Text style={[styles.sectionTitle, { textAlign: "center", fontSize: 18 }]}>
+                                <Text style={[styles.sectionTitle, { textAlign: "center", fontSize: 18, fontStyle: "italic" }]}>
                                     Kết quả cho &quot;{searchedKeyword}&quot;
                                 </Text>
                                 {isSearching && (

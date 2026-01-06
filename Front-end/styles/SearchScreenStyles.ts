@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
         paddingBottom: 18,
     },
     sectionTitle: {
-        color: "#000000",
+        color: "#ffffffff",
         fontSize: 18,
         fontWeight: 700,
         fontFamily: "Montserrat_700Bold",
