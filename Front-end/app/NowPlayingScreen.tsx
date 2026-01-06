@@ -27,7 +27,8 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
         seekTo,
         currentSong,
         duration,
-        position
+        position,
+        setSoundVolume
     } = usePlayer();
     const formatTime = (millis: number) => {
         if (!millis) return "0:00";
@@ -39,6 +40,7 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
     const [volume, setVolume] = useState(0.8);
     const muteAnim = useRef(new RNAnimated.Value(volume > 0 ? 0 : 1)).current;
     const oldVolume = useRef(volume);
+    const lastVolumeUpdateTimestamp = useRef<number>(0);
     const normalize = (v: number | number[]) => (Array.isArray(v) ? v[0] : v);
 
     useEffect(() => {
@@ -175,8 +177,10 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
                                 if (volume > 0) {
                                     oldVolume.current = volume;
                                     setVolume(0);
+                                    setSoundVolume(0);
                                 } else {
                                     setVolume(oldVolume.current);
+                                    setSoundVolume(oldVolume.current);
                                 }
                             }}
                         >
@@ -197,7 +201,19 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
                             minimumTrackStyle={styles.sliderMinTrack}
                             thumbStyle={styles.sliderThumb}
                             value={volume}
-                            onValueChange={(value) => setVolume(normalize(value))}
+                            onValueChange={(value) => {
+                                const newVal = normalize(value);
+                                setVolume(newVal);
+                                const now = Date.now();
+                                if (now - lastVolumeUpdateTimestamp.current > 100) {
+                                    setSoundVolume(newVal);
+                                    lastVolumeUpdateTimestamp.current = now;
+                                }
+                            }}
+                            onSlidingComplete={(value) => {
+                                const newVal = normalize(value);
+                                setSoundVolume(newVal);
+                            }}
                             minimumValue={0}
                             maximumValue={1}
                         />

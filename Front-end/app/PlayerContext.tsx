@@ -16,6 +16,7 @@ interface PlayerContextType {
     miniPlayerRef: React.RefObject<MiniPlayerRef | null>;
     duration: number;
     position: number;
+    setSoundVolume: (value: number) => Promise<void>;
 }
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
@@ -28,6 +29,12 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     const [duration, setDuration] = useState(0);
     const [position, setPosition] = useState(0);
     const miniPlayerRef = useRef<MiniPlayerRef>(null);
+
+    const setSoundVolume = async (value: number) => {
+        if (sound) {
+            await sound.setVolumeAsync(value);
+        }
+    };
 
     useEffect(() => {
         Audio.setAudioModeAsync({
@@ -124,7 +131,8 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
             seekTo,
             miniPlayerRef,
             duration,
-            position
+            position,
+            setSoundVolume,
         }}>
             {children}
         </PlayerContext.Provider>
