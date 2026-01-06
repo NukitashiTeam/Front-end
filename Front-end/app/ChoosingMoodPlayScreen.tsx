@@ -1,74 +1,90 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     StyleSheet,
     StatusBar,
     Platform,
     Text,
-    Image,
+    TouchableOpacity,
+    ActivityIndicator,
+    Alert
 } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import styles from "../styles/ChoosingMoodPlayStyles";
-import Header from "../Components/Header";
+import { FlatList } from "react-native-gesture-handler";
+import * as SecureStore from 'expo-secure-store';
 import {
     useFonts as useMontserrat,
     Montserrat_400Regular,
     Montserrat_700Bold
 } from "@expo-google-fonts/montserrat";
-import { FlatList } from "react-native-gesture-handler";
-
-type MoodItem = {
-    id?: number;
-    imgPath: any;
-    moodName: string;
-};
+import styles from "../styles/ChoosingMoodPlayStyles";
+import Header from "../Components/Header";
+import getAllMoods, { IMood } from "../fetchAPI/getAllMoods";
 
 export default function ChoosingMoodPlayScreen() {
     const router = useRouter();
-    const [isModEnabled, setIsModEnabled] = useState(false);
     const insets = useSafeAreaInsets();
-
+    const [moodList, setMoodList] = useState<IMood[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isModEnabled, setIsModEnabled] = useState(false);
     let [fontsMontserratLoaded] = useMontserrat({
         Montserrat_400Regular,
         Montserrat_700Bold,
     });
 
-    if(!fontsMontserratLoaded) {
+    useEffect(() => {
+        const fetchMoods = async () => {
+            try {
+                const token = await SecureStore.getItemAsync('accessToken');
+                if (token) {
+                    const data = await getAllMoods(token);
+                    if (data) {
+                        setMoodList(data);
+                    }
+                } else {
+                    console.log("Không tìm thấy accessToken");
+                }
+            } catch (error) {
+                console.error("Lỗi khi lấy mood:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchMoods();
+    }, []);
+
+    const handlePressMood = (item: IMood) => {
+        console.log("Selected Mood:", item.displayName);
+    };
+
+    const renderMoodItem = ({ item }: { item: IMood }) => (
+        <TouchableOpacity 
+            activeOpacity={0.7}
+            style={styles.gridItemContainer}
+            onPress={() => handlePressMood(item)}
+        >
+            <View style={[
+                styles.moodCircle, 
+                { 
+                    backgroundColor: item.colorCode || '#FFF',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }
+            ]}>
+                <Text style={{ fontSize: 32 }}>{item.icon}</Text>
+            </View>
+            
+            <Text style={styles.moodName} numberOfLines={1}>
+                {item.displayName}
+            </Text>
+        </TouchableOpacity>
+    );
+
+    if (!fontsMontserratLoaded) {
         return null;
     }
-
-    const moodList: MoodItem[] = [
-        { imgPath: require("../assets/images/avatar.png"), moodName: "Chill" },
-        { imgPath: require("../assets/images/avatar2.png"), moodName: "Travel" },
-        { imgPath: require("../assets/images/avatar5.png"), moodName: "Deadline" },
-
-        { imgPath: require("../assets/images/avatar.png"), moodName: "Chill" },
-        { imgPath: require("../assets/images/avatar2.png"), moodName: "Travel" },
-        { imgPath: require("../assets/images/avatar5.png"), moodName: "Deadline" },
-
-        { imgPath: require("../assets/images/avatar.png"), moodName: "Chill" },
-        { imgPath: require("../assets/images/avatar2.png"), moodName: "Travel" },
-        { imgPath: require("../assets/images/avatar5.png"), moodName: "Deadline" },
-
-        { imgPath: require("../assets/images/avatar.png"), moodName: "Chill" },
-        { imgPath: require("../assets/images/avatar2.png"), moodName: "Travel" },
-        { imgPath: require("../assets/images/avatar5.png"), moodName: "Deadline" },
-
-        { imgPath: require("../assets/images/avatar.png"), moodName: "Chill" },
-        { imgPath: require("../assets/images/avatar2.png"), moodName: "Travel" },
-        { imgPath: require("../assets/images/avatar5.png"), moodName: "Deadline" },
-    ];
-
-    const renderMoodItem = ({ item }: { item: MoodItem }) => (
-        <View style={styles.gridItemContainer}>
-            <View style={styles.moodCircle}>
-                <Image source={item.imgPath} style={styles.moodImage} resizeMode="contain" />
-            </View>
-            <Text style={styles.moodName}>{item.moodName}</Text>
-        </View>
-    );
 
     return (
         <View style={[styles.container, {
@@ -93,14 +109,25 @@ export default function ChoosingMoodPlayScreen() {
                 <Text style={styles.choosingMoodPlayTextStyle}>One click on the mood and make the soundtrack you want</Text>
             </View>
 
-            <FlatList
-                data={moodList}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={renderMoodItem}
-                numColumns={3}
-                contentContainerStyle={styles.flatListContent}
-                showsVerticalScrollIndicator={false}
-            />
+            {isLoading ? (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size="large" color="#FFF" />
+                </View>
+            ) : (
+                <FlatList
+                    data={moodList}
+                    keyExtractor={(item) => item._id}
+                    renderItem={renderMoodItem}
+                    numColumns={3}
+                    contentContainerStyle={styles.flatListContent}
+                    showsVerticalScrollIndicator={false}
+                    ListEmptyComponent={
+                        <Text style={{ color: 'white', textAlign: 'center', marginTop: 20 }}>
+                            No moods available
+                        </Text>
+                    }
+                />
+            )}
         </View>
     );
 }

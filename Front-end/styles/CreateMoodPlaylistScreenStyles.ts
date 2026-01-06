@@ -119,6 +119,23 @@ const styles = StyleSheet.create({
         right: 0,
         paddingHorizontal: 12,
     },
+    spinner: {
+    width: 100,
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  segment: {
+    position: 'absolute',
+    width: 12,
+    height: 12,
+    backgroundColor: '#4F378A', 
+    borderRadius: 6,
+    top: 0,
+    left: '50%',
+    marginLeft: -6,
+    transformOrigin: 'center 50px', 
+  },
 });
 
 export default styles;

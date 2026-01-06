@@ -34,7 +34,7 @@ export default function PhoneInputScreen(){
     return(
         <Background>
             <View style={{flex:1,alignItems:'center', paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0, paddingBottom: insets.bottom ? Math.max(insets.bottom, 12) : 12,}}>
-            <Text style={{...styles.signintitle, marginTop:20}}>Enter your phone number</Text>
+            <Text style={{...styles.signintitle, marginTop:20}}>Enter your Email</Text>
              <View style={{width: '100%', paddingTop: 30,paddingLeft:15,paddingRight:5, marginLeft:"1%"}}>
                 <PhoneInput
                     value={phoneNumber}

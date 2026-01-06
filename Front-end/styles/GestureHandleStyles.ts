@@ -1,13 +1,19 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
+    touchArea: {
+        height: "10%",
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "transparent",
+        zIndex: 10000000,
+    },
     handle: {
-        width: 40,
-        height: 5,
-        borderRadius: 2.5,
-        backgroundColor: 'rgba(255, 255, 255, 0.75)',
-        alignSelf: 'center',
-        marginVertical: 1,
+        width: 80,
+        height: 7,
+        borderRadius: 999,
+        backgroundColor: "rgba(255,255,255,0.5)",
     },
 });
 

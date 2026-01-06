@@ -1,13 +1,20 @@
 import { useRouter, Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MiniPlayer, { MiniPlayerRef } from "../Components/MiniPlayer";
 import BottomBar from "../Components/BottomBar";
 import PlayerProvider from "./PlayerContext";
 import * as Sentry from '@sentry/react-native';
 import { useNavigationContainerRef } from 'expo-router';
+import * as NavigationBar from 'expo-navigation-bar';
+
+import {
+    SafeAreaProvider,
+    initialWindowMetrics,
+    useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 // 1. Khai báo integration
 export const navigationIntegration = Sentry.reactNavigationIntegration();
@@ -24,7 +31,7 @@ Sentry.init({
   ],
 
   tracePropagationTargets: ["https://myproject.org", /^\/api\//],
-  debug: true,
+  debug: !true,
 
   
 
@@ -53,6 +60,7 @@ SplashScreen.preventAutoHideAsync();
 export default Sentry.wrap(function RootLayout() {
     const router = useRouter();
     const pathname = usePathname();
+    const insets = useSafeAreaInsets();
     const [isPlayerExpanded, setIsPlayerExpanded] = useState(false);
 
     const playerRef = useRef<MiniPlayerRef>(null);
@@ -65,6 +73,8 @@ export default Sentry.wrap(function RootLayout() {
     }, []);
 
     const ref = useNavigationContainerRef();
+    const [bottomBarHeight, setBottomBarHeight] = useState(0);
+    const BOTTOM_GAP = 8;
     
     // Đăng ký navigation container cho Sentry
     useEffect(() => {
@@ -72,6 +82,14 @@ export default Sentry.wrap(function RootLayout() {
             navigationIntegration.registerNavigationContainer(ref);
         }
     }, [ref]);
+
+    useEffect(() => {
+        if (Platform.OS === 'android') {
+            NavigationBar.setPositionAsync("absolute");
+            NavigationBar.setBackgroundColorAsync("#00000000");
+            NavigationBar.setButtonStyleAsync("light"); 
+        }
+    }, []);
 
     // 3. SỬA LỖI CÚ PHÁP Ở ĐÂY
     useEffect(() => {
@@ -122,11 +140,12 @@ export default Sentry.wrap(function RootLayout() {
                     <Stack.Screen name="SearchScreen" />
                     <Stack.Screen name="MyMusic" />
                     <Stack.Screen name="ChoosingMoodPlayScreen" />
+                    <Stack.Screen name="ContextConfigScreen" />
                 </Stack>
                 {appearBottomBar && (
                     <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
 
-                        <View style={{ position: "absolute", bottom: "2%", left: 0, right: 0, zIndex: 9999, alignItems: 'center' }}>
+                        <View style={{ position: "absolute", bottom: "0%", left: 0, right: 0, zIndex: 9999, alignItems: 'center', paddingBottom: insets.bottom}}>
                             <BottomBar
                                 active={activeTab as any}
                                 onPress={(k) => {
@@ -158,6 +177,9 @@ export default Sentry.wrap(function RootLayout() {
                                     ref={playerRef}
                                     hidden={pathname === "/onboarding" || pathname === "/index"}
                                     onStateChange={(expanded) => setIsPlayerExpanded(expanded)}
+                                    bottomBarHeight={bottomBarHeight}
+                                    bottomInset={insets.bottom}
+                                    bottomGap={BOTTOM_GAP}
                                 />
                             </View>
                         )}

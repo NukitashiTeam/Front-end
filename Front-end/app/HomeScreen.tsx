@@ -1,6 +1,9 @@
 import React, {
     useEffect,
-    useState
+    useState,
+    useCallback,
+    memo,
+    useMemo 
 } from "react";
 import { 
     View,
@@ -10,12 +13,14 @@ import {
     TouchableOpacity,
     FlatList,
     Dimensions,
-    Pressable
+    Pressable,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
-import styles from "../styles/HomeStyles";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SplashScreen from 'expo-splash-screen';
+import * as SecureStore from 'expo-secure-store';
 import {
     useFonts as useIrishGrover,
     IrishGrover_400Regular
@@ -25,10 +30,42 @@ import {
     Montserrat_400Regular,
     Montserrat_700Bold
 } from "@expo-google-fonts/montserrat";
-import * as SplashScreen from 'expo-splash-screen';
-import Header from "../Components/Header";
 
-SplashScreen.preventAutoHideAsync();
+import styles from "../styles/HomeStyles";
+import Header from "../Components/Header";
+import { refreshTokenUse } from '../fetchAPI/loginAPI';
+import getAllPlaylist, { IPlaylist } from "../fetchAPI/getAllPlaylist";
+import getAllMoods, { IMood } from "../fetchAPI/getAllMoods";
+
+const CACHE_KEY_PLAYLIST = 'CACHE_HOME_PLAYLIST';
+const NUM_COLS = 2;
+const H_PADDING = 20;
+const GAP = 16;
+const ITEM_W = Math.floor((Dimensions.get("window").width - H_PADDING * 2 - GAP) / NUM_COLS);
+
+const PlaylistItem = memo(({ item, onPress }: { item: IPlaylist, onPress: (item: IPlaylist) => void }) => {
+    const imageSource = useMemo(() => {
+        return (item.songs && item.songs.length > 0 && item.songs[0].image_url) ? { uri: item.songs[0].image_url } : require("../assets/images/song4.jpg");
+    }, [item.thumbnail, item.songs]);
+
+    return (
+        <TouchableOpacity
+            activeOpacity={0.85}
+            style={{ width: ITEM_W }}
+            onPress={() => onPress(item)}
+        >
+            <View style={{ borderRadius: 16, overflow: "hidden" }}>
+                <Image 
+                    source={imageSource} 
+                    resizeMode="cover" 
+                    style={{ width: "100%", height: ITEM_W }} 
+                />
+            </View>
+            <Text numberOfLines={1} style={styles.playlistTitle}>{item.title}</Text>
+        </TouchableOpacity>
+    );
+});
+PlaylistItem.displayName = 'PlaylistItem';
 
 export default function HomeScreen() {
     let [fontsIrishGroverLoaded] = useIrishGrover({
@@ -41,31 +78,116 @@ export default function HomeScreen() {
     });
 
     const fontsLoaded = fontsIrishGroverLoaded && fontsMontserratLoaded;
-    const [isModEnabled, setIsModEnabled] = useState(true);
     const router = useRouter();
-    
-    const RECENT_PLAYLISTS = [
-        {id: "1", title: "Wibu Songs", cover: require("../assets/images/weebooSong.jpg")},
-        {id: "2", title: "Sad Songs", cover: require("../assets/images/sadSong.jpg")},
-        {id: "3", title: "Lonely Songs", cover: require("../assets/images/lonelySong.jpg")},
-        {id: "4", title: "Allegory of the cave Songs", cover: require("../assets/images/allegoryOfTheCaveSong.jpg")},
-    ];
 
-    const NUM_COLS = 2;
-    const H_PADDING = 20;
-    const GAP = 16;
-    const ITEM_W = Math.floor((Dimensions.get("window").width - H_PADDING * 2 - GAP) / NUM_COLS);
+    const [isModEnabled, setIsModEnabled] = useState(true);
+    const [recentPlaylists, setRecentPlaylists] = useState<IPlaylist[]>([]);
+    const [quickStartMood, setQuickStartMood] = useState<IMood | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const loadData = useCallback(async () => {
+        try {
+            const cachedData = await AsyncStorage.getItem(CACHE_KEY_PLAYLIST);
+            if (cachedData) {
+                setRecentPlaylists(JSON.parse(cachedData));
+                setIsLoading(false); 
+            }
+
+            let token = await SecureStore.getItemAsync("accessToken")
+            let needRefreshLogin = false;
+            if (!token) {
+                needRefreshLogin = true;
+            }
+
+            if (!needRefreshLogin && token) {
+                const data = await getAllPlaylist(token);
+                if (data) {
+                    if (Array.isArray(data)) {
+                        const top4 = data.slice(0, 4);
+                        if (JSON.stringify(top4) !== cachedData) {
+                            setRecentPlaylists(top4);
+                            await AsyncStorage.setItem(CACHE_KEY_PLAYLIST, JSON.stringify(top4));
+                        }
+                    }
+                } else {
+                    console.log("Token cũ có thể đã hết hạn, đang thử đăng nhập lại...");
+                    needRefreshLogin = true; 
+                }
+
+                if (!needRefreshLogin) {
+                    const moods = await getAllMoods(token);
+                    if (moods && moods.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * moods.length);
+                        setQuickStartMood(moods[randomIndex]);
+                        console.log("Random Mood selected:", moods[randomIndex].name);
+                    }
+                }
+            }
+
+            if (needRefreshLogin) {
+                const newToken = await refreshTokenUse();
+                if (newToken) {
+                    token = newToken;
+                    const dataRetry = await getAllPlaylist(newToken);
+                    if (dataRetry && Array.isArray(dataRetry)) {
+                        const top4 = dataRetry.slice(0, 4);
+                        setRecentPlaylists(top4);
+                        await AsyncStorage.setItem(CACHE_KEY_PLAYLIST, JSON.stringify(top4));
+                    }
+
+                    const moodsRetry = await getAllMoods(newToken);
+                    if (moodsRetry && moodsRetry.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * moodsRetry.length);
+                        setQuickStartMood(moodsRetry[randomIndex]);
+                        console.log("Random Mood selected (retry):", moodsRetry[randomIndex].name);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("Lỗi fetch data HomeScreen:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
 
     useEffect(() => {
-        if (!fontsLoaded) return;
-        (async () => {
-          await SplashScreen.hideAsync();
-        })();
-      }, [fontsLoaded]);
+        if (fontsLoaded) {
+            SplashScreen.hideAsync();
+        }
+    }, [fontsLoaded]);
 
-    if(!fontsLoaded) {
-        return null;
-    }
+    useEffect(() => {
+        loadData();
+    }, [loadData]);
+
+    const handlePressItem = useCallback((item: IPlaylist) => {
+        let validPic = "";
+        if (item.songs && item.songs.length > 0 && item.songs[0].image_url) {
+            validPic = item.songs[0].image_url;
+        }
+
+        router.navigate({
+            pathname: "/PlaylistSong",
+            params: { 
+                id: item._id, 
+                title: item.title,
+                pic: validPic
+            }
+        });
+    }, [router]);
+
+    const handleQuickStartPress = () => {
+        const moodToPlay = quickStartMood?.name || "happy";
+        router.push({
+            pathname: "/CreateMoodPlaylistScreen",
+            params: { moodName: moodToPlay }
+        });
+    };
+
+    if(!fontsLoaded) return null;
+
+    const moodDisplayName = quickStartMood?.name ? quickStartMood.name.charAt(0).toUpperCase() + quickStartMood.name.slice(1) : "Happy";
+    const moodIcon = quickStartMood?.icon || "🎵"; 
 
     return (
         <View style={styles.container}>
@@ -79,22 +201,25 @@ export default function HomeScreen() {
             />
 
             <FlatList
-                data={RECENT_PLAYLISTS}
-                keyExtractor={(it) => it.id}
+                data={recentPlaylists}
+                keyExtractor={(item) => item._id}
                 numColumns={2}
+                initialNumToRender={4}
+                maxToRenderPerBatch={4}
+                windowSize={5}
+                removeClippedSubviews={true} 
                 contentContainerStyle={[styles.contentInner, { paddingBottom: 250 }]}
                 showsVerticalScrollIndicator={false}
                 ListHeaderComponent={<>
                     <Header isModEnabled={isModEnabled} onToggleMod={setIsModEnabled} />
 
-                    {/* QUICK START */}
                     <View style={{ width: "100%", alignItems: "center" }}>
                         <Text style={styles.sectionTitle}>QUICK START</Text>
                     </View>
                     
                     <View style={styles.quickStartWrapper}>
                         <Pressable
-                            onPress={() => router.push("/CreateMoodPlaylistScreen")}
+                            onPress={handleQuickStartPress}
                             style={({ pressed }) => [{
                                 opacity: pressed ? 0.96 : 1
                             }]}
@@ -106,20 +231,18 @@ export default function HomeScreen() {
                                 style={styles.quickStartCard}
                             >
                                 <View style={styles.quickStartTopRow}>
-                                    <Text style={styles.quickStartLabel}>Last Mood</Text>
+                                    <Text style={styles.quickStartLabel}>Best Mood</Text>
                                     <View style={styles.quickStartLeftDown}>
                                         <View style={styles.moodAvatarCircle}>
-                                            <Image source={require("../assets/images/avatar.png")} style={styles.moodAvatarImg} />
+                                            <Text style={styles.moodEmojiText}>{moodIcon}</Text>
                                         </View>
-                                        <Text style={styles.moodNameText}>Chill</Text>
+                                        <Text style={styles.moodNameText}>{moodDisplayName}</Text>
                                     </View>
                                 </View>
                                 
                                 <View style={styles.quickStartBottomRow}>
                                     <Pressable
-                                        onPress={() => {
-                                            console.log("Play!");
-                                        }}
+                                        onPress={handleQuickStartPress}
                                         accessibilityRole="button"
                                         accessibilityLabel="Play"
                                         hitSlop={8}
@@ -135,7 +258,6 @@ export default function HomeScreen() {
                         </Pressable>
                     </View>
 
-                    {/* RECENT PLAYLIST title */}
                     <View style={{ width: "100%", alignItems: "center" }}>
                         <Text style={styles.sectionTitle}>RECENT PLAYLIST</Text>
                     </View>
@@ -146,21 +268,12 @@ export default function HomeScreen() {
                     marginBottom: GAP,
                 }}
                 renderItem={({ item }) => (
-                    <TouchableOpacity
-                        activeOpacity={0.85}
-                        style={{ width: ITEM_W }}
-                        onPress={() => console.log("Open playlist:", item.title)}
-                    >
-                        <View style={{ borderRadius: 16, overflow: "hidden" }}>
-                            <Image source={item.cover} resizeMode="cover" style={{ width: "100%", height: ITEM_W }} />
-                        </View>
-                        <Text numberOfLines={1} style={styles.playlistTitle}>{item.title}</Text>
-                    </TouchableOpacity>
+                    <PlaylistItem item={item} onPress={handlePressItem} />
                 )}
+                
+                ListEmptyComponent={!isLoading ? <Text style={{color:'white', textAlign:'center'}}>No playlists found</Text> : null}
                 ListFooterComponent={<View style={{ height: 12 }} />}
             />
-
-            {/* <MiniPlayer /> */}
         </View>
     );
 }

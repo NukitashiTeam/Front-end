@@ -1,8 +1,9 @@
 import React,{useState, useRef} from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import styles from '../../../styles/style';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import Background from '../../../Components/background';
+import { verifyOTP, resendOTP } from '@/fetchAPI/signupAPI';
 const Otpsign = () =>{
     const router = useRouter();
     const [otp,setOtp] = useState<string[]>(['', '', '', '']);
@@ -11,6 +12,7 @@ const Otpsign = () =>{
     const ref2 = useRef<TextInput>(null);
     const ref3 = useRef<TextInput>(null);
     const refs = [ref0, ref1, ref2, ref3];
+    const { email } = useLocalSearchParams<{ email?: string }>();
     const handleOtpChange = (text: string, index: number) => {
         const newOtp = [...otp];
         newOtp[index] = text;
@@ -22,17 +24,33 @@ const Otpsign = () =>{
         }
     };
 
-    const handleNext = () => {
+    const handleNext = async () => {
         const code = otp.join('');
         console.log('OTP:', code);
-        router.push("/src/signin/Typesong");
-        // Navigate to next screen or verify OTP
-        // router.push('/next-screen');
+        if (code.length !== 4) {
+          Alert.alert("Lỗi", "Vui lòng nhập đủ 4 chữ số OTP");
+          return;
+        }
+        try {
+          await verifyOTP({ otp: code });
+          Alert.alert("Thành công", "Tài khoản đã được tạo thành công!");
+          router.push("/src/signin/Typesong"); // hoặc màn home/login
+        } catch (error: any) {
+          Alert.alert("OTP sai", error.message);
+        } 
     };
-    const handleResend = () => {
-        console.log('Resend SMS');
-        // Logic to resend OTP
+  const handleResend = async () => {
+      if (!email) {
+        Alert.alert("Lỗi", "Không tìm thấy email. Vui lòng quay lại bước trước.");
+        return;
+      }
 
+      try {
+        await resendOTP({ contact: email });
+        Alert.alert("Thành công", "OTP mới đã được gửi lại đến email của bạn!");
+      } catch (error: any) {
+        Alert.alert("Thất bại", error.message || "Không thể gửi lại OTP");
+      }
     };
 
     return(
@@ -62,12 +80,12 @@ const Otpsign = () =>{
           </View>
           <Text style={{fontWeight: "600"}}>Resend OTP</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>router.back()} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
+        {/* <TouchableOpacity onPress={()=>router.back()} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
           <View>
             <Image source={require("../../../assets/images/Vector.png")} style={styles.icon} />
           </View>
           <Text style={{fontWeight: "600"}}>Edit Phone Number</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         </Background>
     )   
 }

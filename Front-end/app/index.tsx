@@ -42,20 +42,20 @@ export default function Index() {
   //   }
   // }, []);
 
-  // // ⏳ Có thể hiển thị splash hoặc loading tạm
+  // ⏳ Có thể hiển thị splash hoặc loading tạm
 
-  // const checkOpen = useCallback (async () => {
-  //   const hasSeen = await AsyncStorage.getItem("hasSeenOnboarding");
-  //   if (hasSeen !== "true") {
-  //     router.replace("/onboarding");
-  //   } else {
-  //     router.replace("/HomeScreen");
-  //   }
-  // }, [])
+  const checkOpen = useCallback (async () => {
+    const hasSeen = await AsyncStorage.getItem("hasSeenOnboarding");
+    if (hasSeen !== "true") {
+      router.replace("/onboarding");
+    } else {
+      router.replace("/src/signin/Login");
+    }
+  }, [])
 
-  // useEffect(() => {
-  //   checkOpen();
-  // }, []);
+  useEffect(() => {
+    checkOpen();
+  }, []);
 
   return (
     <BackgroundLayer>

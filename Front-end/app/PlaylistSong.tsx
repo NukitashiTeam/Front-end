@@ -1,98 +1,210 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     Text,
     Image,
-    StyleSheet,
     FlatList,
     StatusBar,
     Platform,
-    Pressable,
-    TextInput,
     TouchableOpacity,
-    Modal
+    ActivityIndicator,
+    Alert
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useRouter, useLocalSearchParams } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons';
 import styles from "../styles/style";
 import Header from "../Components/Header";
-import { useRouter, useLocalSearchParams } from "expo-router";
 import Background from "../Components/MainBackground";
-type Song = {
-id: string;
-title: string;
-artist: string;
-pic: any;
-};
-export default function PlaylistSong(){
+import getPlaylistDetail, { IPlaylistDetail, ISong } from "../fetchAPI/getPlaylistDetail";
+import deletePlaylist from "../fetchAPI/deletePlaylist";
+import removeSongFromPlaylist from "../fetchAPI/removeSongFromPlaylist";
+import * as SecureStore from 'expo-secure-store';
+
+const CACHE_KEY_TOKEN = 'CACHE_USER_TOKEN';
+
+export default function PlaylistSong() {
     const [isModEnabled, setIsModEnabled] = useState(false);
     const insets = useSafeAreaInsets();
     const router = useRouter();
+    
     const params = useLocalSearchParams();
-    const artistTitle = params.title as string || "Unknown Artist";
-    const artistPic = params.pic as any;
-    const songs: Song[] = [
-        { id: '1', title: 'Name of the song', artist: 'Artist Name', pic: require('../assets/images/lonelySong.jpg') },
-        { id: '2', title: 'Name of the song', artist: 'Artist Name', pic: require('../assets/images/sadSong.jpg') },
-        { id: '3', title: 'Name of the song', artist: 'Artist Name', pic: require('../assets/images/song.png') },
-        { id: '4', title: 'Name of the song', artist: 'Artist Name', pic: require('../assets/images/song4.jpg') },
-        { id: '5', title: 'Name of the song', artist: 'Artist Name', pic: require('../assets/images/song5.jpg') },
-        { id: '6', title: 'Name of the song', artist: 'Artist Name', pic: require('../assets/images/song6.jpg') },
-        { id: '7', title: 'Name of the song', artist: 'Artist Name', pic: require('../assets/images/song7.jpg') },
-        ];
-    const renderSongItem = ({ item }: { item: Song }) => (
-        <View style={styles.songItem}>
-            <Image source={item.pic} style={styles.songImage} />
-            <View >
-                <Text style={styles.songTitle}>{item.title}</Text>
-                <Text style={styles.songArtist}>{item.artist}</Text>
+    const playlistId = params.id as string;
+    const playlistTitle = params.title as string || "Unknown Playlist";
+    const playlistPic = params.pic ? { uri: params.pic as string } : require('../assets/images/MoodyBlue.png');
+
+    const [playlistData, setPlaylistData] = useState<IPlaylistDetail | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const token = await SecureStore.getItemAsync("accessToken");
+                if (token && playlistId) {
+                    const data = await getPlaylistDetail(token, playlistId);
+                    if (data) {
+                        setPlaylistData(data);
+                    }
+                } else {
+                    console.log("Thiếu Token hoặc Playlist ID");
+                }
+            } catch (error) {
+                console.error("Lỗi fetch playlist detail:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchData();
+    }, [playlistId]);
+
+    const handleRemoveSong = (songId: string) => {
+        Alert.alert(
+            "Xóa bài hát",
+            "Bạn có chắc chắn muốn xóa bài hát này khỏi playlist?",
+            [
+                { text: "Hủy", style: "cancel" },
+                { 
+                    text: "Xóa", 
+                    style: "destructive", 
+                    onPress: async () => {
+                        setIsLoading(true);
+                        const token = await AsyncStorage.getItem(CACHE_KEY_TOKEN);
+                        if (token && playlistId) {
+                            const updatedPlaylist = await removeSongFromPlaylist(token, playlistId, songId);
+                            
+                            if (updatedPlaylist) {
+                                setPlaylistData(updatedPlaylist); 
+                            } else {
+                                Alert.alert("Lỗi", "Không thể xóa bài hát. Vui lòng thử lại.");
+                            }
+                        }
+                        setIsLoading(false);
+                    }
+                }
+            ]
+        );
+    };
+
+    const renderSongItem = ({ item }: { item: ISong }) => (
+        <View style={[styles.songItem, { flexDirection: 'row', alignItems: 'center' }]}>
+            <Image 
+                source={(item.image_url && item.image_url !== "") ? { uri: item.image_url } : require('../assets/images/song5.jpg')}
+                style={styles.songImage} 
+            />
+            
+            <View style={{ flex: 1, marginLeft: 12 }}>
+                <Text numberOfLines={1} style={styles.songTitle}>{item.title}</Text>
+                <Text numberOfLines={1} style={styles.songArtist}>{item.artist}</Text>
             </View>
+
+            <TouchableOpacity 
+                onPress={() => handleRemoveSong(item.songId)}
+                style={{ padding: 10 }}
+            >
+                <Ionicons name="trash-outline" size={24} color="white" />
+            </TouchableOpacity>
         </View>
     );
-    const handleVectorPress = () => {
-        console.log('Vector icon pressed');
-    };
 
-    const handleAddPress = () => {
-        console.log('Add icon pressed');
+    const handleVectorPress = () => console.log('Vector icon pressed');
+    const handleDeletePress = async () => {
+        Alert.alert(
+            "Xóa Playlist",
+            "Bạn có chắc chắn muốn xóa vĩnh viễn playlist này không?",
+            [
+                { text: "Hủy", style: "cancel" },
+                { 
+                    text: "Xóa", 
+                    style: "destructive", 
+                    onPress: async () => {
+                        setIsLoading(true);
+                        const token = await AsyncStorage.getItem(CACHE_KEY_TOKEN);
+                        
+                        if (token && playlistId) {
+                            const success = await deletePlaylist(token, playlistId);
+                            if (success) {
+                                if (router.canGoBack()) {
+                                    router.back();
+                                } else {
+                                    router.replace("/MyMusic");
+                                }
+                            } else {
+                                alert("Xóa thất bại. Có thể bạn không phải chủ sở hữu.");
+                            }
+                        }
+                        setIsLoading(false);
+                    }
+                }
+            ]
+        );
     };
+    const handlePlayPress = () => console.log('Play icon pressed');
 
-    const handlePlayPress = () => {
-        console.log('Play icon pressed');
-    };
-    return(
+    return (
         <Background>
-                <View style={{flex:1, paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0, paddingBottom: insets.bottom ? Math.max(insets.bottom, 12) : 12,}}>
-                    <View style={styles.headerWrap}>
-                        <Header isModEnabled={isModEnabled} onToggleMod={setIsModEnabled} />
-                    </View>
-                    <TouchableOpacity style={styles.backbutton} onPress={() => router.navigate('/MyMusic')}>
-                        <Image source={require('../assets/images/material-symbols-light_arrow-back-ios.png')} style={{width: 24, height: 24, tintColor: '#FFFFFF'}} />
-                    </TouchableOpacity>
-                    <View style={styles.artistHeader}>
-                    <Image source={artistPic} style={styles.artistImage} />
-                    <Text style={styles.artistName}>{artistTitle}</Text>
-                    </View>
-                    <View style={{flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginBottom: 10,gap:100}}>
-                        <View style={{flexDirection: 'row', alignItems: 'center', gap:20}}>
-                            <TouchableOpacity onPress={handleVectorPress}>
-                                <Image source={require('../assets/images/Vector (1).png')} style={{ width: 24, height: 24, tintColor: '#FFFFFF' }} />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={handleAddPress}>
-                                <Image source={require('../assets/images/add.png')} style={{ width: 24, height: 24, tintColor: '#FFFFFF' }} />
-                            </TouchableOpacity>
-                        </View>
+            <View style={{
+                flex: 1, 
+                paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0, 
+                paddingBottom: insets.bottom ? Math.max(insets.bottom, 12) : 12,
+            }}>
+                <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
 
-                            <TouchableOpacity onPress={handlePlayPress}>
-                                <Image source={require('../assets/images/carbon_play-filled.png')} style={{ width: 50, height: 50, tintColor: '#FFFFFF' }} />
-                            </TouchableOpacity>
-                    </View>
-                    <FlatList
-                        data={songs}
-                        renderItem={renderSongItem}
-                        keyExtractor={item => item.id}
-                        contentContainerStyle={{ paddingVertical: 5 , marginBottom:"5%"}}
-                    />
+                <View style={styles.headerWrap}>
+                    <Header isModEnabled={isModEnabled} onToggleMod={setIsModEnabled} />
                 </View>
+
+                <TouchableOpacity style={styles.backbutton} onPress={() => {
+                    if (router.canGoBack()) router.back();
+                    else router.replace("/MyMusic");
+                }}>
+                    <Image source={require('../assets/images/material-symbols-light_arrow-back-ios.png')} style={{width: 24, height: 24, tintColor: '#FFFFFF'}} />
+                </TouchableOpacity>
+
+                <View style={styles.artistHeader}>
+                    <Image source={playlistPic} style={styles.artistImage} />
+                    <Text style={styles.artistName}>{playlistTitle}</Text>
+                    {playlistData?.mood && (
+                        <Text style={{color: '#ddd', fontSize: 14, marginTop: 5}}>
+                            Mood: {playlistData.mood}
+                        </Text>
+                    )}
+                </View>
+
+                <View style={{flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginBottom: 10, justifyContent: 'space-between'}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center', gap: 20}}>
+                        <TouchableOpacity onPress={handleVectorPress}>
+                            <Ionicons name="shuffle" size={28} color="#FFFFFF" />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleDeletePress}>
+                            <Ionicons name="close" size={32} color="#FFFFFF" />
+                        </TouchableOpacity>
+                    </View>
+
+                    <TouchableOpacity onPress={handlePlayPress}>
+                        <Image source={require('../assets/images/carbon_play-filled.png')} style={{ width: 50, height: 50, tintColor: '#FFFFFF' }} />
+                    </TouchableOpacity>
+                </View>
+
+                {isLoading ? (
+                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                        <ActivityIndicator size="large" color="#ffffff" />
+                        <Text style={{color: 'white', marginTop: 10}}>Loading songs...</Text>
+                    </View>
+                ) : (
+                    <FlatList
+                        data={playlistData?.songs || []}
+                        renderItem={renderSongItem}
+                        keyExtractor={(item) => item.songId}
+                        contentContainerStyle={{ paddingVertical: 5, marginBottom: "5%", paddingHorizontal: 20 }}
+                        ListEmptyComponent={
+                            <Text style={{color: 'white', textAlign: 'center', marginTop: 20}}>
+                                No songs in this playlist
+                            </Text>
+                        }
+                    />
+                )}
+            </View>
         </Background>
     );
 }

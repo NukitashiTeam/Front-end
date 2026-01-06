@@ -1,5 +1,5 @@
-import React, { useEffect, useImperativeHandle, forwardRef } from "react";
-import { View, TouchableOpacity, Text, Dimensions, StyleSheet, BackHandler } from "react-native";
+import React, { useEffect, useImperativeHandle, forwardRef, useMemo } from "react";
+import { View, TouchableOpacity, Text, Dimensions, StyleSheet, BackHandler, useWindowDimensions, Platform, StatusBar} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import GestureHandle from "./GestureHandle"; 
@@ -18,6 +18,7 @@ import Animated, {
 import styles from "../styles/MiniPlayerStyles";
 import NowPlayingScreen from "../app/NowPlayingScreen";
 import { usePlayer } from "../app/PlayerContext";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get("window");
 const GUIDELINE_BASE_HEIGHT = 812;
@@ -37,13 +38,36 @@ export type MiniPlayerRef = {
 type MiniPlayerProps = {
     hidden?: boolean;
     onStateChange?: (isExpanded: boolean) => void;
+    bottomBarHeight?: number;
+    bottomInset?: number;
+    bottomGap?: number;
 };
 
-const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({ hidden = false, onStateChange }, ref) => {
+const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
+
+const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
+    hidden = false,
+    onStateChange,
+    bottomBarHeight = 0,
+    bottomInset,
+    bottomGap = 8
+}, ref) => {
     const { isPlaying, setIsPlaying, progressVal, setProgress: setProgressVal } = usePlayer();
+    // const { height: SCREEN_H, width: SCREEN_W } = useWindowDimensions();
+    const insets = useSafeAreaInsets();
+    const safeBottom = bottomInset ?? insets.bottom;
     
     const expandProgress = useSharedValue(0); 
     const context = useSharedValue(0);
+
+    const MINI_HEIGHT = useMemo(() => {
+        return Math.round(clamp(SCREEN_H * 0.09, 72, 92));
+    }, [SCREEN_H]);
+
+    const MINI_BOTTOM_OFFSET = safeBottom + bottomGap + bottomBarHeight + 8;
+    const HANDLE_PEEK = Platform.OS === "ios" ? verticalScale(-80) : verticalScale(-100);
+    const MINIMIZED_TRANSLATE_Y = MINI_HEIGHT - HANDLE_PEEK;
+    const MAX_TRAVEL = Math.max(1, SCREEN_H - (MINI_HEIGHT + MINI_BOTTOM_OFFSET));
 
     const notifyStateChange = (expanded: boolean) => {
         if (onStateChange) {
@@ -82,7 +106,7 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({ hidden = false,
     const panUp = Gesture.Pan().onStart(() => {
         context.value = expandProgress.value;
     }).onChange((e) => {
-        const change = -e.translationY / (SCREEN_H - MINI_HEIGHT);
+        const change = -e.translationY / MAX_TRAVEL;
         expandProgress.value = Math.min(Math.max(context.value + change, -1), 1);
     }).onEnd((e) => {
         if (e.velocityY < -500) {
@@ -158,7 +182,7 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({ hidden = false,
                     translateY: interpolate(
                         expandProgress.value, 
                         [-1, 0, 1], 
-                        [PEEK_OFFSET, 0, -MINI_HEIGHT], 
+                        [MINIMIZED_TRANSLATE_Y, 0, -MINI_HEIGHT], 
                         Extrapolation.CLAMP
                     ) 
                 }
@@ -184,21 +208,22 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({ hidden = false,
     if (hidden) return null;
 
     return (
-        <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "transparent", height: "106%"}]} pointerEvents="box-none">
             <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: 'black' }, backdropStyle]} pointerEvents="none" />
 
             <Animated.View style={[StyleSheet.absoluteFill, fullPlayerStyle]}>
                 <GestureDetector gesture={panDown}>
                     <Animated.View style={{ 
-                        height: 60,
+                        height: insets.top,
                         width: '100%', 
                         position: 'absolute', 
-                        top: 0, 
+                        top: Platform.OS === "android" ? Math.max(insets.top ?? 0, StatusBar.currentHeight ?? 0) : (insets.top ?? 0), 
                         zIndex: 100,
                         backgroundColor: 'transparent',
                         alignItems: 'center',
                         justifyContent: 'flex-end',
-                        paddingBottom: 10
+                        paddingTop: insets.top,
+                        paddingBottom: 10,
                     }}>
                         <GestureHandle /> 
                     </Animated.View>
@@ -208,7 +233,9 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({ hidden = false,
             </Animated.View>
 
             <GestureDetector gesture={panUp}>
-                <Animated.View style={[styles.miniPlayerStub, miniPlayerStyle]}>
+                <Animated.View style={[styles.miniPlayerStub, {
+                    bottom: MINI_BOTTOM_OFFSET,
+                }, miniPlayerStyle]}>
                     <LinearGradient
                         colors={["#580499E3", "#580499E3"]}
                         start={{ x: 0, y: 0 }}

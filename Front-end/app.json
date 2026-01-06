@@ -57,7 +57,8 @@
           "project": "nukitashiteam",
           "organization": "nukitashiteam"
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,
