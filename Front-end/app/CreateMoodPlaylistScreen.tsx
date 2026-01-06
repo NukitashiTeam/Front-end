@@ -21,11 +21,12 @@ import {
     Montserrat_400Regular,
     Montserrat_700Bold
 } from "@expo-google-fonts/montserrat";
-import styles from "../styles/CreateMoodPlaylistScreenStyles";
-import Header from "../Components/Header";
-import getRandomSongsByMood, { ISongPreview } from "../fetchAPI/getRandomSongsByMood";
-import getAllMoods, { IMood } from "../fetchAPI/getAllMoods";
+import styles from "@/styles/CreateMoodPlaylistScreenStyles";
+import Header from "@/Components/Header";
+import getRandomSongsByMood, { ISongPreview } from "@/fetchAPI/getRandomSongsByMood";
+import getAllMoods, { IMood } from "@/fetchAPI/getAllMoods";
 import { usePlayer } from "./PlayerContext";
+import { addToHistory } from "@/app/src/historyHelper"; 
 
 export default function CreateMoodPlaylistScreen() {
     const router = useRouter();
@@ -109,8 +110,9 @@ export default function CreateMoodPlaylistScreen() {
 
     if (!fontsMontserratLoaded) return null;
 
-    const handlePlaySong = async (songId: string) => {
-        await playTrack(songId);
+    const handlePlaySong = async (item: ISongPreview) => {
+        await addToHistory(item);
+        await playTrack(item.songId);
         if (miniPlayerRef.current) {
             miniPlayerRef.current.expand();
         }
@@ -119,7 +121,7 @@ export default function CreateMoodPlaylistScreen() {
     const renderSong = ({ item }: { item: ISongPreview }) => (
         <TouchableOpacity 
             style={styles.songRow} 
-            onPress={() => handlePlaySong(item.songId)}
+            onPress={() => handlePlaySong(item)}
         >
             <Image 
                 source={item.image_url ? { uri: item.image_url } : require("../assets/images/song4.jpg")} 

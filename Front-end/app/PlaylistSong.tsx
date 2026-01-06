@@ -21,6 +21,7 @@ import deletePlaylist from "../fetchAPI/deletePlaylist";
 import removeSongFromPlaylist from "../fetchAPI/removeSongFromPlaylist";
 import * as SecureStore from 'expo-secure-store';
 import { usePlayer } from "./PlayerContext";
+import { addToHistory } from "@/app/src/historyHelper";
 
 export default function PlaylistSong() {
     const [isModEnabled, setIsModEnabled] = useState(false);
@@ -56,9 +57,10 @@ export default function PlaylistSong() {
         fetchData();
     }, [playlistId]);
 
-    const handlePlaySong = async (songId: string) => {
-        await playTrack(songId);
-        console.log(`Playing Song ID: ${songId}`);
+    const handlePlaySong = async (item: ISong) => {
+        await addToHistory(item);
+        await playTrack(item.songId);
+        console.log(`Playing Song ID: ${item.songId}`);
         if (miniPlayerRef.current) {
             miniPlayerRef.current.expand();
         }
@@ -98,7 +100,7 @@ export default function PlaylistSong() {
     const renderSongItem = ({ item }: { item: ISong }) => (
         <TouchableOpacity 
             style={[styles.songItem, { flexDirection: 'row', alignItems: 'center' }]}
-            onPress={() => handlePlaySong(item.songId)}
+            onPress={() => handlePlaySong(item)}
         >
             <Image 
                 source={(item.image_url && item.image_url !== "") ? { uri: item.image_url } : require('../assets/images/song5.jpg')}
@@ -132,7 +134,7 @@ export default function PlaylistSong() {
         if (playlistData?.songs && playlistData.songs.length > 0) {
             const shuffledSongs = shuffleArray(playlistData.songs);
             setPlaylistData(prev => prev ? { ...prev, songs: shuffledSongs } : null);
-            handlePlaySong(shuffledSongs[0].songId);
+            handlePlaySong(shuffledSongs[0]);
             console.log("Playlist shuffled and playing first song:", shuffledSongs[0].title);
         } else {
             Alert.alert("Thông báo", "Playlist này chưa có bài hát nào để trộn.");
@@ -172,7 +174,7 @@ export default function PlaylistSong() {
 
     const handlePlayPress = () => {
         if (playlistData?.songs && playlistData.songs.length > 0) {
-            handlePlaySong(playlistData.songs[0].songId);
+            handlePlaySong(playlistData.songs[0]);
         } else {
             Alert.alert("Thông báo", "Playlist này chưa có bài hát nào.");
         }
