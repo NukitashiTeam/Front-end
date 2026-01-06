@@ -8,7 +8,6 @@ import {
     TouchableOpacity,
     StatusBar,
     Platform,
-    ActivityIndicator,
     Animated,
     Easing
 } from "react-native";
@@ -25,7 +24,7 @@ import {
 import styles from "../styles/CreateMoodPlaylistScreenStyles";
 import Header from "../Components/Header";
 import getRandomSongsByMood, { ISongPreview } from "../fetchAPI/getRandomSongsByMood";
-import { refreshTokenUse } from "../fetchAPI/loginAPI";
+import getAllMoods, { IMood } from "../fetchAPI/getAllMoods";
 import { usePlayer } from "./PlayerContext";
 
 export default function CreateMoodPlaylistScreen() {
@@ -39,6 +38,7 @@ export default function CreateMoodPlaylistScreen() {
     const [isModEnabled, setIsModEnabled] = useState(false);
     const [songList, setSongList] = useState<ISongPreview[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [currentMoodInfo, setCurrentMoodInfo] = useState<IMood | null>(null);
     
     const displayMoodName = moodNameParam || "happy";
     const rotateAnim = useRef(new Animated.Value(0)).current;
@@ -86,9 +86,25 @@ export default function CreateMoodPlaylistScreen() {
         }
     };
 
+    const fetchMoodInfo = async () => {
+        try {
+            const token = await SecureStore.getItemAsync('accessToken');
+            if (token) {
+                const allMoods = await getAllMoods(token);
+                const foundMood = allMoods?.find(m => m.name.toLowerCase() === displayMoodName.toLowerCase());
+                if (foundMood) {
+                    setCurrentMoodInfo(foundMood);
+                }
+            }
+        } catch (error) {
+            console.error("Lỗi khi lấy thông tin mood:", error);
+        }
+    }
+
     useEffect(() => {
         const moodToFetch = moodNameParam || "happy";
         fetchSongsByMood(moodToFetch);
+        fetchMoodInfo();
     }, [moodNameParam]);
 
     if (!fontsMontserratLoaded) return null;
@@ -148,9 +164,20 @@ export default function CreateMoodPlaylistScreen() {
                 <Text style={styles.sectionTitle}>Created Mood Playlist</Text>
 
                 <View style={styles.playlistNameView}>
-                    <Image source={require("../assets/images/avatar.png")} style={styles.ownerAvatar} />
+                    <View style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 25,
+                        backgroundColor: currentMoodInfo?.colorCode || '#E0E0E0',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginRight: 12
+                    }}>
+                        <Text style={{ fontSize: 24 }}>{currentMoodInfo?.icon || '🎵'}</Text>
+                    </View>
+                    
                     <View style={{ flex: 1 }}>
-                        <Text style={styles.ownerName}>{displayMoodName.toUpperCase()}</Text> 
+                        <Text style={styles.ownerName}>{currentMoodInfo?.displayName || displayMoodName.toUpperCase()}</Text> 
                     </View>
                 </View>
                 
