@@ -27,6 +27,7 @@ import getDetailContext from "@/fetchAPI/getDetailContext";
 import getRandomSongsByContext from "@/fetchAPI/getRandomSongsByContext";
 import createContext, { ICreateContextInput } from "@/fetchAPI/createContext";
 import updateContext, { IUpdateContextInput } from "@/fetchAPI/updateContext";
+import deleteUserContext from "@/fetchAPI/deleteUserContext";
 
 type Mode = "config" | "create";
 
@@ -178,6 +179,54 @@ export default function ContextConfigScreen() {
         } finally {
             setIsCreatingPlaylist(false);
         }
+    };
+
+    const handleDeleteContext = async () => {
+        if (!contextId) {
+            Alert.alert("Lỗi", "Không tìm thấy ID của Context.");
+            return;
+        }
+
+        Alert.alert(
+            "Xóa Context",
+            `Bạn có chắc chắn muốn xóa ngữ cảnh "${displayContextName}" không?`, [{
+                text: "Hủy",
+                style: "cancel",
+            }, {
+                text: "Xóa",
+                style: "destructive",
+                onPress: async () => {
+                    setIsSubmitting(true);
+                    try {
+                        const token = await SecureStore.getItemAsync("accessToken");
+                        if (token) {
+                            const result = await deleteUserContext(token, contextId);
+                            if (result) {
+                                Alert.alert("Thành công", result.message, [{ 
+                                    text: "OK", 
+                                    onPress: () => {
+                                        if (router.canGoBack()) {
+                                            router.back();
+                                        } else {
+                                            router.replace('/ContextUserListScreen');
+                                        }
+                                    }
+                                }]);
+                            } else {
+                                Alert.alert("Thất bại", "Bạn không có quyền xóa Context này hoặc đã xảy ra lỗi.");
+                            }
+                        } else {
+                            Alert.alert("Lỗi", "Phiên đăng nhập không hợp lệ.");
+                        }
+                    } catch (error) {
+                        console.error("Lỗi khi xóa context:", error);
+                        Alert.alert("Lỗi", "Đã xảy ra lỗi hệ thống.");
+                    } finally {
+                        setIsSubmitting(false);
+                    }
+                }
+            }]
+        );
     };
 
     const handleSaveContext = async () => {
@@ -353,15 +402,19 @@ export default function ContextConfigScreen() {
                                     </Pressable>
 
                                     <Pressable
-                                        onPress={() => {
-                                            Alert.alert("Coming Soon", "Chức năng xóa sẽ sớm được cập nhật!");
-                                        }}
+                                        onPress={handleDeleteContext}
+                                        disabled={isSubmitting}
                                         style={({ pressed }) => [
                                             styles.pillBtn,
+                                            { backgroundColor: "#580499E3" },
                                             { opacity: pressed ? 0.7 : 1 }
                                         ]}
                                     >
-                                        <Text style={styles.pillBtnText}>Delete Context</Text>
+                                        {isSubmitting ? (
+                                            <ActivityIndicator size="small" color="#FFF" />
+                                        ) : (
+                                            <Text style={styles.pillBtnText}>Delete Context</Text>
+                                        )}
                                     </Pressable>
                                 </View>
                             </View>
