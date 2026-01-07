@@ -121,7 +121,7 @@ const AppNavigation = () => {
                                     }
                                     router.navigate("/HomeScreen");
                                 } else if (k === "radio") {
-                                    if (pathname.startsWith("/MyMusic") || pathname.startsWith("/CreatePlaylist") || pathname.startsWith("/PlaylistSong")) {
+                                    if (pathname.startsWith("/CreatePlaylist")) {
                                         router.navigate("/NowPlayingScreen");
                                     } else {
                                         miniPlayerRef.current?.expand();
