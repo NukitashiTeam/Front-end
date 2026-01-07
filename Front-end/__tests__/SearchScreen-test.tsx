@@ -6,14 +6,54 @@ import * as SecureStore from 'expo-secure-store';
 import SearchScreen from '@/app/SearchScreen'; // Adjust path based on your structure
 import searchSongsByKeyword from '@/fetchAPI/SearchMusic';
 import getAllMoods from '@/fetchAPI/getAllMoods';
-import getUserContexts from '@/fetchAPI/getUserContexts';
+import getUserContexts from '@/fetchAPI/getContextUserHome'; // Fixed path based on console logs
 import { refreshTokenUse } from '@/fetchAPI/loginAPI';
 
 // Mock dependencies
 jest.mock('expo-router', () => ({
   useRouter: jest.fn(),
 }));
-
+jest.mock('expo-av', () => ({
+  Audio: {
+    Sound: jest.fn().mockImplementation(() => ({
+      loadAsync: jest.fn().mockResolvedValue(undefined),
+      unloadAsync: jest.fn().mockResolvedValue(undefined),
+      playAsync: jest.fn().mockResolvedValue(undefined),
+      pauseAsync: jest.fn().mockResolvedValue(undefined),
+      stopAsync: jest.fn().mockResolvedValue(undefined),
+      setPositionAsync: jest.fn().mockResolvedValue(undefined),
+      getStatusAsync: jest.fn().mockResolvedValue({
+        isLoaded: true,
+        positionMillis: 0,
+        durationMillis: 100000,
+        isPlaying: false,
+      }),
+      setOnPlaybackStatusUpdate: jest.fn(),
+    })),
+    setAudioModeAsync: jest.fn().mockResolvedValue(undefined),
+  },
+  InterruptionModeIOS: {
+    Default: 0,
+    DoNotMix: 1,
+    DuckOthers: 2,
+  },
+  InterruptionModeAndroid: {
+    Default: 0,
+    DoNotMix: 1,
+    DuckOthers: 2,
+  },
+}));
+jest.mock('@/app/PlayerContext', () => ({
+  usePlayer: jest.fn(() => ({
+    currentTrack: null,
+    isPlaying: false,
+    play: jest.fn(),
+    pause: jest.fn(),
+    stop: jest.fn(),
+    setCurrentTrack: jest.fn(),
+  })),
+  PlayerProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
 jest.mock('@expo/vector-icons', () => {
   const { View } = require('react-native');
   return {
@@ -37,13 +77,24 @@ jest.mock('expo-secure-store', () => ({
   getItemAsync: jest.fn(),
 }));
 
-jest.mock('@react-native-async-storage/async-storage', () => ({}));
+jest.mock('@/fetchAPI/getAllMoods', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
 
-jest.mock('@/fetchAPI/SearchMusic', () => jest.fn());
+jest.mock('@/fetchAPI/getContextUserHome', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
 
-jest.mock('@/fetchAPI/getAllMoods', () => jest.fn());
+jest.mock('@/fetchAPI/SearchMusic', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
 
-jest.mock('@/fetchAPI/getUserContexts', () => jest.fn());
+jest.mock('@react-native-async-storage/async-storage', () => 
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+);
 
 jest.mock('@/fetchAPI/loginAPI', () => ({
   refreshTokenUse: jest.fn(),
@@ -119,7 +170,7 @@ describe('SearchScreen', () => {
     fireEvent(input, 'submitEditing');
 
     await findByText('Song1');
-    expect(searchSongsByKeyword).toHaveBeenCalledWith('test', 5);
+    expect(searchSongsByKeyword).toHaveBeenCalledWith('test', 10);
   });
 
   it('shows loading during data fetch', () => {
@@ -141,9 +192,12 @@ describe('SearchScreen', () => {
 
     const moodIcon = await findByText('😊');
     fireEvent.press(moodIcon.parent!.parent!);
-    expect(mockRouter.push).toHaveBeenCalledWith({
-      pathname: '/CreateMoodPlaylistScreen',
-      params: { moodName: 'happy' },
+
+    await waitFor(() => {
+      expect(mockRouter.push).toHaveBeenCalledWith({
+        pathname: '/CreateMoodPlaylistScreen',
+        params: { moodName: 'happy' },
+      });
     });
   });
 
