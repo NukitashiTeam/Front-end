@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "Front-end",
-    "slug": "Front-end",
+    "name": "Moody Blue",
+    "slug": "Moody Blue",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo-app.png",
     "scheme": "frontend",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
