@@ -13,6 +13,7 @@ const Otpsign = () =>{
     const ref3 = useRef<TextInput>(null);
     const refs = [ref0, ref1, ref2, ref3];
     const { email } = useLocalSearchParams<{ email?: string }>();
+    const { username, password } = useLocalSearchParams<{ username?: string; password?: string }>();
     const handleOtpChange = (text: string, index: number) => {
         const newOtp = [...otp];
         newOtp[index] = text;
@@ -34,7 +35,13 @@ const Otpsign = () =>{
         try {
           await verifyOTP({ otp: code });
           Alert.alert("Thành công", "Tài khoản đã được tạo thành công!");
-          router.push("/src/signin/Typesong"); // hoặc màn home/login
+          router.push({
+            pathname: "/src/signin/Typesong",
+            params: {
+              username: username,
+              password: password
+            }
+          }); // hoặc màn home/login
         } catch (error: any) {
           Alert.alert("OTP sai", error.message);
         } 

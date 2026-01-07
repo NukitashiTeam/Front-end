@@ -35,7 +35,13 @@ export default function SignupScreen() {
         passwordConfirm: confirmPassword,
         });
 
-        router.navigate('/src/signin/EmailInput');
+        router.navigate({
+            pathname: '/src/signin/EmailInput',
+            params: { 
+                username: username.trim(),
+                password: password
+            },
+        });
     } catch (error: any) {
         Alert.alert("Đăng ký thất bại", error.message);
     }

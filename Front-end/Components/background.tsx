@@ -14,7 +14,7 @@ const Background: React.FC<Props> = ({ children }) => {
     IrishGrover_400Regular,
   });
   return (
-    <LinearGradient colors={["#818BFF", "#3b2a89"]} style={style.container}>
+    <LinearGradient colors={["rgba(129, 139, 255, 1)", "#3b2a89"]} style={style.container}>
       {children}
     </LinearGradient>
   );

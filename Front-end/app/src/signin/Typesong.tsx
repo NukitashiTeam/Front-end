@@ -1,20 +1,33 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import Background from "../../../Components/background";
 import styles from "../../../styles/style";
+import loginAPI from "@/fetchAPI/loginAPI";
 
 const TypeSong = () => {
   const router = useRouter();
   const insets = useSafeAreaInsets(); // 👈 lấy giá trị safe area
   const [selected, setSelected] = useState<string[]>([]);
   const types = ["Pop", "Rock", "Jazz", "Classical", "Hip-Hop", "Country", "Dance", "Chill", "Buồn", "Thất tình", "Vui", "Lofi"," Nhạc Trẻ", "Nhạc Trịnh", "Remix"," Acoustic", "Indie", "R&B", "Blues", "Metal"];
+  const { username, password } = useLocalSearchParams<{ username?: string; password?: string }>();
+  console.log("Params received in TypeSong:", { username, password });
+  const handleLogin = async () => {
+      if (!username || !password) return;
 
+      try {
+        await loginAPI(username, password);
+        // Đăng nhập thành công → chuyển sang Home
+        router.navigate('/HomeScreen');
+      } catch (error) {
+        alert('Đăng nhập thất bại. Kiểm tra username/password.');
+        console.error(error);
+      }
+    };
   const renderType = (type: string) => {
-    const isSelected = selected.includes(type);
-
+  const isSelected = selected.includes(type);
     return (
       <TouchableOpacity
         style={styles.optionTypeContainer}
@@ -58,11 +71,11 @@ const TypeSong = () => {
           keyExtractor={(item, index) => index.toString()}
           numColumns={2}
           columnWrapperStyle={styles.row}
-          contentContainerStyle={{ paddingVertical: 5 , marginBottom:"5%"}}
+          contentContainerStyle={{ paddingVertical: 10 , marginBottom:"5%"}}
           showsVerticalScrollIndicator={false}
         />
         </View>
-        <TouchableOpacity style={{...styles.otpbutton, marginBottom: "15%", marginTop: "5%"}} activeOpacity={0.8} onPress={() => router.push('/HomeScreen')}>
+        <TouchableOpacity style={{...styles.otpbutton, marginBottom: "15%", marginTop: "5%"}} activeOpacity={0.8} onPress={handleLogin}>
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
 

@@ -11,7 +11,7 @@ import {
    Alert
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router'; // nếu dùng Expo Router
+import { useRouter, useLocalSearchParams } from 'expo-router'; // nếu dùng Expo Router
 import Background from "../../../Components/background";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import NextBackButton from "../../../Components/NextBackButton";
@@ -21,18 +21,21 @@ export default function EmailScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const { username, password } = useLocalSearchParams<{ username?: string; password?: string }>();
   const handleNext = async () => {
     if (!email.trim()) {
         Alert.alert("Lỗi", "Vui lòng nhập email");
         return;
     }
-
     setLoading(true);
     try {
         await signupStep2({ contact: email.trim() });
         router.push({
           pathname: "/src/signin/Otpsign",
-          params: { email: email.trim() } // Truyền email qua params
+          params: { email: email.trim(),
+            username: username,
+            password: password
+           } // Truyền email qua params
         });
     } catch (error: any) {
         Alert.alert("Gửi OTP thất bại", error.message);
