@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     sectionLabel: {
         marginTop: 10,
         marginBottom: "5%",
-        color: "#0B0B0B",
+        color: "#ffffffff",
         fontSize: 20,
         fontWeight: "700",
     },

@@ -6,8 +6,7 @@ import {
     Platform,
     Text,
     TouchableOpacity,
-    ActivityIndicator,
-    Alert
+    ActivityIndicator
 } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -19,9 +18,12 @@ import {
     Montserrat_400Regular,
     Montserrat_700Bold
 } from "@expo-google-fonts/montserrat";
-import styles from "../styles/ChoosingMoodPlayStyles";
-import Header from "../Components/Header";
-import getAllMoods, { IMood } from "../fetchAPI/getAllMoods";
+import styles from "@/styles/ChoosingMoodPlayStyles";
+import Header from "@/Components/Header";
+import getAllMoods, { IMood } from "@/fetchAPI/getAllMoods";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const CACHE_KEY_LAST_MOOD = 'CACHE_LAST_MOOD';
 
 export default function ChoosingMoodPlayScreen() {
     const router = useRouter();
@@ -55,8 +57,20 @@ export default function ChoosingMoodPlayScreen() {
         fetchMoods();
     }, []);
 
-    const handlePressMood = (item: IMood) => {
+    const handlePressMood = async (item: IMood) => {
         console.log("Selected Mood:", item.displayName);
+        
+        try {
+            await AsyncStorage.setItem(CACHE_KEY_LAST_MOOD, JSON.stringify(item));
+        } catch (error) {
+            console.error("Lỗi khi lưu mood:", error);
+        }
+
+        const moodNameTarget = item.name || "happy"; 
+        router.push({
+            pathname: "/CreateMoodPlaylistScreen",
+            params: { moodName: moodNameTarget }
+        });
     };
 
     const renderMoodItem = ({ item }: { item: IMood }) => (

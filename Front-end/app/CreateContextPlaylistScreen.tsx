@@ -9,7 +9,8 @@ import {
     StatusBar,
     Platform,
     Animated,
-    Easing
+    Easing,
+    Alert
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
@@ -21,40 +22,44 @@ import {
     Montserrat_400Regular,
     Montserrat_700Bold
 } from "@expo-google-fonts/montserrat";
-import styles from "@/styles/CreateMoodPlaylistScreenStyles";
+import styles from "@/styles/CreateMoodPlaylistScreenStyles"; 
 import Header from "@/Components/Header";
-import getRandomSongsByMood, { ISongPreview } from "@/fetchAPI/getRandomSongsByMood";
-import getAllMoods, { IMood } from "@/fetchAPI/getAllMoods";
+import getRandomSongsByContext, { ISongContextItem } from "@/fetchAPI/getRandomSongsByContext";
 import { IMusicDetail } from "@/fetchAPI/getMusicById";
 import { usePlayer } from "./PlayerContext";
 import { addToHistory } from "@/app/src/historyHelper"; 
 
-export default function CreateMoodPlaylistScreen() {
+export default function CreateContextPlaylistScreen() {
     const router = useRouter();
     const insets = useSafeAreaInsets();
     const { playTrack, playList, miniPlayerRef } = usePlayer();
     
     const params = useLocalSearchParams();
-    const moodNameParam = params.moodName as string; 
-    
+    const contextNameParam = params.contextName as string || "Context";
+    const contextIconParam = params.contextIcon as string || "📚";
+    const contextColorParam = params.contextColor as string || "#9fb1ff";
+    const initialSongsJson = params.songsData as string;
+
     const [isModEnabled, setIsModEnabled] = useState(false);
-    const [songList, setSongList] = useState<ISongPreview[]>([]);
+    const [songList, setSongList] = useState<ISongContextItem[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [currentMoodInfo, setCurrentMoodInfo] = useState<IMood | null>(null);
     
-    const displayMoodName = moodNameParam || "happy";
     const rotateAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        Animated.loop(
-        Animated.timing(rotateAnim, {
-            toValue: 1,
-            duration: 1000,
-            easing: Easing.linear,
-            useNativeDriver: true,
-        })
-        ).start();
-    }, [rotateAnim]);
+        if (isLoading) {
+            Animated.loop(
+                Animated.timing(rotateAnim, {
+                    toValue: 1,
+                    duration: 1000,
+                    easing: Easing.linear,
+                    useNativeDriver: true,
+                })
+            ).start();
+        } else {
+            rotateAnim.setValue(0);
+        }
+    }, [isLoading, rotateAnim]);
 
     const rotate = rotateAnim.interpolate({
         inputRange: [0, 1],
@@ -66,52 +71,44 @@ export default function CreateMoodPlaylistScreen() {
         Montserrat_700Bold,
     });
 
-    const fetchSongsByMood = async (mood: string) => {
+    useEffect(() => {
+        if (initialSongsJson) {
+            try {
+                const parsedSongs = JSON.parse(initialSongsJson);
+                if (Array.isArray(parsedSongs)) {
+                    setSongList(parsedSongs);
+                }
+            } catch (e) {
+                console.error("Lỗi parse songsData:", e);
+            }
+        }
+    }, [initialSongsJson]);
+
+    const handleRefreshSongs = async () => {
         setIsLoading(true);
         try {
             const token = await SecureStore.getItemAsync('accessToken');
             if (token) {
-                console.log(`fetching songs for mood: ${mood}`);
-                const responseData = await getRandomSongsByMood(token, mood);
+                console.log(`Refreshing songs for context: ${contextNameParam}`);
+                const responseData = await getRandomSongsByContext(token, contextNameParam);
                 if (responseData && responseData.success) {
                     setSongList(responseData.data);
                 } else {
-                    console.log("Không lấy được dữ liệu nhạc mood.");
+                    Alert.alert("Thông báo", "Không lấy được dữ liệu mới.");
                 }
             } else {
-                console.log("Chưa đăng nhập hoặc không có token");
+                Alert.alert("Lỗi", "Phiên đăng nhập hết hạn.");
             }
         } catch (error) {
-            console.error("Lỗi khi fetch songs:", error);
+            console.error("Lỗi khi refresh songs:", error);
         } finally {
             setIsLoading(false);
         }
     };
 
-    const fetchMoodInfo = async () => {
-        try {
-            const token = await SecureStore.getItemAsync('accessToken');
-            if (token) {
-                const allMoods = await getAllMoods(token);
-                const foundMood = allMoods?.find(m => m.name.toLowerCase() === displayMoodName.toLowerCase());
-                if (foundMood) {
-                    setCurrentMoodInfo(foundMood);
-                }
-            }
-        } catch (error) {
-            console.error("Lỗi khi lấy thông tin mood:", error);
-        }
-    }
-
-    useEffect(() => {
-        const moodToFetch = moodNameParam || "happy";
-        fetchSongsByMood(moodToFetch);
-        fetchMoodInfo();
-    }, [moodNameParam]);
-
     if (!fontsMontserratLoaded) return null;
 
-    const convertToPlayerQueue = (songs: ISongPreview[]): IMusicDetail[] => {
+    const convertToPlayerQueue = (songs: ISongContextItem[]): IMusicDetail[] => {
         return songs.map(song => ({
             _id: song.songId,
             track_id: song.songId,
@@ -122,34 +119,46 @@ export default function CreateMoodPlaylistScreen() {
             release_date: "",
             album: "",
             genre: "",
-            mood: displayMoodName
+            mood: ""
         }));
     };
 
-    const handlePlaySong = async (item: ISongPreview) => {
+    const handlePlaySong = async (item: ISongContextItem) => {
         if (miniPlayerRef.current) {
             miniPlayerRef.current.expand();
         }
         
-        addToHistory(item);
+        const songData = {
+            ...item,
+            track_id: item.songId,
+            _id: item.songId,
+            image_url: item.image_url || "", 
+            mp3_url: (item as any).mp3_url || "",
+            album: "",
+            genre: "",
+            release_date: "",
+            mood: ""
+        };
+
+        addToHistory(songData);
         const fullQueue = convertToPlayerQueue(songList);
         const selectedIndex = songList.findIndex(s => s.songId === item.songId);
         if (selectedIndex !== -1) {
             await playList(fullQueue, selectedIndex);
         } else {
-            await playTrack(item.songId);
+            await playTrack(songData as any);
         }
     };
 
     const handlePlayAll = async () => {
         if (songList.length > 0) {
-             if (miniPlayerRef.current) miniPlayerRef.current.expand();
-             const fullQueue = convertToPlayerQueue(songList);
-             await playList(fullQueue, 0);
+            if (miniPlayerRef.current) miniPlayerRef.current.expand();
+            const fullQueue = convertToPlayerQueue(songList);
+            await playList(fullQueue, 0);
         }
     };
 
-    const renderSong = ({ item }: { item: ISongPreview }) => (
+    const renderSong = ({ item }: { item: ISongContextItem }) => (
         <TouchableOpacity 
             style={styles.songRow} 
             onPress={() => handlePlaySong(item)}
@@ -194,29 +203,31 @@ export default function CreateMoodPlaylistScreen() {
             </TouchableOpacity>
             
             <View style={styles.headerBlock}>
-                <Text style={styles.sectionTitle}>Created Mood Playlist</Text>
+                <Text style={styles.sectionTitle}>Create Context Playlist</Text>
 
                 <View style={styles.playlistNameView}>
                     <View style={{
                         width: 50,
                         height: 50,
                         borderRadius: 25,
-                        backgroundColor: currentMoodInfo?.colorCode || '#E0E0E0',
+                        backgroundColor: contextColorParam,
                         justifyContent: 'center',
                         alignItems: 'center',
                         marginRight: 12
                     }}>
-                        <Text style={{ fontSize: 24 }}>{currentMoodInfo?.icon || '🎵'}</Text>
+                        <Text style={{ fontSize: 24 }}>
+                            {contextIconParam.length < 5 ? contextIconParam : '🎧'} 
+                        </Text>
                     </View>
                     
                     <View style={{ flex: 1 }}>
-                        <Text style={styles.ownerName}>{currentMoodInfo?.displayName || displayMoodName.toUpperCase()}</Text> 
+                        <Text style={styles.ownerName}>{contextNameParam}</Text> 
                     </View>
                 </View>
                 
                 <View style={styles.playlistHeaderRow}>
                     <View style={styles.playlistHeaderRowColumn1}>
-                        <TouchableOpacity style={styles.iconCircle} onPress={() => fetchSongsByMood(displayMoodName)}>
+                        <TouchableOpacity style={styles.iconCircle} onPress={handleRefreshSongs}>
                             <Ionicons name="refresh" size={18} color="#fff" />
                         </TouchableOpacity>
                         
@@ -228,11 +239,11 @@ export default function CreateMoodPlaylistScreen() {
                                         pathname: '/CreatePlaylist',
                                         params: { 
                                             songsData: JSON.stringify(songList),
-                                            defaultTitle: `My ${displayMoodName.toUpperCase()} Mix`
+                                            defaultTitle: `${contextNameParam} Mix`
                                         }
                                     });
                                 } else {
-                                    router.navigate('/CreatePlaylist');
+                                    Alert.alert("Lỗi", "Danh sách trống");
                                 }
                             }}
                         >
@@ -250,9 +261,8 @@ export default function CreateMoodPlaylistScreen() {
 
             {isLoading ? (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <View style={{alignItems: "center", justifyContent: "center",}}>
-                        <Text style={{fontSize:24, fontWeight:600}}>Playlist in progress</Text>
-                        <Text style={{fontSize:24, fontWeight:600}}>please wait</Text>
+                    <View style={{alignItems: "center", justifyContent: "center", marginBottom: 20}}>
+                        <Text style={{fontSize: 20, fontWeight: '600', color: 'white'}}>Generating Playlist...</Text>
                     </View>
                     
                     <Animated.View style={{ transform: [{ rotate }] }}>
@@ -277,7 +287,7 @@ export default function CreateMoodPlaylistScreen() {
                     showsVerticalScrollIndicator={false}
                     ListEmptyComponent={
                         <Text style={{ color: 'white', textAlign: 'center', marginTop: 20 }}>
-                            No songs found for this mood.
+                            No songs found for this context.
                         </Text>
                     }
                 />

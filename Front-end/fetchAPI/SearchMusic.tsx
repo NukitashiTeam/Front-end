@@ -9,6 +9,7 @@ export interface Mood {
 }
 
 export interface SongPreview {
+  _id: string;
   track_id: string;
   title: string;
   artist: string;

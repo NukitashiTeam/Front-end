@@ -30,10 +30,9 @@ interface AddSongResponse {
 const addSongToPlaylist = async (token: string, playlistId: string, musicId: string): Promise<IPlaylistDetail | null> => {
     try {
         console.log(`--- [ADD SONG API] Đang thêm musicId: "${musicId}" vào playlistId: "${playlistId}" ---`);
-
-        const ENDPOINT = `${BASE_URL}/api/playlist/add-song/${playlistId}`;
+        const ENDPOINT = `${BASE_URL}/api/playlist/new-music/${playlistId}`;
         const response = await fetch(ENDPOINT, {
-            method: 'POST',
+            method: 'PATCH',
             headers: {
                 'Accept': 'application/json',
                 'Authorization': `Bearer ${token}`,
@@ -43,23 +42,24 @@ const addSongToPlaylist = async (token: string, playlistId: string, musicId: str
         });
 
         const responseText = await response.text();
-
         if (responseText.trim().startsWith('<')) {
-            console.error('[ADD SONG API] LỖI: Server trả về HTML. Kiểm tra lại Endpoint hoặc ID.');
+            console.error('[ADD SONG API] LỖI: Server trả về HTML. Kiểm tra lại Endpoint hoặc Method (PATCH).');
+            console.log('Response status:', response.status);
             return null;
         }
 
         try {
             const responseJson = JSON.parse(responseText) as AddSongResponse;
-
             if (response.ok) {
-                if (responseJson.success && responseJson.data) {
-                    console.log(`[ADD SONG API] Thành công! Playlist "${responseJson.data.title}" hiện có ${responseJson.data.songs.length} bài hát.`);
-                    return responseJson.data;
-                } else {
-                    console.warn('[ADD SONG API] Server báo 200 nhưng không có dữ liệu:', responseJson);
-                    return null;
+                if (responseJson) {
+                    const resultData = responseJson.data || responseJson; 
+                    if (resultData) {
+                         console.log(`[ADD SONG API] Thành công!`);
+                         return resultData as IPlaylistDetail;
+                    }
                 }
+                console.warn('[ADD SONG API] Server OK nhưng không có dữ liệu trả về.');
+                return null; 
             } else {
                 if (response.status === 401) {
                     console.error('[ADD SONG API] Lỗi 401: Token không hợp lệ hoặc hết hạn.');
