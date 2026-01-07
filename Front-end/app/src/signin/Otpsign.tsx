@@ -13,6 +13,7 @@ const Otpsign = () =>{
     const ref3 = useRef<TextInput>(null);
     const refs = [ref0, ref1, ref2, ref3];
     const { email } = useLocalSearchParams<{ email?: string }>();
+    const { username, password } = useLocalSearchParams<{ username?: string; password?: string }>();
     const handleOtpChange = (text: string, index: number) => {
         const newOtp = [...otp];
         newOtp[index] = text;
@@ -34,7 +35,13 @@ const Otpsign = () =>{
         try {
           await verifyOTP({ otp: code });
           Alert.alert("Thành công", "Tài khoản đã được tạo thành công!");
-          router.push("/src/signin/Typesong"); // hoặc màn home/login
+          router.push({
+            pathname: "/src/signin/Typesong",
+            params: {
+              username: username,
+              password: password
+            }
+          }); // hoặc màn home/login
         } catch (error: any) {
           Alert.alert("OTP sai", error.message);
         } 
@@ -55,7 +62,17 @@ const Otpsign = () =>{
 
     return(
         <Background>
-        <Text style={styles.signintitle}>Enter OTP</Text>
+          <View
+                    style={{
+                      flex: 1,
+                      alignItems: 'center',
+                      justifyContent: 'flex-start', 
+                      paddingTop:80, 
+                      paddingHorizontal: 20,
+                      width:"100%"
+                    }}
+                  >
+                    <Text style={styles.signintitle}>Enter OTP</Text>
         <View style={styles.otpContainer}>
           {otp.map((digit, index) => (
             <TextInput
@@ -80,6 +97,14 @@ const Otpsign = () =>{
           </View>
           <Text style={{fontWeight: "600"}}>Resend OTP</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={handleResend} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
+          <View>
+            <Image source={require("../../../assets/images/Vector.png")} style={styles.icon} />
+          </View>
+          <Text style={{fontWeight: "600"}}>Edit Phone number</Text>
+        </TouchableOpacity>
+                  </View>
+        
         {/* <TouchableOpacity onPress={()=>router.back()} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
           <View>
             <Image source={require("../../../assets/images/Vector.png")} style={styles.icon} />
