@@ -55,7 +55,17 @@ const Otpsign = () =>{
 
     return(
         <Background>
-        <Text style={styles.signintitle}>Enter OTP</Text>
+          <View
+                    style={{
+                      flex: 1,
+                      alignItems: 'center',
+                      justifyContent: 'flex-start', 
+                      paddingTop:80, 
+                      paddingHorizontal: 20,
+                      width:"100%"
+                    }}
+                  >
+                    <Text style={styles.signintitle}>Enter OTP</Text>
         <View style={styles.otpContainer}>
           {otp.map((digit, index) => (
             <TextInput
@@ -80,6 +90,14 @@ const Otpsign = () =>{
           </View>
           <Text style={{fontWeight: "600"}}>Resend OTP</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={handleResend} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
+          <View>
+            <Image source={require("../../../assets/images/Vector.png")} style={styles.icon} />
+          </View>
+          <Text style={{fontWeight: "600"}}>Edit Phone number</Text>
+        </TouchableOpacity>
+                  </View>
+        
         {/* <TouchableOpacity onPress={()=>router.back()} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
           <View>
             <Image source={require("../../../assets/images/Vector.png")} style={styles.icon} />

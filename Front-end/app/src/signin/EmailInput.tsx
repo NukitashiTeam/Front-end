@@ -43,17 +43,28 @@ export default function EmailScreen() {
   const insets = useSafeAreaInsets()
   return (
     <Background>
+          <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'flex-start', 
+            paddingTop:80, 
+            paddingHorizontal: 20,
+            width:"100%"
+          }}
+        >
           {/* Tiêu đề */}
-            <Text style={styles.signintitle}>Enter Your Email</Text>
+          <Text style={styles.signintitle}>Enter Your Email</Text>
 
-            {/* Input Email */}
-            <TextInput
-                style={styles.textinput}
-                placeholder="Insert your email"
-                placeholderTextColor="#999"
-                value={email}
-                onChangeText={setEmail}
-                />
+          {/* Input Email */}
+          <TextInput
+                          style={[styles.textinput, { width: "90%"}]}
+                          placeholder="Enter your email"
+                          placeholderTextColor="#999"
+                          value={email}
+                          onChangeText={setEmail}
+                      />
+        </View>
           
           
 
