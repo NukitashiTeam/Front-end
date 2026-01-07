@@ -54,7 +54,7 @@ const isExpoGo = Constants.executionEnvironment === ExecutionEnvironment.StoreCl
   maxBreadcrumbs: 150,
 
   // Enable native crash handling
-  enableNative: false,
+  enableNative: true,
   enableNativeCrashHandling: true,
   enableAutoPerformanceTracing: true,
 });
