@@ -9,6 +9,7 @@ import { PlayerProvider, usePlayer } from "./PlayerContext";
 import * as Sentry from '@sentry/react-native';
 import { useNavigationContainerRef } from 'expo-router';
 import * as NavigationBar from 'expo-navigation-bar';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 
 import {
     SafeAreaProvider,
@@ -19,7 +20,10 @@ import {
 // 1. Khai báo integration
 export const navigationIntegration = Sentry.reactNavigationIntegration();
 
-Sentry.init({
+const isExpoGo = Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
+
+// if(!isExpoGo) {
+    Sentry.init({
   dsn: 'https://ff33da7f27044f642b735cc7f2ec6d9c@o4510503566049280.ingest.us.sentry.io/4510503622541312',
   
   // 2. QUAN TRỌNG: Phải thêm integration vào đây
@@ -31,7 +35,7 @@ Sentry.init({
   ],
 
   tracePropagationTargets: ["https://myproject.org", /^\/api\//],
-  debug: !true,
+  debug: true,
 
   
 
@@ -50,10 +54,12 @@ Sentry.init({
   maxBreadcrumbs: 150,
 
   // Enable native crash handling
-  enableNative: true,
+  enableNative: false,
   enableNativeCrashHandling: true,
   enableAutoPerformanceTracing: true,
 });
+// }
+
 
 SplashScreen.preventAutoHideAsync();
 
