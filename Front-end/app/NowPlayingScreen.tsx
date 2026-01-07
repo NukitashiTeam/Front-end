@@ -26,8 +26,11 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
         seekTo,
         currentSong,
         setSoundVolume,
-        subscribeToProgress
+        subscribeToProgress,
+        playNext,
+        playPrevious
     } = usePlayer();
+
     const formatTime = (millis: number) => {
         if (!millis) return "0:00";
         const minutes = Math.floor(millis / 60000);
@@ -132,7 +135,11 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
                     </TouchableOpacity>
 
                     <View style={styles.transportRow}>
-                        <TouchableOpacity accessibilityLabel="Prev">
+                        {/* Nút Previous */}
+                        <TouchableOpacity 
+                            accessibilityLabel="Prev" 
+                            onPress={playPrevious}
+                        >
                             <Ionicons name="play-skip-back" size={24} color="#fff" />
                         </TouchableOpacity>
 
@@ -144,7 +151,11 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
                             <Ionicons name={isPlaying ? "pause" : "play"} size={24} color="#4A2F7C" />
                         </TouchableOpacity>
 
-                        <TouchableOpacity accessibilityLabel="Next">
+                        {/* Nút Next */}
+                        <TouchableOpacity 
+                            accessibilityLabel="Next" 
+                            onPress={playNext}
+                        >
                             <Ionicons name="play-skip-forward" size={24} color="#fff" />
                         </TouchableOpacity>
                     </View>

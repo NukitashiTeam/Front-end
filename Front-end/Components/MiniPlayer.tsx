@@ -57,8 +57,11 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
         togglePlayPause, 
         currentSong, 
         seekTo,
-        subscribeToProgress
+        subscribeToProgress,
+        playNext,
+        playPrevious
     } = usePlayer();
+
     const insets = useSafeAreaInsets();
     const safeBottom = bottomInset ?? insets.bottom;
     const [position, setPosition] = useState(0);
@@ -283,7 +286,11 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
                                 </View>
 
                                 <View style={styles.miniControlRow}>
-                                    <TouchableOpacity style={styles.miniIconBtn}>
+                                    {/* Nút Previous */}
+                                    <TouchableOpacity 
+                                        style={styles.miniIconBtn}
+                                        onPress={playPrevious}
+                                    >
                                         <Ionicons name="play-skip-back" size={26} color="white" />
                                     </TouchableOpacity>
 
@@ -295,7 +302,11 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
                                         <Ionicons name={isPlaying ? "pause" : "play"} size={28} color="white" />
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity style={styles.miniIconBtn}>
+                                    {/* Nút Next */}
+                                    <TouchableOpacity 
+                                        style={styles.miniIconBtn}
+                                        onPress={playNext}
+                                    >
                                         <Ionicons name="play-skip-forward" size={26} color="white" />
                                     </TouchableOpacity>
                                 </View>

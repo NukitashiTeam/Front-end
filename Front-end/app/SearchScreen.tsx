@@ -61,7 +61,7 @@ export default function SearchScreen() {
     const router = useRouter();
     const [isModEnabled, setIsModEnabled] = useState(false);
     const insets = useSafeAreaInsets();
-    const { playTrack, miniPlayerRef } = usePlayer();
+    const { playTrack, playList, miniPlayerRef } = usePlayer();
 
     let [fontsMontserratLoaded] = useMontserrat({
         Montserrat_400Regular,
@@ -200,27 +200,28 @@ export default function SearchScreen() {
         setIsSearching(false);
     };
 
-    const renderSongItem = ({ item }: { item: SongPreview }) => (
+    const renderSongItem = ({ item, index }: { item: SongPreview, index: number }) => (
         <TouchableOpacity 
             style={styles.songRow}
             onPress={() => {
-                const songData: IMusicDetail = {
-                    _id: item._id,
-                    track_id: item.track_id,
-                    title: item.title,
-                    artist: item.artist,
-                    album: item.album,
-                    genre: item.genre,
-                    mp3_url: item.mp3_url,
-                    image_url: item.image_url,
-                    release_date: item.release_date,
-                    mood: item.moods && item.moods.length > 0 ? item.moods[0].name : ""
-                };
                 if (miniPlayerRef.current) {
                     miniPlayerRef.current.expand();
                 }
                 addToHistory(item); 
-                playTrack(songData); 
+                const sourceList = isSearchMode ? searchResult : recentSongs;
+                const fullQueue: IMusicDetail[] = sourceList.map(song => ({
+                    _id: song._id,
+                    track_id: song.track_id,
+                    title: song.title,
+                    artist: song.artist,
+                    album: song.album,
+                    genre: song.genre,
+                    mp3_url: song.mp3_url,
+                    image_url: song.image_url,
+                    release_date: song.release_date,
+                    mood: song.moods && song.moods.length > 0 ? song.moods[0].name : ""
+                }));
+                playList(fullQueue, index);
             }}
         >
             <Image source={{ uri: item.image_url }} style={styles.songCover} resizeMode="cover"/>

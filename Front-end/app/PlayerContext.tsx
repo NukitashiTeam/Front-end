@@ -10,7 +10,12 @@ interface PlayerContextType {
     isPlaying: boolean;
     setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
     currentSong: IMusicDetail | null;
+    queue: IMusicDetail[];
+    currentIndex: number;
     playTrack: (song: string | IMusicDetail) => Promise<void>; 
+    playList: (list: IMusicDetail[], startIndex?: number) => Promise<void>;
+    playNext: () => Promise<void>;
+    playPrevious: () => Promise<void>;
     togglePlayPause: () => Promise<void>;
     seekTo: (value: number) => Promise<void>;
     miniPlayerRef: React.RefObject<MiniPlayerRef | null>;
@@ -24,11 +29,16 @@ const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
 export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentSong, setCurrentSong] = useState<IMusicDetail | null>(null);
+    const [queue, setQueue] = useState<IMusicDetail[]>([]);
+    const [currentIndex, setCurrentIndex] = useState<number>(-1);
     const [isFinished, setIsFinished] = useState(false); 
     
     const miniPlayerRef = useRef<MiniPlayerRef>(null);
     const soundRef = useRef<Audio.Sound | null>(null);
     const playRequestRef = useRef<number>(0);
+    
+    const queueRef = useRef<IMusicDetail[]>([]);
+    const currentIndexRef = useRef<number>(-1);
 
     const progressRef = useRef({ position: 0, duration: 0 });
     const subscribersRef = useRef<ProgressCallback[]>([]);
@@ -45,6 +55,23 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         });
     }, []);
 
+    useEffect(() => {
+        queueRef.current = queue;
+    }, [queue]);
+
+    useEffect(() => {
+        currentIndexRef.current = currentIndex;
+    }, [currentIndex]);
+
+    useEffect(() => {
+        let isMounted = true;
+        if (isFinished && isMounted) {
+            setIsFinished(false);
+            playNext();
+        }
+        return () => { isMounted = false; };
+    }, [isFinished]);
+    
     const subscribeToProgress = useCallback((callback: ProgressCallback) => {
         subscribersRef.current.push(callback);
         return () => {
@@ -68,44 +95,72 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
             });
 
             if (status.didJustFinish) {
-                setIsPlaying(false);
                 setIsFinished(true);
             }
+        } else if (status.error) {
+            console.error(`Player Error: ${status.error}`);
         }
     }, []);
 
-    const playTrack = useCallback(async (input: string | IMusicDetail) => {
+    // --- SỬA LỖI TẠI ĐÂY ---
+    const playTrack = useCallback(async (input: string | IMusicDetail, keepQueue: boolean = false) => {
         const currentRequestId = ++playRequestRef.current;
         try {
-            if (typeof input !== 'string') {
-                setCurrentSong(input);
-                setIsPlaying(true);
-                setIsFinished(false);
-            }
-
             let songDetails: IMusicDetail | null = null;
+            const token = await SecureStore.getItemAsync('accessToken');
+
             if (typeof input === 'string') {
-                const token = await SecureStore.getItemAsync('accessToken');
+                // Trường hợp 1: Input là ID string -> Gọi API lấy full thông tin
                 if (!token) return;
                 songDetails = await getMusicById(input, token);
-                if (songDetails) setCurrentSong(songDetails);
             } else {
+                // Trường hợp 2: Input là Object (từ Queue hoặc Playlist)
                 songDetails = input;
+
+                // KIỂM TRA QUAN TRỌNG:
+                // Nếu object này không có mp3_url (hoặc rỗng), ta phải gọi API để lấy link nhạc chuẩn
+                if ((!songDetails.mp3_url || songDetails.mp3_url === "") && token) {
+                    console.log(`[PlayerContext] Bài hát "${songDetails.title}" thiếu link nhạc. Đang tải chi tiết...`);
+                    const songId = songDetails._id || songDetails.track_id;
+                    const fullDetails = await getMusicById(songId, token);
+                    
+                    if (fullDetails) {
+                        // Gộp thông tin mới lấy được vào object hiện tại
+                        songDetails = { ...songDetails, ...fullDetails };
+                    }
+                }
             }
 
+            if (!songDetails) return;
+
+            // Cập nhật UI ngay lập tức
+            setCurrentSong(songDetails);
+            setIsPlaying(true);
+            setIsFinished(false);
+
+            if (!keepQueue) {
+                setQueue([songDetails]);
+                setCurrentIndex(0);
+            }
+
+            // Unload nhạc cũ
+            if (soundRef.current) {
+                try {
+                    await soundRef.current.unloadAsync(); 
+                } catch (e) {
+                    console.log('Unload Error:', e);
+                }
+            }
+
+            // Kiểm tra race condition (nếu người dùng bấm bài khác nhanh quá)
             if (playRequestRef.current !== currentRequestId) return;
 
-            if (songDetails && songDetails.mp3_url) {
-                if (soundRef.current) {
-                    try {
-                        await soundRef.current.unloadAsync(); 
-                    } catch (e) { console.log(e); }
-                }
+            progressRef.current = { position: 0, duration: 0 };
+            subscribersRef.current.forEach(cb => cb(0, 0));
 
-                if (playRequestRef.current !== currentRequestId) return;
-
-                progressRef.current = { position: 0, duration: 0 };
-                subscribersRef.current.forEach(cb => cb(0, 0));
+            // Phát nhạc
+            if (songDetails.mp3_url) {
+                console.log(`[PlayerContext] Đang phát: ${songDetails.title}`);
                 const { sound: newSound } = await Audio.Sound.createAsync(
                     { uri: songDetails.mp3_url },
                     { shouldPlay: false, progressUpdateIntervalMillis: 500 },
@@ -120,6 +175,9 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
                 soundRef.current = newSound;
                 await newSound.playAsync();
                 setIsPlaying(true);
+            } else {
+                console.warn('Song has no MP3 URL:', songDetails.title);
+                setIsFinished(true); // Tự động next nếu lỗi link
             }
         } catch (error) {
             console.error('Error playing track:', error);
@@ -127,20 +185,52 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         }
     }, [onPlaybackStatusUpdate]);
 
+    const playList = useCallback(async (list: IMusicDetail[], startIndex: number = 0) => {
+        if (!list || list.length === 0) return;
+        setQueue(list);
+        setCurrentIndex(startIndex);
+        // Gọi playTrack với object từ list, playTrack sẽ tự lo việc fetch link nếu thiếu
+        await playTrack(list[startIndex], true);
+    }, [playTrack]);
+
+    const playNext = useCallback(async () => {
+        const currentQueue = queueRef.current;
+        const cIndex = currentIndexRef.current;
+        if (currentQueue.length === 0) return;
+        const nextIndex = (cIndex + 1) % currentQueue.length;
+        setCurrentIndex(nextIndex);
+        await playTrack(currentQueue[nextIndex], true);
+    }, [playTrack]);
+
+    const playPrevious = useCallback(async () => {
+        const currentQueue = queueRef.current;
+        const cIndex = currentIndexRef.current;
+        if (currentQueue.length === 0) return;
+        const prevIndex = (cIndex - 1 + currentQueue.length) % currentQueue.length;
+        setCurrentIndex(prevIndex);
+        await playTrack(currentQueue[prevIndex], true);
+    }, [playTrack]);
+
     const togglePlayPause = useCallback(async () => {
-        if (!soundRef.current) return;
+        if (!soundRef.current) {
+            if (currentSong) {
+                await playTrack(currentSong, true);
+            }
+            return;
+        }
+
         if (isPlaying) {
             await soundRef.current.pauseAsync();
             setIsPlaying(false);
         } else {
             if (isFinished) {
-                await soundRef.current.setPositionAsync(0);
-                setIsFinished(false);
+               await soundRef.current.setPositionAsync(0);
+               setIsFinished(false);
             }
             await soundRef.current.playAsync();
             setIsPlaying(true);
         }
-    }, [isPlaying, isFinished]);
+    }, [isPlaying, isFinished, currentSong, playTrack]);
 
     const seekTo = useCallback(async (value: number) => {
         const currentDuration = progressRef.current.duration;
@@ -150,13 +240,13 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
             progressRef.current.position = seekPosition;
             subscribersRef.current.forEach(cb => cb(seekPosition, currentDuration));
 
-            if (isFinished) {
+            if (!isPlaying) {
                 await soundRef.current.playAsync();
                 setIsPlaying(true);
                 setIsFinished(false);
             }
         }
-    }, [isFinished]);
+    }, [isPlaying]);
 
     const setSoundVolume = useCallback(async (value: number) => {
         if (soundRef.current) {
@@ -174,14 +264,24 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         isPlaying, 
         setIsPlaying, 
         currentSong,
+        queue,
+        currentIndex,
         playTrack,
+        playList,
+        playNext,
+        playPrevious,
         togglePlayPause,
         seekTo,
         miniPlayerRef,
         setSoundVolume,
         subscribeToProgress,
         getCurrentProgress  
-    }), [isPlaying, currentSong, playTrack, togglePlayPause, seekTo, setSoundVolume, subscribeToProgress, getCurrentProgress]);
+    }), [
+        isPlaying, currentSong, queue, currentIndex, 
+        playTrack, playList, playNext, playPrevious, 
+        togglePlayPause, seekTo, setSoundVolume, 
+        subscribeToProgress, getCurrentProgress
+    ]);
 
     return (
         <PlayerContext.Provider value={contextValue}>

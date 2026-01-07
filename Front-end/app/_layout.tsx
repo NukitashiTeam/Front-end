@@ -28,7 +28,7 @@ Sentry.init({
   ],
 
   tracePropagationTargets: ["https://myproject.org", /^\/api\//],
-  debug: true,
+  debug: !true,
 
   // Performance Monitoring
   tracesSampleRate: 1.0,
@@ -82,6 +82,7 @@ const AppNavigation = () => {
         pathname.startsWith("/HomeScreen") ||
         pathname.startsWith("/NowPlayingScreen") ||
         pathname.startsWith("/CreateMoodPlaylistScreen") ||
+        pathname.startsWith("/CreateContextPlaylistScreen") ||
         pathname.startsWith("/SearchScreen") ||
         pathname.startsWith("/MyMusic") ||
         pathname.startsWith("/CreatePlaylist") ||
@@ -101,6 +102,7 @@ const AppNavigation = () => {
                 <Stack.Screen name="onboarding" />
                 <Stack.Screen name="HomeScreen" />
                 <Stack.Screen name="CreateMoodPlaylistScreen" />
+                <Stack.Screen name="CreateContextPlaylistScreen" />
                 <Stack.Screen name="SearchScreen" />
                 <Stack.Screen name="MyMusic" />
                 <Stack.Screen name="ChoosingMoodPlayScreen" />

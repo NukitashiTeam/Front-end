@@ -25,13 +25,14 @@ import styles from "@/styles/CreateMoodPlaylistScreenStyles";
 import Header from "@/Components/Header";
 import getRandomSongsByMood, { ISongPreview } from "@/fetchAPI/getRandomSongsByMood";
 import getAllMoods, { IMood } from "@/fetchAPI/getAllMoods";
+import { IMusicDetail } from "@/fetchAPI/getMusicById";
 import { usePlayer } from "./PlayerContext";
 import { addToHistory } from "@/app/src/historyHelper"; 
 
 export default function CreateMoodPlaylistScreen() {
     const router = useRouter();
     const insets = useSafeAreaInsets();
-    const { playTrack, miniPlayerRef } = usePlayer();
+    const { playTrack, playList, miniPlayerRef } = usePlayer();
     
     const params = useLocalSearchParams();
     const moodNameParam = params.moodName as string; 
@@ -110,13 +111,42 @@ export default function CreateMoodPlaylistScreen() {
 
     if (!fontsMontserratLoaded) return null;
 
-    const handlePlaySong = (item: ISongPreview) => {
+    const convertToPlayerQueue = (songs: ISongPreview[]): IMusicDetail[] => {
+        return songs.map(song => ({
+            _id: song.songId,
+            track_id: song.songId,
+            title: song.title,
+            artist: song.artist,
+            image_url: song.image_url || "",
+            mp3_url: (song as any).mp3_url || "",
+            release_date: "",
+            album: "",
+            genre: "",
+            mood: displayMoodName
+        }));
+    };
+
+    const handlePlaySong = async (item: ISongPreview) => {
         if (miniPlayerRef.current) {
             miniPlayerRef.current.expand();
         }
         
         addToHistory(item);
-        playTrack(item.songId);
+        const fullQueue = convertToPlayerQueue(songList);
+        const selectedIndex = songList.findIndex(s => s.songId === item.songId);
+        if (selectedIndex !== -1) {
+            await playList(fullQueue, selectedIndex);
+        } else {
+            await playTrack(item.songId);
+        }
+    };
+
+    const handlePlayAll = async () => {
+        if (songList.length > 0) {
+             if (miniPlayerRef.current) miniPlayerRef.current.expand();
+             const fullQueue = convertToPlayerQueue(songList);
+             await playList(fullQueue, 0);
+        }
     };
 
     const renderSong = ({ item }: { item: ISongPreview }) => (
@@ -211,7 +241,7 @@ export default function CreateMoodPlaylistScreen() {
                     </View>
                     
                     <View style={styles.playlistHeaderRowColumn2}>
-                        <TouchableOpacity style={styles.playCircle}>
+                        <TouchableOpacity style={styles.playCircle} onPress={handlePlayAll}>
                             <Ionicons name="play" size={22} color="#4A2F7C" />
                         </TouchableOpacity>
                     </View>

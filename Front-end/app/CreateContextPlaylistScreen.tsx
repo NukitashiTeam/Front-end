@@ -25,13 +25,14 @@ import {
 import styles from "@/styles/CreateMoodPlaylistScreenStyles"; 
 import Header from "@/Components/Header";
 import getRandomSongsByContext, { ISongContextItem } from "@/fetchAPI/getRandomSongsByContext";
+import { IMusicDetail } from "@/fetchAPI/getMusicById";
 import { usePlayer } from "./PlayerContext";
 import { addToHistory } from "@/app/src/historyHelper"; 
 
 export default function CreateContextPlaylistScreen() {
     const router = useRouter();
     const insets = useSafeAreaInsets();
-    const { playTrack, miniPlayerRef } = usePlayer();
+    const { playTrack, playList, miniPlayerRef } = usePlayer();
     
     const params = useLocalSearchParams();
     const contextNameParam = params.contextName as string || "Context";
@@ -107,7 +108,22 @@ export default function CreateContextPlaylistScreen() {
 
     if (!fontsMontserratLoaded) return null;
 
-    const handlePlaySong = (item: ISongContextItem) => {
+    const convertToPlayerQueue = (songs: ISongContextItem[]): IMusicDetail[] => {
+        return songs.map(song => ({
+            _id: song.songId,
+            track_id: song.songId,
+            title: song.title,
+            artist: song.artist,
+            image_url: song.image_url || "",
+            mp3_url: (song as any).mp3_url || "",
+            release_date: "",
+            album: "",
+            genre: "",
+            mood: ""
+        }));
+    };
+
+    const handlePlaySong = async (item: ISongContextItem) => {
         if (miniPlayerRef.current) {
             miniPlayerRef.current.expand();
         }
@@ -125,7 +141,21 @@ export default function CreateContextPlaylistScreen() {
         };
 
         addToHistory(songData);
-        playTrack(songData as any);
+        const fullQueue = convertToPlayerQueue(songList);
+        const selectedIndex = songList.findIndex(s => s.songId === item.songId);
+        if (selectedIndex !== -1) {
+            await playList(fullQueue, selectedIndex);
+        } else {
+            await playTrack(songData as any);
+        }
+    };
+
+    const handlePlayAll = async () => {
+        if (songList.length > 0) {
+            if (miniPlayerRef.current) miniPlayerRef.current.expand();
+            const fullQueue = convertToPlayerQueue(songList);
+            await playList(fullQueue, 0);
+        }
     };
 
     const renderSong = ({ item }: { item: ISongContextItem }) => (
@@ -173,7 +203,7 @@ export default function CreateContextPlaylistScreen() {
             </TouchableOpacity>
             
             <View style={styles.headerBlock}>
-                <Text style={styles.sectionTitle}>Context Playlist</Text>
+                <Text style={styles.sectionTitle}>Create Context Playlist</Text>
 
                 <View style={styles.playlistNameView}>
                     <View style={{
@@ -222,9 +252,7 @@ export default function CreateContextPlaylistScreen() {
                     </View>
                     
                     <View style={styles.playlistHeaderRowColumn2}>
-                        <TouchableOpacity style={styles.playCircle} onPress={() => {
-                            if(songList.length > 0) handlePlaySong(songList[0]);
-                        }}>
+                        <TouchableOpacity style={styles.playCircle} onPress={handlePlayAll}>
                             <Ionicons name="play" size={22} color="#4A2F7C" />
                         </TouchableOpacity>
                     </View>
