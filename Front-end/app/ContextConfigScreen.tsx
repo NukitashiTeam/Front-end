@@ -164,10 +164,12 @@ export default function ContextConfigScreen() {
             const result = await getRandomSongsByContext(token, displayContextName);
             if (result && result.success && result.data && result.data.length > 0) {
                 router.push({
-                    pathname: "/CreatePlaylist",
+                    pathname: "/CreateContextPlaylistScreen",
                     params: {
                         songsData: JSON.stringify(result.data),
-                        defaultTitle: `Context: ${displayContextName}`
+                        contextName: displayContextName,
+                        contextIcon: displayContextIcon,
+                        contextColor: displayContextColor
                     }
                 });
             } else {
