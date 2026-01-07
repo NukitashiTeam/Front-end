@@ -342,21 +342,23 @@ export default function SearchScreen() {
                             )}
                         </View>
 
-                        {isSearchMode ? (
-                            <>
-                                <TouchableOpacity onPress={handleBack} style={{ marginLeft: 5, marginBottom: 10 }}>
-                                    <Ionicons name="arrow-back" size={35} color="#FFF" style={{ width: 50 }} />
+                        {isSearchMode ? (<>
+                            <View style={styles.resultHeaderContainer}>
+                                <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+                                    <Ionicons name="arrow-back" size={28} color="#FFF" />
                                 </TouchableOpacity>
-                                <Text style={[styles.sectionTitle, { textAlign: "center", fontSize: 18, fontStyle: "italic" }]}>
-                                    Kết quả cho &quot;{searchedKeyword}&quot;
+
+                                <Text style={styles.resultTitleText} numberOfLines={1}>
+                                    Kết quả cho "{searchedKeyword}"
                                 </Text>
-                                {isSearching && (
-                                    <Text style={{ textAlign: "center", color: "#FFF", fontSize: 16, marginBottom: 20 }}>
-                                        Đang tìm kiếm...
-                                    </Text>
-                                )}
-                            </>
-                        ) : (<>
+                                
+                                <View style={styles.spacer} />
+                            </View>
+
+                            {isSearching && (
+                                <ActivityIndicator size="small" color="#FFF" style={{marginBottom: 10}} />
+                            )}
+                        </>) : (<>
                             <View style={styles.suggestionsMoodPlaylistTextBlock}>
                                 <Text style={styles.sectionTitle}>All Mood Playlist</Text>
                                 <TouchableOpacity onPress={() => router.navigate("/ChoosingMoodPlayScreen")}>
