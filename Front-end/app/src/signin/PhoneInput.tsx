@@ -43,12 +43,9 @@ export default function PhoneInputScreen(){
                     onChangeSelectedCountry={handleSelectedCountry}
                 />
              </View>
-
-             
-             
              <Text style={[styles.termtext,{color:"white"}]}>By creating an account, you agree to the Terms and Privacy Policy</Text>
              <NextBackButton onNextPage={()=>router.push("/src/signin/Otpsign")} onBackPage ={() => router.back()}/>
-                            </View>
+            </View>
         </Background>
     )
 }

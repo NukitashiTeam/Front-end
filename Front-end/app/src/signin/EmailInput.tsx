@@ -35,7 +35,7 @@ export default function EmailScreen() {
           params: { email: email.trim(),
             username: username,
             password: password
-           } // Truyền email qua params
+           } 
         });
     } catch (error: any) {
         Alert.alert("Gửi OTP thất bại", error.message);

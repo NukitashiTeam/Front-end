@@ -41,7 +41,7 @@ const Otpsign = () =>{
               username: username,
               password: password
             }
-          }); // hoặc màn home/login
+          }); 
         } catch (error: any) {
           Alert.alert("OTP sai", error.message);
         } 
@@ -72,45 +72,38 @@ const Otpsign = () =>{
                       width:"100%"
                     }}
                   >
-                    <Text style={styles.signintitle}>Enter OTP</Text>
-        <View style={styles.otpContainer}>
-          {otp.map((digit, index) => (
-            <TextInput
-              key={index}
-              style={styles.otpInput}
-              value={digit}
-              onChangeText={(text) => handleOtpChange(text, index)}
-              keyboardType="numeric"
-              maxLength={1}
-              ref={refs[index]} // Gán ref đúng cách
-              autoFocus={index === 0}
-            />
-          ))}
-        </View>
-        <Text style={styles.otpsubtitle}> We sent an SMS with a 4-digit Code to your phone number</Text>
-        <TouchableOpacity onPress={handleNext} style={styles.otpbutton}>
-          <Text style={styles.buttonText}>Next</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleResend} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
-          <View>
-            <Image source={require("../../../assets/images/mingcute_message-4-line.png")} style={styles.icon} />
+            <Text style={styles.signintitle}>Enter OTP</Text>
+            <View style={styles.otpContainer}>
+              {otp.map((digit, index) => (
+                <TextInput
+                  key={index}
+                  style={styles.otpInput}
+                  value={digit}
+                  onChangeText={(text) => handleOtpChange(text, index)}
+                  keyboardType="numeric"
+                  maxLength={1}
+                  ref={refs[index]} 
+                  autoFocus={index === 0}
+                />
+              ))}
+            </View>
+            <Text style={styles.otpsubtitle}> We sent an SMS with a 4-digit Code to your phone number</Text>
+            <TouchableOpacity onPress={handleNext} style={styles.otpbutton}>
+              <Text style={styles.buttonText}>Next</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleResend} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
+              <View>
+                <Image source={require("../../../assets/images/mingcute_message-4-line.png")} style={styles.icon} />
+              </View>
+              <Text style={{fontWeight: "600"}}>Resend OTP</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleResend} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
+              <View>
+                <Image source={require("../../../assets/images/Vector.png")} style={styles.icon} />
+              </View>
+              <Text style={{fontWeight: "600"}}>Edit Phone number</Text>
+            </TouchableOpacity>
           </View>
-          <Text style={{fontWeight: "600"}}>Resend OTP</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleResend} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
-          <View>
-            <Image source={require("../../../assets/images/Vector.png")} style={styles.icon} />
-          </View>
-          <Text style={{fontWeight: "600"}}>Edit Phone number</Text>
-        </TouchableOpacity>
-                  </View>
-        
-        {/* <TouchableOpacity onPress={()=>router.back()} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
-          <View>
-            <Image source={require("../../../assets/images/Vector.png")} style={styles.icon} />
-          </View>
-          <Text style={{fontWeight: "600"}}>Edit Phone Number</Text>
-        </TouchableOpacity> */}
         </Background>
     )   
 }

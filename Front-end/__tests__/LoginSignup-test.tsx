@@ -87,7 +87,6 @@ describe('SignIn SignUp Process Components', () => {
       navigate: jest.fn(),
       back: jest.fn(),
     });
-    (useLocalSearchParams as jest.Mock).mockReturnValue({ email: 'test@example.com' });
   });
 
   afterEach(() => {
@@ -96,10 +95,14 @@ describe('SignIn SignUp Process Components', () => {
   });
 
   describe('EmailScreen (EmailInput.tsx)', () => {
+    beforeEach(() => {
+      (useLocalSearchParams as jest.Mock).mockReturnValue({ username: 'testuser', password: 'testpass' });
+    });
+
     it('renders correctly', () => {
       const { getByText, getByPlaceholderText } = render(<EmailScreen />);
       expect(getByText('Enter Your Email')).toBeTruthy();
-      expect(getByPlaceholderText('Insert your email')).toBeTruthy();
+      expect(getByPlaceholderText('Enter your email')).toBeTruthy();
       expect(getByText('By creating an account, you agree to the Terms and Privacy Policy')).toBeTruthy();
     });
 
@@ -115,14 +118,14 @@ describe('SignIn SignUp Process Components', () => {
       (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
 
       const { getByPlaceholderText, getByTestId } = render(<EmailScreen />);
-      fireEvent.changeText(getByPlaceholderText('Insert your email'), 'test@example.com');
+      fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
       fireEvent.press(getByTestId('next-button'));
 
       await waitFor(() => {
         expect(mockSignupStep2).toHaveBeenCalledWith({ contact: 'test@example.com' });
         expect(mockPush).toHaveBeenCalledWith({
           pathname: '/src/signin/Otpsign',
-          params: { email: 'test@example.com' },
+          params: { email: 'test@example.com', username: 'testuser', password: 'testpass' },
         });
       });
     });
@@ -130,7 +133,7 @@ describe('SignIn SignUp Process Components', () => {
     it('shows alert on signupStep2 error', async () => {
       mockSignupStep2.mockRejectedValue(new Error('Error message'));
       const { getByPlaceholderText, getByTestId } = render(<EmailScreen />);
-      fireEvent.changeText(getByPlaceholderText('Insert your email'), 'test@example.com');
+      fireEvent.changeText(getByPlaceholderText('Enter your email'), 'test@example.com');
       fireEvent.press(getByTestId('next-button'));
 
       await waitFor(() => {
@@ -221,19 +224,28 @@ describe('SignIn SignUp Process Components', () => {
   });
 
   describe('Otpsign (Otpsign.tsx)', () => {
+    beforeEach(() => {
+      (useLocalSearchParams as jest.Mock).mockReturnValue({
+        email: 'test@example.com',
+        username: 'testuser',
+        password: 'testpass',
+      });
+    });
+
     it('renders correctly', () => {
       const { getByText } = render(<Otpsign />);
       expect(getByText('Enter OTP')).toBeTruthy();
       expect(getByText(' We sent an SMS with a 4-digit Code to your phone number')).toBeTruthy();
       expect(getByText('Next')).toBeTruthy();
       expect(getByText('Resend OTP')).toBeTruthy();
+      expect(getByText('Edit Phone number')).toBeTruthy();
     });
 
-    it('handles OTP input and auto-focus', () => {
+    it('handles OTP input changes', () => {
       const { UNSAFE_getAllByType } = render(<Otpsign />);
       const inputs = UNSAFE_getAllByType(TextInput);
       fireEvent.changeText(inputs[0], '1');
-      // Expect focus on next, but hard to test ref focus in RTL
+      expect(inputs[0].props.value).toBe('1');
     });
 
     it('shows alert on incomplete OTP', () => {
@@ -258,7 +270,10 @@ describe('SignIn SignUp Process Components', () => {
       await waitFor(() => {
         expect(mockVerifyOTP).toHaveBeenCalledWith({ otp: '1234' });
         expect(Alert.alert).toHaveBeenCalledWith('Thành công', 'Tài khoản đã được tạo thành công!');
-        expect(mockPush).toHaveBeenCalledWith('/src/signin/Typesong');
+        expect(mockPush).toHaveBeenCalledWith({
+          pathname: '/src/signin/Typesong',
+          params: { username: 'testuser', password: 'testpass' },
+        });
       });
     });
 
@@ -299,7 +314,7 @@ describe('SignIn SignUp Process Components', () => {
     });
 
     it('shows alert if no email for resend', async () => {
-      (useLocalSearchParams as jest.Mock).mockReturnValue({ email: undefined });
+      (useLocalSearchParams as jest.Mock).mockReturnValue({});
       const { getByText } = render(<Otpsign />);
       fireEvent.press(getByText('Resend OTP'));
 
@@ -323,22 +338,40 @@ describe('SignIn SignUp Process Components', () => {
     });
 
     it('shows password mismatch error', async () => {
-      const { getByPlaceholderText, getByText } = render(<SignupScreen />);
-      // Fill username to enable the button
+      const { getByPlaceholderText, getByText, queryByText } = render(<SignupScreen />);
       fireEvent.changeText(getByPlaceholderText('Insert your username'), 'testuser');
       fireEvent.changeText(getByPlaceholderText('Insert your password'), 'pass1');
       fireEvent.changeText(getByPlaceholderText('Confirm password'), 'pass2');
       fireEvent.press(getByText('Sign Up'));
 
       await waitFor(() => {
-        expect(getByText('Passwords do not match!')).toBeTruthy();
+        expect(queryByText('Passwords do not match!')).toBeTruthy();
       });
     });
 
-    it('disables sign up button when fields empty', () => {
-      const { UNSAFE_getAllByType } = render(<SignupScreen />);
-      const buttons = UNSAFE_getAllByType(TouchableOpacity);
+    it('clears password error on confirm change', async () => {
+      const { getByPlaceholderText, getByText, queryByText } = render(<SignupScreen />);
+      fireEvent.changeText(getByPlaceholderText('Insert your username'), 'testuser');
+      fireEvent.changeText(getByPlaceholderText('Insert your password'), 'pass1');
+      fireEvent.changeText(getByPlaceholderText('Confirm password'), 'pass2');
+      fireEvent.press(getByText('Sign Up'));
+
+      await waitFor(() => {
+        expect(queryByText('Passwords do not match!')).toBeTruthy();
+      });
+
+      fireEvent.changeText(getByPlaceholderText('Confirm password'), 'pass1');
+      expect(queryByText('Passwords do not match!')).toBeNull();
+    });
+
+    it('disables sign up button when username or password empty', () => {
+      const { getByPlaceholderText, UNSAFE_getAllByType } = render(<SignupScreen />);
+      let buttons = UNSAFE_getAllByType(TouchableOpacity);
       expect(buttons[3].props.disabled).toBe(true);
+
+      fireEvent.changeText(getByPlaceholderText('Insert your username'), 'user');
+      buttons = UNSAFE_getAllByType(TouchableOpacity);
+      expect(buttons[3].props.disabled).toBe(true); // Still disabled without password
     });
 
     it('calls signupStep1 and navigates on success', async () => {
@@ -358,7 +391,13 @@ describe('SignIn SignUp Process Components', () => {
           password: 'pass',
           passwordConfirm: 'pass',
         });
-        expect(mockNavigate).toHaveBeenCalledWith('/src/signin/EmailInput');
+        expect(mockNavigate).toHaveBeenCalledWith({
+          pathname: '/src/signin/EmailInput',
+          params: { 
+            username: 'user',
+            password: 'pass'
+          },
+        });
       });
     });
 
