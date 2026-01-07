@@ -41,7 +41,6 @@ import { refreshTokenUse } from '@/fetchAPI/loginAPI';
 import { IMusicDetail } from "@/fetchAPI/getMusicById";
 import { usePlayer } from "./PlayerContext";
 
-// Key để lưu lịch sử vào bộ nhớ máy
 const RECENT_SONGS_KEY = 'RECENT_PLAYED_SONGS_HISTORY';
 const CACHE_KEY_LAST_MOOD = 'CACHE_LAST_MOOD';
 
@@ -50,7 +49,6 @@ const CONTEXT_ITEM_WIDTH = SCREEN_WIDTH * 0.3;
 const CONTEXT_ITEM_SIZE = CONTEXT_ITEM_WIDTH;
 const SPACER = (SCREEN_WIDTH - CONTEXT_ITEM_SIZE) / 2;
 
-// Xóa type Song cũ, dùng chung SongPreview cho thống nhất
 type ContextItem = {
     id: string;
     title: string;
@@ -61,7 +59,6 @@ type ContextItem = {
 
 export default function SearchScreen() {
     const router = useRouter();
-    // Giữ nguyên state nút switch nhưng không xử lý logic phức tạp nữa
     const [isModEnabled, setIsModEnabled] = useState(false);
     const insets = useSafeAreaInsets();
     const { playTrack, miniPlayerRef } = usePlayer();
@@ -80,8 +77,6 @@ export default function SearchScreen() {
     
     const [contexts, setContexts] = useState<IContextData[]>([]);
     const [loadingData, setLoadingData] = useState<boolean>(true);
-
-    // --- THAY ĐỔI: State cho danh sách bài hát gần đây ---
     const [recentSongs, setRecentSongs] = useState<SongPreview[]>([]);
 
     const infiniteContextData = useMemo(() => {
@@ -105,7 +100,6 @@ export default function SearchScreen() {
         scrollX.value = event.contentOffset.x;
     });
     
-    // --- THAY ĐỔI: Hàm load lịch sử từ AsyncStorage ---
     const loadRecentSongs = async () => {
         try {
             const savedSongs = await AsyncStorage.getItem(RECENT_SONGS_KEY);
@@ -117,28 +111,19 @@ export default function SearchScreen() {
         }
     };
 
-    // --- THAY ĐỔI: Hàm thêm bài hát vào lịch sử ---
     const addToHistory = async (song: SongPreview) => {
         try {
-            // 1. Lấy danh sách hiện tại
             let currentList = [...recentSongs];
-            
-            // 2. Kiểm tra nếu bài hát đã tồn tại thì xóa đi (để đưa lên đầu)
-            // Dùng track_id hoặc _id để so sánh
             currentList = currentList.filter(item => 
                 (item.track_id && item.track_id !== song.track_id) || 
                 (item._id && item._id !== song._id)
             );
 
-            // 3. Thêm bài mới vào đầu danh sách
             currentList.unshift(song);
-
-            // 4. Cắt danh sách chỉ lấy 10 bài
             if (currentList.length > 10) {
                 currentList = currentList.slice(0, 10);
             }
 
-            // 5. Cập nhật state và lưu vào AsyncStorage
             setRecentSongs(currentList);
             await AsyncStorage.setItem(RECENT_SONGS_KEY, JSON.stringify(currentList));
         } catch (error) {
@@ -150,7 +135,6 @@ export default function SearchScreen() {
         const fetchData = async () => {
             try {
                 setLoadingData(true);
-                // Load danh sách nhạc gần đây
                 await loadRecentSongs();
 
                 let token = await SecureStore.getItemAsync("accessToken");
@@ -198,7 +182,7 @@ export default function SearchScreen() {
         setIsSearchMode(true);
         setSearchedKeyword(keyword);
         try {
-            const results = await searchSongsByKeyword(keyword, 40);
+            const results = await searchSongsByKeyword(keyword, 10);
             setSearchResults(results);
         } catch (error) {
             console.error("Search error:", error);
