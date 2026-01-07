@@ -76,7 +76,7 @@ const AppNavigation = () => {
                     ? "music"
                     : "home";
                     
-    const isNowPlaying = pathname.startsWith("/NowPlayingScreen") || pathname.startsWith("/MyMusic") || pathname.startsWith("/CreatePlaylist"); // || pathname.startsWith("/PlaylistSong");
+    const isNowPlaying = pathname.startsWith("/NowPlayingScreen") || pathname.startsWith("/CreatePlaylist");
     
     const appearBottomBar = (
         pathname.startsWith("/HomeScreen") ||

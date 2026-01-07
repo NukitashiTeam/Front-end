@@ -235,7 +235,7 @@ export default function MyMusic() {
           <TouchableOpacity
             style={{
               position: "absolute",
-              bottom: 60 + (insets.bottom || 0),
+              bottom: 100 + (insets.bottom || 0),
               alignSelf: "center",
               width: 60,
               height: 60,
