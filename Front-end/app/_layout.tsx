@@ -5,7 +5,7 @@ import { StyleSheet, View, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MiniPlayer, { MiniPlayerRef } from "../Components/MiniPlayer";
 import BottomBar from "../Components/BottomBar";
-import PlayerProvider from "./PlayerContext";
+import { PlayerProvider, usePlayer } from "./PlayerContext";
 import * as Sentry from '@sentry/react-native';
 import { useNavigationContainerRef } from 'expo-router';
 import * as NavigationBar from 'expo-navigation-bar';
@@ -57,51 +57,23 @@ Sentry.init({
 
 SplashScreen.preventAutoHideAsync();
 
-export default Sentry.wrap(function RootLayout() {
+const AppNavigation = () => {
     const router = useRouter();
     const pathname = usePathname();
     const insets = useSafeAreaInsets();
+    const { miniPlayerRef } = usePlayer(); 
     const [isPlayerExpanded, setIsPlayerExpanded] = useState(false);
-
-    const playerRef = useRef<MiniPlayerRef>(null);
-
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            SplashScreen.hideAsync();
-        }, 1200);
-        return () => clearTimeout(timeout);
-    }, []);
-
-    const ref = useNavigationContainerRef();
     const [bottomBarHeight, setBottomBarHeight] = useState(0);
     const BOTTOM_GAP = 8;
-    
-    // Đăng ký navigation container cho Sentry
+    const ref = useNavigationContainerRef();
+
     useEffect(() => {
         if (ref) {
             navigationIntegration.registerNavigationContainer(ref);
         }
     }, [ref]);
 
-    useEffect(() => {
-        if (Platform.OS === 'android') {
-            NavigationBar.setPositionAsync("absolute");
-            NavigationBar.setBackgroundColorAsync("#00000000");
-            NavigationBar.setButtonStyleAsync("light"); 
-        }
-    }, []);
-
-    // 3. SỬA LỖI CÚ PHÁP Ở ĐÂY
-    useEffect(() => {
-        Sentry.setUser({
-            id: "nukitashiteam",
-            email: "lekhanh98777@gmail.com",
-            username: "khanhPear",
-        });
-        Sentry.setTag("group", "nukitashiteam");
-    }, []);
-
-    const activeTab = isPlayerExpanded
+    const activeTab = isPlayerExpanded || pathname.startsWith("/NowPlayingScreen")
         ? "radio"
         : pathname.startsWith("/HomeScreen")
             ? "home"
@@ -111,12 +83,13 @@ export default Sentry.wrap(function RootLayout() {
                     ? "music"
                     : "home";
                     
-    const isNowPlaying = pathname.startsWith("/NowPlayingScreen") || pathname.startsWith("/MyMusic") || pathname.startsWith("/CreatePlaylist") || pathname.startsWith("/PlaylistSong");
+    const isNowPlaying = pathname.startsWith("/NowPlayingScreen") || pathname.startsWith("/CreatePlaylist");
     
     const appearBottomBar = (
         pathname.startsWith("/HomeScreen") ||
         pathname.startsWith("/NowPlayingScreen") ||
         pathname.startsWith("/CreateMoodPlaylistScreen") ||
+        pathname.startsWith("/CreateContextPlaylistScreen") ||
         pathname.startsWith("/SearchScreen") ||
         pathname.startsWith("/MyMusic") ||
         pathname.startsWith("/CreatePlaylist") ||
@@ -125,67 +98,99 @@ export default Sentry.wrap(function RootLayout() {
     );
 
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <PlayerProvider>
-                <Stack
-                    screenOptions={{
-                        headerShown: false,
-                        contentStyle: { backgroundColor: "#818BFF", flex: 1 }
-                    }}
-                >
-                    <Stack.Screen name="index" />
-                    <Stack.Screen name="onboarding" />
-                    <Stack.Screen name="HomeScreen" />
-                    <Stack.Screen name="CreateMoodPlaylistScreen" />
-                    <Stack.Screen name="SearchScreen" />
-                    <Stack.Screen name="MyMusic" />
-                    <Stack.Screen name="ChoosingMoodPlayScreen" />
-                    <Stack.Screen name="ContextConfigScreen" />
-                </Stack>
-                {appearBottomBar && (
-                    <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+        <>
+            <Stack
+                screenOptions={{
+                    headerShown: false,
+                    contentStyle: { backgroundColor: "#818BFF", flex: 1 }
+                }}
+            >
+                <Stack.Screen name="index" />
+                <Stack.Screen name="onboarding" />
+                <Stack.Screen name="HomeScreen" />
+                <Stack.Screen name="CreateMoodPlaylistScreen" />
+                <Stack.Screen name="CreateContextPlaylistScreen" />
+                <Stack.Screen name="SearchScreen" />
+                <Stack.Screen name="MyMusic" />
+                <Stack.Screen name="ChoosingMoodPlayScreen" />
+                <Stack.Screen name="ContextConfigScreen" />
+            </Stack>
 
-                        <View style={{ position: "absolute", bottom: "0%", left: 0, right: 0, zIndex: 9999, alignItems: 'center', paddingBottom: insets.bottom}}>
-                            <BottomBar
-                                active={activeTab as any}
-                                onPress={(k) => {
-                                    if (k === "home") {
-                                        if (pathname === "/HomeScreen" && isPlayerExpanded) {
-                                            playerRef.current?.collapse();
-                                        }
-                                        router.navigate("/HomeScreen");
-                                    } else if (k === "radio") {
-                                        if (pathname.startsWith("/MyMusic") || pathname.startsWith("/CreatePlaylist") || pathname.startsWith("/PlaylistSong")) {
-                                            router.navigate("/NowPlayingScreen");
-                                        } else {
-                                            playerRef.current?.expand();
-                                        }
-                                    } else if (k === "search") {
-                                        if (isPlayerExpanded) playerRef.current?.collapse();
-                                        router.navigate("/SearchScreen");
-                                    } else if (k === "music") {
-                                        if (isPlayerExpanded) playerRef.current?.collapse();
-                                        router.navigate("/MyMusic");
+            {appearBottomBar && (
+                <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+                    <View style={{ position: "absolute", bottom: "0%", left: 0, right: 0, zIndex: 9999, alignItems: 'center', paddingBottom: insets.bottom}}>
+                        <BottomBar
+                            active={activeTab as any}
+                            onPress={(k) => {
+                                if (k === "home") {
+                                    if (pathname === "/HomeScreen" && isPlayerExpanded) {
+                                        miniPlayerRef.current?.collapse();
                                     }
-                                }}
+                                    router.navigate("/HomeScreen");
+                                } else if (k === "radio") {
+                                    if (pathname.startsWith("/CreatePlaylist")) {
+                                        router.navigate("/NowPlayingScreen");
+                                    } else {
+                                        miniPlayerRef.current?.expand();
+                                    }
+                                } else if (k === "search") {
+                                    if (isPlayerExpanded) miniPlayerRef.current?.collapse();
+                                    router.navigate("/SearchScreen");
+                                } else if (k === "music") {
+                                    if (isPlayerExpanded) miniPlayerRef.current?.collapse();
+                                    router.navigate("/MyMusic");
+                                }
+                            }}
+                        />
+                    </View>
+
+                    {!isNowPlaying && (
+                        <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "100%", zIndex: 8000 }} pointerEvents="box-none">
+                            <MiniPlayer
+                                ref={miniPlayerRef}
+                                hidden={pathname === "/onboarding" || pathname === "/index"}
+                                onStateChange={(expanded) => setIsPlayerExpanded(expanded)}
+                                bottomBarHeight={bottomBarHeight}
+                                bottomInset={insets.bottom}
+                                bottomGap={BOTTOM_GAP}
                             />
                         </View>
+                    )}
+                </View>
+            )}
+        </>
+    );
+};
 
-                        {!isNowPlaying && (
-                            <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "100%", zIndex: 8000 }} pointerEvents="box-none">
-                                <MiniPlayer
-                                    ref={playerRef}
-                                    hidden={pathname === "/onboarding" || pathname === "/index"}
-                                    onStateChange={(expanded) => setIsPlayerExpanded(expanded)}
-                                    bottomBarHeight={bottomBarHeight}
-                                    bottomInset={insets.bottom}
-                                    bottomGap={BOTTOM_GAP}
-                                />
-                            </View>
-                        )}
+export default Sentry.wrap(function RootLayout() {
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            SplashScreen.hideAsync();
+        }, 1200);
+        return () => clearTimeout(timeout);
+    }, []);
 
-                    </View>
-                )}
+    useEffect(() => {
+        if (Platform.OS === 'android') {
+            NavigationBar.setPositionAsync("absolute");
+            NavigationBar.setBackgroundColorAsync("#00000000");
+            NavigationBar.setButtonStyleAsync("light"); 
+        }
+    }, []);
+
+    useEffect(() => {
+        Sentry.setUser({
+            id: "nukitashiteam",
+            email: "lekhanh98777@gmail.com",
+            username: "khanhPear",
+        });
+        Sentry.setTag("group", "nukitashiteam");
+    }, []);
+
+    return (
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <PlayerProvider>
+                <AppNavigation />
             </PlayerProvider>
         </GestureHandlerRootView>
     );

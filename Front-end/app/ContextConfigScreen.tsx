@@ -11,18 +11,23 @@ import {
     FlatList,
     ScrollView as RNScrollView,
     ActivityIndicator,
+    Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as SecureStore from 'expo-secure-store';
-
-import Header from "../Components/Header";
-import styles from "../styles/ContextConfigScreenStyles";
-import getAllMoods, { IMood } from "../fetchAPI/getAllMoods";
-import { refreshTokenUse } from "../fetchAPI/loginAPI";
-import getDetailContext from "../fetchAPI/getDetailContext";
+import EmojiPicker, { type EmojiType } from 'rn-emoji-keyboard';
+import Header from "@/Components/Header";
+import styles from "@/styles/ContextConfigScreenStyles";
+import getAllMoods, { IMood } from "@/fetchAPI/getAllMoods";
+import { refreshTokenUse } from "@/fetchAPI/loginAPI";
+import getDetailContext from "@/fetchAPI/getDetailContext";
+import getRandomSongsByContext from "@/fetchAPI/getRandomSongsByContext";
+import createContext, { ICreateContextInput } from "@/fetchAPI/createContext";
+import updateContext, { IUpdateContextInput } from "@/fetchAPI/updateContext";
+import deleteUserContext from "@/fetchAPI/deleteUserContext";
 
 type Mode = "config" | "create";
 
@@ -61,9 +66,12 @@ export default function ContextConfigScreen() {
     const [loadingMoods, setLoadingMoods] = useState(true);
     
     const [fetchingDetail, setFetchingDetail] = useState(false);
+    const [isCreatingPlaylist, setIsCreatingPlaylist] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isOpenEmoji, setIsOpenEmoji] = useState(false);
 
     const [contextName, setContextName] = useState<string>("");
-    const [selectedIcon, setSelectedIcon] = useState<string>("book-outline");
+    const [selectedIcon, setSelectedIcon] = useState<string>("📚"); 
     const [selectedColor, setSelectedColor] = useState<string>("#9fb1ff");
     const [selectedMoodIds, setSelectedMoodIds] = useState<string[]>([]);
 
@@ -129,7 +137,7 @@ export default function ContextConfigScreen() {
         setMode(targetMode);
         if (targetMode === "create" && isEdit !== "true") {
             setContextName("");
-            setSelectedIcon("book-outline");
+            setSelectedIcon("📚");
             setSelectedColor("#9fb1ff");
             setSelectedMoodIds([]);
         } else if (contextId) {
@@ -137,6 +145,161 @@ export default function ContextConfigScreen() {
         }
 
     }, [contextId, paramMode, isEdit]);
+
+    const handlePickEmoji = (emojiObject: EmojiType) => {
+        setSelectedIcon(emojiObject.emoji);
+    };
+
+    const handleCreateContextPlaylist = async () => {
+        if (isCreatingPlaylist) return;
+        setIsCreatingPlaylist(true);
+
+        try {
+            const token = await SecureStore.getItemAsync("accessToken");
+            if (!token) {
+                Alert.alert("Lỗi", "Bạn cần đăng nhập để thực hiện chức năng này.");
+                return;
+            }
+
+            const result = await getRandomSongsByContext(token, displayContextName);
+            if (result && result.success && result.data && result.data.length > 0) {
+                router.push({
+                    pathname: "/CreateContextPlaylistScreen",
+                    params: {
+                        songsData: JSON.stringify(result.data),
+                        contextName: displayContextName,
+                        contextIcon: displayContextIcon,
+                        contextColor: displayContextColor
+                    }
+                });
+            } else {
+                Alert.alert("Thông báo", "Không tìm thấy bài hát phù hợp cho ngữ cảnh này.");
+            }
+        } catch (error) {
+            console.error("Lỗi khi tạo playlist context:", error);
+            Alert.alert("Lỗi", "Đã xảy ra lỗi khi tạo playlist.");
+        } finally {
+            setIsCreatingPlaylist(false);
+        }
+    };
+
+    const handleDeleteContext = async () => {
+        if (!contextId) {
+            Alert.alert("Lỗi", "Không tìm thấy ID của Context.");
+            return;
+        }
+
+        Alert.alert(
+            "Xóa Context",
+            `Bạn có chắc chắn muốn xóa ngữ cảnh "${displayContextName}" không?`, [{
+                text: "Hủy",
+                style: "cancel",
+            }, {
+                text: "Xóa",
+                style: "destructive",
+                onPress: async () => {
+                    setIsSubmitting(true);
+                    try {
+                        const token = await SecureStore.getItemAsync("accessToken");
+                        if (token) {
+                            const result = await deleteUserContext(token, contextId);
+                            if (result) {
+                                Alert.alert("Thành công", result.message, [{ 
+                                    text: "OK", 
+                                    onPress: () => {
+                                        if (router.canGoBack()) {
+                                            router.back();
+                                        } else {
+                                            router.replace('/ContextUserListScreen');
+                                        }
+                                    }
+                                }]);
+                            } else {
+                                Alert.alert("Thất bại", "Bạn không có quyền xóa Context này hoặc đã xảy ra lỗi.");
+                            }
+                        } else {
+                            Alert.alert("Lỗi", "Phiên đăng nhập không hợp lệ.");
+                        }
+                    } catch (error) {
+                        console.error("Lỗi khi xóa context:", error);
+                        Alert.alert("Lỗi", "Đã xảy ra lỗi hệ thống.");
+                    } finally {
+                        setIsSubmitting(false);
+                    }
+                }
+            }]
+        );
+    };
+
+    const handleSaveContext = async () => {
+        if (!contextName.trim()) {
+            Alert.alert("Thiếu thông tin", "Vui lòng nhập tên cho Context.");
+            return;
+        }
+
+        if (selectedMoodIds.length === 0) {
+            Alert.alert("Thiếu thông tin", "Vui lòng chọn ít nhất một Mood.");
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            const token = await SecureStore.getItemAsync("accessToken");
+            if (!token) {
+                Alert.alert("Lỗi", "Vui lòng đăng nhập lại.");
+                return;
+            }
+
+            const inputData = {
+                name: contextName.trim(),
+                icon: selectedIcon,
+                color: selectedColor,
+                moods: selectedMoodIds
+            };
+
+            if (contextId) {
+                const result = await updateContext(token, contextId, inputData);
+                if (result) {
+                    Alert.alert("Thành công", "Cập nhật Context thành công!", [{
+                        text: "OK",
+                        onPress: () => {
+                            setDisplayContextName(result.name);
+                            setDisplayContextIcon(result.icon);
+                            setDisplayContextColor(result.color);
+                            if (result._id !== contextId) {
+                                console.log("Context đã được Fork sang ID mới:", result._id);
+                            }
+                            setMode("config");
+                            router.navigate('/ContextUserListScreen');
+                        }
+                    }]);
+                } else {
+                    Alert.alert("Thất bại", "Không thể cập nhật Context. Vui lòng thử lại.");
+                }
+            } else {
+                const newContext = await createContext(token, inputData);
+                if (newContext) {
+                    Alert.alert("Thành công", "Đã tạo Context mới!", [{
+                        text: "OK",
+                        onPress: () => {
+                            setDisplayContextName(newContext.name);
+                            setDisplayContextIcon(newContext.icon);
+                            setDisplayContextColor(newContext.color);
+                            setMode("config");
+                            router.navigate('/ContextUserListScreen');
+                        }
+                    }]);
+                } else {
+                    Alert.alert("Thất bại", "Không thể tạo Context. Vui lòng thử lại.");
+                }
+            }
+        } catch (error) {
+            console.error("Lỗi khi lưu context:", error);
+            Alert.alert("Lỗi", "Đã xảy ra lỗi hệ thống.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     const selectedMoodsList = useMemo(() => 
         allMoods.filter((m) => selectedMoodIds.includes(m._id)), 
@@ -157,7 +320,7 @@ export default function ContextConfigScreen() {
 
     return (
         <View style={styles.container}>
-            <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+            <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
 
             <LinearGradient
                 colors={["#8C84FF", "#6E5ED1"]}
@@ -221,32 +384,39 @@ export default function ContextConfigScreen() {
                                             { opacity: pressed ? 0.7 : 1 }
                                         ]}
                                     >
-                                        <Text style={styles.pillBtnText}>Edit / Add more</Text>
+                                        <Text style={styles.pillBtnText}>Edit Context</Text>
                                     </Pressable>
                                     
                                     <Pressable
-                                        onPress={() => {
-                                            // Logic tạo playlist
-                                        }}
+                                        onPress={handleCreateContextPlaylist}
+                                        disabled={isCreatingPlaylist}
                                         style={({ pressed }) => [
                                             styles.pillBtn,
                                             { backgroundColor: "#4C38CA" },
-                                            { opacity: pressed ? 0.7 : selectedMoodIds.length ? 1 : 0.6 }
-                                        ]}
-                                    >
-                                        <Text style={styles.pillBtnText}>Create Playlist</Text>
-                                    </Pressable>
-
-                                    <Pressable
-                                        onPress={() => {
-                                            // Logic xóa
-                                        }}
-                                        style={({ pressed }) => [
-                                            styles.pillBtn,
                                             { opacity: pressed ? 0.7 : 1 }
                                         ]}
                                     >
-                                        <Text style={styles.pillBtnText}>Delete Context</Text>
+                                        {isCreatingPlaylist ? (
+                                            <ActivityIndicator size="small" color="#FFF" />
+                                        ) : (
+                                            <Text style={styles.pillBtnText}>Create Playlist</Text>
+                                        )}
+                                    </Pressable>
+
+                                    <Pressable
+                                        onPress={handleDeleteContext}
+                                        disabled={isSubmitting}
+                                        style={({ pressed }) => [
+                                            styles.pillBtn,
+                                            { backgroundColor: "#580499E3" },
+                                            { opacity: pressed ? 0.7 : 1 }
+                                        ]}
+                                    >
+                                        {isSubmitting ? (
+                                            <ActivityIndicator size="small" color="#FFF" />
+                                        ) : (
+                                            <Text style={styles.pillBtnText}>Delete Context</Text>
+                                        )}
                                     </Pressable>
                                 </View>
                             </View>
@@ -270,31 +440,20 @@ export default function ContextConfigScreen() {
 
                         <View style={styles.logoCard}>
                             <Text style={styles.formLabel}>Context Logo</Text>
-                            <View style={[styles.logoBox, { backgroundColor: selectedColor || "#9fb1ff" }]}>
+                            <Pressable 
+                                onPress={() => setIsOpenEmoji(true)}
+                                style={[styles.logoBox, { backgroundColor: selectedColor || "#9fb1ff" }]}
+                            >
                                 {isUrlOrEmoji(selectedIcon) ? (
                                     <Text style={{fontSize: 40}}>{selectedIcon}</Text>
                                 ) : (
                                     <Ionicons name={selectedIcon as any} size={40} color="#FFFFFF" />
                                 )}
-                            </View>
+                            </Pressable>
                         </View>
                     </View>
 
-                    <Text style={[styles.sectionLabel, { marginTop: 12 }]}>Choose Context Icon</Text>
-                    <RNScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.iconPickerRow}>
-                        {ICON_OPTIONS.map((icon) => {
-                            const active = selectedIcon === icon.name;
-                            return (
-                                <Pressable key={icon.id} style={[styles.iconOption, active && styles.iconOptionActive]} onPress={() => setSelectedIcon(icon.name)}>
-                                    <View style={styles.iconOptionIconWrap}>
-                                        <Ionicons name={icon.name} size={24} color="#FFFFFF" />
-                                    </View>
-                                    <Text style={styles.iconOptionLabel}>{icon.label}</Text>
-                                </Pressable>
-                            );
-                        })}
-                    </RNScrollView>
-
+                    <Text style={[{ marginTop: 12, fontStyle: "italic", textAlign: "right" }]}>*Tap icon above to change Emoji</Text>                    
                     <Text style={[styles.sectionLabel, { marginTop: 12 }]}>Choose Background Color</Text>
                     <View style={styles.colorPickerRow}>
                         {COLOR_OPTIONS.map((c) => (
@@ -326,6 +485,7 @@ export default function ContextConfigScreen() {
                 </LinearGradient>
 
                 <Text style={[styles.sectionLabel, { marginTop: 16 }]}>Choose Context's Mood</Text>
+                <Text style={[{ fontStyle: "italic", textAlign: "right", color: "white"}]}>*Need at least 3 moods</Text>
                 <LinearGradient
                     colors={["#4C38CA", "#392997", "#261B64"]}
                     start={{ x: 0, y: 0 }}
@@ -362,28 +522,39 @@ export default function ContextConfigScreen() {
 
                 {mode === "create" && (
                     <Pressable
-                        style={[styles.createBtn, { opacity: contextName.trim() ? 1 : 0.6 }]}
-                        onPress={() => {
-                            if (!contextName.trim()) return;
-                            setDisplayContextName(contextName.trim());
-                            setDisplayContextIcon(selectedIcon);
-                            setDisplayContextColor(selectedColor);
-                            setMode("config");
-                            console.log("Saving context:", {
-                                id: contextId,
-                                name: contextName,
-                                icon: selectedIcon,
-                                color: selectedColor,
-                                moods: selectedMoodIds
-                            });
-                        }}
+                        style={[styles.createBtn, { opacity: (contextName.trim() && !isSubmitting) ? 1 : 0.6 }]}
+                        onPress={handleSaveContext}
+                        disabled={isSubmitting}
                     >
-                        <Text style={styles.createBtnText}>
-                            {contextId ? "Save Changes" : "Create"}
-                        </Text>
+                        {isSubmitting ? (
+                            <ActivityIndicator color="#FFF" />
+                        ) : (
+                            <Text style={styles.createBtnText}>
+                                {contextId ? "Save Changes" : "Create"}
+                            </Text>
+                        )}
                     </Pressable>
                 )}
             </ScrollView>
+
+            <EmojiPicker
+                onEmojiSelected={handlePickEmoji}
+                open={isOpenEmoji}
+                onClose={() => setIsOpenEmoji(false)}
+                theme={{
+                    backdrop: '#16161888',
+                    knob: '#766dfc',
+                    container: '#282829',
+                    header: '#fff',
+                    skinTonesContainer: '#252427',
+                    category: {
+                        icon: '#766dfc',
+                        iconActive: '#fff',
+                        container: '#252427',
+                        containerActive: '#766dfc',
+                    },
+                }}
+            />
         </View>
     );
 }

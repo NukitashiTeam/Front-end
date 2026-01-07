@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
         paddingBottom: 18,
     },
     sectionTitle: {
-        color: "#000000",
+        color: "#ffffffff",
         fontSize: 18,
         fontWeight: 700,
         fontFamily: "Montserrat_700Bold",
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
         marginBottom:20
     },
     ownerName: {
-        color: "#000000",
+        color: "#ffffffff",
         fontSize: 16,
         fontWeight: "700",
     },
@@ -106,27 +106,24 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 10,
     },
-    // moodAvatarCircle: {
-    //     width: 55, 
-    //     height: 55,
-    //     borderRadius: 32,
-    //     backgroundColor: "#FFE082",
-    //     alignItems: "center",
-    //     justifyContent: "center",
-    //     overflow: "hidden",
-    // },
+    resultHeaderContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 5,
+    },
     moodAvatarImg: {
         width: "100%",
         height: "100%",
         resizeMode: "cover",
     },
-    // moodNameText: {
-    //     color: "white",
-    //     fontSize: 10,
-    //     fontWeight: 700,
-    //     fontFamily: "Montserrat_700Bold",
-    //     marginTop: 5,
-    // },
+    resultTitleText: {
+        flex: 1,
+        color: "#FFF",
+        fontSize: 18,
+        fontStyle: "italic",
+        fontWeight: "600",
+        textAlign: "center",
+    },
     suggestionsMoodPlaylistFlatList: {
         width: "100%",
         flexDirection: "row",
@@ -193,11 +190,9 @@ const styles = StyleSheet.create({
         color: "#000000",
         height: '100%',
     },
-    backbutton:{
-        fontSize: 40,
-        color: "white",
-        marginBottom: 30,
-        marginLeft: 20,
+    backButton:{
+        padding: 5,
+        marginRight: 10,
     },
     moodListContainer: {
         marginBottom: 28,
@@ -232,6 +227,9 @@ const styles = StyleSheet.create({
         fontFamily: "Montserrat_700Bold",
         textAlign: "center",
     },
+    spacer: {
+        width: 35, 
+    }
 });
 
 export default styles;

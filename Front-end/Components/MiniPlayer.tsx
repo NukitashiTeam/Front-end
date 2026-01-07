@@ -1,4 +1,4 @@
-import React, { useEffect, useImperativeHandle, forwardRef, useMemo } from "react";
+import React, { useEffect, useImperativeHandle, forwardRef, useMemo, useState } from "react";
 import { View, TouchableOpacity, Text, Dimensions, StyleSheet, BackHandler, useWindowDimensions, Platform, StatusBar} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -52,11 +52,21 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
     bottomInset,
     bottomGap = 8
 }, ref) => {
-    const { isPlaying, setIsPlaying, progressVal, setProgress: setProgressVal } = usePlayer();
-    // const { height: SCREEN_H, width: SCREEN_W } = useWindowDimensions();
+    const { 
+        isPlaying, 
+        togglePlayPause, 
+        currentSong, 
+        seekTo,
+        subscribeToProgress,
+        playNext,
+        playPrevious
+    } = usePlayer();
+
     const insets = useSafeAreaInsets();
     const safeBottom = bottomInset ?? insets.bottom;
-    
+    const [position, setPosition] = useState(0);
+    const [duration, setDuration] = useState(0);
+    const progressVal = duration > 0 ? position / duration : 0;
     const expandProgress = useSharedValue(0); 
     const context = useSharedValue(0);
 
@@ -68,6 +78,13 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
     const HANDLE_PEEK = Platform.OS === "ios" ? verticalScale(-80) : verticalScale(-100);
     const MINIMIZED_TRANSLATE_Y = MINI_HEIGHT - HANDLE_PEEK;
     const MAX_TRAVEL = Math.max(1, SCREEN_H - (MINI_HEIGHT + MINI_BOTTOM_OFFSET));
+
+    const formatTime = (millis: number) => {
+        if (!millis) return "0:00";
+        const minutes = Math.floor(millis / 60000);
+        const seconds = ((millis % 60000) / 1000).toFixed(0);
+        return minutes + ":" + (Number(seconds) < 10 ? '0' : '') + seconds;
+    };
 
     const notifyStateChange = (expanded: boolean) => {
         if (onStateChange) {
@@ -102,6 +119,14 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
         const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
         return () => backHandler.remove();
     }, []);
+
+    useEffect(() => {
+        const unsubscribe = subscribeToProgress((pos, dur) => {
+            setPosition(pos);
+            setDuration(dur);
+        });
+        return unsubscribe;
+    }, [subscribeToProgress]);
     
     const panUp = Gesture.Pan().onStart(() => {
         context.value = expandProgress.value;
@@ -207,6 +232,11 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
 
     if (hidden) return null;
 
+    const displayTitle = currentSong ? currentSong.title : "Not Playing";
+    const displayArtist = currentSong 
+        ? `${currentSong.artist} ${currentSong.album ? '- ' + currentSong.album : ''}` 
+        : "Select a song to play";
+
     return (
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "transparent", height: "106%"}]} pointerEvents="box-none">
             <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: 'black' }, backdropStyle]} pointerEvents="none" />
@@ -248,45 +278,53 @@ const MiniPlayer = forwardRef<MiniPlayerRef, MiniPlayerProps>(({
                             <View style={{display: "flex", flexDirection: 'column', alignItems: 'center', flex: 1}}>
                                 <View style={styles.miniHeaderRow}>
                                     <Ionicons name="notifications-outline" size={34} color="white" />
-                                    <View>
-                                        <Text style={styles.miniTitle}>Shape of You</Text>
-                                        <Text style={styles.miniSubtitle}>Ed Sherran - Happy Playlist</Text>
+                                    <View style={{ flex: 1, alignItems: 'center', marginHorizontal: 10 }}> 
+                                        <Text style={styles.miniTitle} numberOfLines={1}>{displayTitle}</Text>
+                                        <Text style={styles.miniSubtitle} numberOfLines={1}>{displayArtist}</Text>
                                     </View>
                                     <Ionicons name="share-social-outline" size={34} color="white" />
                                 </View>
 
                                 <View style={styles.miniControlRow}>
-                                    <TouchableOpacity style={styles.miniIconBtn}>
+                                    {/* Nút Previous */}
+                                    <TouchableOpacity 
+                                        style={styles.miniIconBtn}
+                                        onPress={playPrevious}
+                                    >
                                         <Ionicons name="play-skip-back" size={26} color="white" />
                                     </TouchableOpacity>
 
                                     <TouchableOpacity
                                         style={[styles.miniIconBtn, { marginHorizontal: 24 }]}
-                                        onPress={() => setIsPlaying((p) => !p)}
+                                        onPress={togglePlayPause}
                                         accessibilityRole="button"
-                                        accessibilityLabel={isPlaying ? "Pause" : "play"}
                                     >
                                         <Ionicons name={isPlaying ? "pause" : "play"} size={28} color="white" />
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity style={styles.miniIconBtn}>
+                                    {/* Nút Next */}
+                                    <TouchableOpacity 
+                                        style={styles.miniIconBtn}
+                                        onPress={playNext}
+                                    >
                                         <Ionicons name="play-skip-forward" size={26} color="white" />
                                     </TouchableOpacity>
                                 </View>
 
                                 <View style={styles.miniProgressRow}>
-                                    <Text style={styles.miniTimeText}>1:02</Text>
+                                    <Text style={styles.miniTimeText}>{formatTime(position)}</Text>
                                     <Slider
                                         containerStyle={styles.miniSliderContainer}
                                         trackStyle={styles.miniSliderTrack}
                                         minimumTrackStyle={styles.miniSliderMinTrack}
                                         thumbStyle={styles.miniSliderThumb}
                                         value={progressVal}
-                                        onValueChange={(v) => setProgressVal(Array.isArray(v) ? v[0] : v)}
+                                        onSlidingComplete={(v) => seekTo(Array.isArray(v) ? v[0] : v)}
                                         minimumValue={0}
                                         maximumValue={1}
                                     />
-                                    <Text style={styles.miniTimeText}>4:08</Text>
+                                    
+                                    <Text style={styles.miniTimeText}>{formatTime(duration)}</Text>
                                 </View>
                             </View>
                         </Animated.View>

@@ -15,15 +15,38 @@ import { Slider } from "@miblanchard/react-native-slider";
 import styles from "../styles/NowPlayingScreenStyles";
 import Header from "../Components/Header";
 import {usePlayer} from "./PlayerContext";
+import { useRouter } from "expo-router";
 
 export default function NowPlayingScreen({ style, onClose }: { style?: any, onClose?: () => void }) {
     const insets = useSafeAreaInsets();
-    const { isPlaying, setIsPlaying, progressVal: progress, setProgress } = usePlayer();
+    const router = useRouter();
+    const { 
+        isPlaying, 
+        togglePlayPause,
+        seekTo,
+        currentSong,
+        setSoundVolume,
+        subscribeToProgress,
+        playNext,
+        playPrevious
+    } = usePlayer();
+
+    const formatTime = (millis: number) => {
+        if (!millis) return "0:00";
+        const minutes = Math.floor(millis / 60000);
+        const seconds = ((millis % 60000) / 1000).toFixed(0);
+        return minutes + ":" + (Number(seconds) < 10 ? '0' : '') + seconds;
+    };
     const [isModEnabled, setIsModEnabled] = useState(true);
     const [volume, setVolume] = useState(0.8);
     const muteAnim = useRef(new RNAnimated.Value(volume > 0 ? 0 : 1)).current;
     const oldVolume = useRef(volume);
+    const lastVolumeUpdateTimestamp = useRef<number>(0);
     const normalize = (v: number | number[]) => (Array.isArray(v) ? v[0] : v);
+
+    const [position, setPosition] = useState(0);
+    const [duration, setDuration] = useState(0);
+    const progressVal = duration > 0 ? position / duration : 0;
 
     useEffect(() => {
         RNAnimated.timing(muteAnim, {
@@ -32,6 +55,22 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
             useNativeDriver: true,
         }).start();
     }, [volume, muteAnim]);
+
+    useEffect(() => {
+        const unsubscribe = subscribeToProgress((pos, dur) => {
+            setPosition(pos);
+            setDuration(dur);
+        });
+        return unsubscribe;
+    }, [subscribeToProgress]);
+
+    if (!currentSong) {
+        return (
+            <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text style={{ color: 'white' }}>No song selected</Text>
+            </View>
+        );
+    }
 
     return (
         <Animated.View
@@ -51,7 +90,7 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
 
                 <View style={styles.artWrapper}>
                     <Image
-                        source={require("../assets/images/artNowPlayingMusic.jpg")}
+                        source={currentSong.image_url ? { uri: currentSong.image_url } : require("../assets/images/artNowPlayingMusic.jpg")}
                         style={styles.artImage}
                         resizeMode="cover"
                     />
@@ -64,8 +103,10 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
                     </TouchableOpacity>
 
                     <View style={styles.titleCenter}>
-                        <Text style={styles.songTitle}>Shape of You</Text>
-                        <Text style={styles.songSubtitle}>Ed Sheeran - Happy Playlist</Text>
+                        <Text style={styles.songTitle} numberOfLines={1}>{currentSong.title}</Text>
+                        <Text style={styles.songSubtitle} numberOfLines={1}>
+                            {currentSong.artist} {currentSong.album ? `- ${currentSong.album}` : ''}
+                        </Text>
                     </View>
 
                     <TouchableOpacity accessibilityLabel="Share">
@@ -75,24 +116,46 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
 
                 {/* Action row */}
                 <View style={styles.actionRow}>
-                    <TouchableOpacity style={styles.smallIconBtn} accessibilityLabel="Add">
+                    <TouchableOpacity 
+                        style={styles.smallIconBtn} 
+                        accessibilityLabel="Add"
+                        onPress={() => {
+                            if (currentSong) {
+                                const idToSend = currentSong._id || currentSong.track_id;
+                                console.log("ID bài hát gửi đi:", idToSend);
+                                if (onClose) onClose(); 
+                                router.push({
+                                    pathname: "/AddMusicToPlaylistScreen",
+                                    params: { songId: idToSend } 
+                                });
+                            }
+                        }}
+                    >
                         <Ionicons name="add" size={20} color="#EADDFF" />
                     </TouchableOpacity>
 
                     <View style={styles.transportRow}>
-                        <TouchableOpacity accessibilityLabel="Prev">
+                        {/* Nút Previous */}
+                        <TouchableOpacity 
+                            accessibilityLabel="Prev" 
+                            onPress={playPrevious}
+                        >
                             <Ionicons name="play-skip-back" size={24} color="#fff" />
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            onPress={() => setIsPlaying((v) => !v)}
+                            onPress={togglePlayPause}
                             style={styles.playBtn}
                             accessibilityLabel="Play/Pause"
                         >
                             <Ionicons name={isPlaying ? "pause" : "play"} size={24} color="#4A2F7C" />
                         </TouchableOpacity>
 
-                        <TouchableOpacity accessibilityLabel="Next">
+                        {/* Nút Next */}
+                        <TouchableOpacity 
+                            accessibilityLabel="Next" 
+                            onPress={playNext}
+                        >
                             <Ionicons name="play-skip-forward" size={24} color="#fff" />
                         </TouchableOpacity>
                     </View>
@@ -108,18 +171,24 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
                 {/* Progress + Volume bars */}
                 <View style={styles.slidersBlock}>
                     <View style={styles.progressSliderContainer}>
-                        <Text style={[styles.timeText, { textAlign: "left" }]}>1:02</Text>
+                        <Text style={[styles.timeText, { textAlign: "left" }]}>
+                            {formatTime(position)}
+                        </Text>
+                        
                         <Slider
                             containerStyle={styles.sliderContainer}
                             trackStyle={styles.sliderTrack}
                             minimumTrackStyle={styles.sliderMinTrack}
                             thumbStyle={styles.sliderThumb}
-                            value={progress}
-                            onValueChange={(value) => setProgress(normalize(value))}
+                            value={progressVal}
+                            onSlidingComplete={(value) => seekTo(Array.isArray(value) ? value[0] : value)}
                             minimumValue={0}
                             maximumValue={1}
                         />
-                        <Text style={[styles.timeText, { textAlign: "right" }]}>4:08</Text>
+                        
+                        <Text style={[styles.timeText, { textAlign: "right" }]}>
+                            {formatTime(duration)}
+                        </Text>
                     </View>
 
                     <View style={styles.volumeSliderContainer}>
@@ -129,8 +198,10 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
                                 if (volume > 0) {
                                     oldVolume.current = volume;
                                     setVolume(0);
+                                    setSoundVolume(0);
                                 } else {
                                     setVolume(oldVolume.current);
+                                    setSoundVolume(oldVolume.current);
                                 }
                             }}
                         >
@@ -151,7 +222,19 @@ export default function NowPlayingScreen({ style, onClose }: { style?: any, onCl
                             minimumTrackStyle={styles.sliderMinTrack}
                             thumbStyle={styles.sliderThumb}
                             value={volume}
-                            onValueChange={(value) => setVolume(normalize(value))}
+                            onValueChange={(value) => {
+                                const newVal = normalize(value);
+                                setVolume(newVal);
+                                const now = Date.now();
+                                if (now - lastVolumeUpdateTimestamp.current > 100) {
+                                    setSoundVolume(newVal);
+                                    lastVolumeUpdateTimestamp.current = now;
+                                }
+                            }}
+                            onSlidingComplete={(value) => {
+                                const newVal = normalize(value);
+                                setSoundVolume(newVal);
+                            }}
                             minimumValue={0}
                             maximumValue={1}
                         />

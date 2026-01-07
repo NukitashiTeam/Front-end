@@ -41,6 +41,7 @@
         }
       ],
       "expo-font",
+      "expo-secure-store",
       [
         "@sentry/react-native/expo",
         {
@@ -48,17 +49,7 @@
           "project": "nukitashiteam",
           "organization": "nukitashiteam"
         }
-      ],
-      "sentry-expo",
-      [
-        "@sentry/react-native/expo",
-        {
-          "url": "https://sentry.io/",
-          "project": "nukitashiteam",
-          "organization": "nukitashiteam"
-        }
-      ],
-      "expo-secure-store"
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
