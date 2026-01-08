@@ -76,7 +76,6 @@ export default function ProfileDetailScreen() {
 
         {/* Username */}
         <Text style={styles.username}>{userInfo.data.username || "Chưa đặt tên"}</Text>
-        {/* <Text style={styles.role}>{userInfo.data.role === "user" ? "Người dùng" : userInfo.data.role}</Text> */}
 
         {/* Info Cards */}
         <View style={styles.infoSection}>

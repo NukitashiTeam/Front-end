@@ -350,7 +350,7 @@ export default function SearchScreen() {
                                 </TouchableOpacity>
 
                                 <Text style={styles.resultTitleText} numberOfLines={1}>
-                                    Kết quả cho "{searchedKeyword}"
+                                    Kết quả cho &quot; {searchedKeyword} &quot;
                                 </Text>
                                 
                                 <View style={styles.spacer} />
