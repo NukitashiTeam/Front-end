@@ -156,7 +156,7 @@ export const styles = StyleSheet.create({
   optionTypebutton: {
     backgroundColor: "#007BFF",
     borderRadius: 10,
-    paddingVertical: 10,
+    paddingVertical: 20,
     paddingHorizontal: 20,
     width: "85%",
     marginVertical: 10,

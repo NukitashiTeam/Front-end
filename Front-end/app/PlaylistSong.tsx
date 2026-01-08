@@ -12,23 +12,23 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import styles from "../styles/style";
 import Header from "../Components/Header";
 import Background from "../Components/MainBackground";
 import getPlaylistDetail, { IPlaylistDetail, ISong } from "../fetchAPI/getPlaylistDetail";
+import { IMusicDetail } from "../fetchAPI/getMusicById";
 import deletePlaylist from "../fetchAPI/deletePlaylist";
 import removeSongFromPlaylist from "../fetchAPI/removeSongFromPlaylist";
 import * as SecureStore from 'expo-secure-store';
-
-const CACHE_KEY_TOKEN = 'CACHE_USER_TOKEN';
+import { usePlayer } from "./PlayerContext";
+import { addToHistory } from "@/app/src/historyHelper";
 
 export default function PlaylistSong() {
     const [isModEnabled, setIsModEnabled] = useState(false);
     const insets = useSafeAreaInsets();
     const router = useRouter();
-    
+    const { playTrack, playList, miniPlayerRef } = usePlayer();
     const params = useLocalSearchParams();
     const playlistId = params.id as string;
     const playlistTitle = params.title as string || "Unknown Playlist";
@@ -58,36 +58,73 @@ export default function PlaylistSong() {
         fetchData();
     }, [playlistId]);
 
+    const convertToPlayerQueue = (songs: ISong[]): IMusicDetail[] => {
+        return songs.map(song => ({
+            _id: song.songId,
+            track_id: song.songId,
+            title: song.title,
+            artist: song.artist,
+            image_url: song.image_url || "",
+            mp3_url: (song as any).mp3_url || (song as any).url || "", 
+            release_date: "",
+            album: "",
+            genre: "",
+            mood: ""
+        }));
+    };
+
+    const handlePlaySong = async (item: ISong) => {
+        if (!playlistData?.songs) return;
+
+        if (miniPlayerRef.current) {
+            miniPlayerRef.current.expand();
+        }
+
+        addToHistory(item).catch(err => console.error("History Error:", err));
+        const fullQueue = convertToPlayerQueue(playlistData.songs);
+        const selectedIndex = playlistData.songs.findIndex(s => s.songId === item.songId);
+        if (selectedIndex !== -1) {
+            console.log(`Playing playlist from index ${selectedIndex}: ${item.title}`);
+            await playList(fullQueue, selectedIndex);
+        } else {
+            await playTrack(item.songId);
+        }
+    };
+
     const handleRemoveSong = (songId: string) => {
         Alert.alert(
             "Xóa bài hát",
-            "Bạn có chắc chắn muốn xóa bài hát này khỏi playlist?",
-            [
-                { text: "Hủy", style: "cancel" },
-                { 
-                    text: "Xóa", 
-                    style: "destructive", 
-                    onPress: async () => {
-                        setIsLoading(true);
-                        const token = await AsyncStorage.getItem(CACHE_KEY_TOKEN);
-                        if (token && playlistId) {
-                            const updatedPlaylist = await removeSongFromPlaylist(token, playlistId, songId);
-                            
-                            if (updatedPlaylist) {
-                                setPlaylistData(updatedPlaylist); 
-                            } else {
-                                Alert.alert("Lỗi", "Không thể xóa bài hát. Vui lòng thử lại.");
-                            }
+            "Bạn có chắc chắn muốn xóa bài hát này khỏi playlist?", [{
+                text: "Hủy",
+                style: "cancel"
+            }, {
+                text: "Xóa", 
+                style: "destructive", 
+                onPress: async () => {
+                    setIsLoading(true);
+                    const token = await SecureStore.getItemAsync("accessToken");
+                    if (token && playlistId) {
+                        const updatedPlaylist = await removeSongFromPlaylist(token, playlistId, songId);
+                        if (updatedPlaylist) {
+                            setPlaylistData(updatedPlaylist); 
+                            Alert.alert("Thành công", "Đã xóa bài hát khỏi playlist.");
+                        } else {
+                            Alert.alert("Lỗi", "Không thể xóa bài hát. Có thể bạn không phải chủ sở hữu.");
                         }
-                        setIsLoading(false);
+                    } else {
+                        Alert.alert("Lỗi", "Phiên đăng nhập không hợp lệ.");
                     }
+                    setIsLoading(false);
                 }
-            ]
+            }]
         );
     };
 
     const renderSongItem = ({ item }: { item: ISong }) => (
-        <View style={[styles.songItem, { flexDirection: 'row', alignItems: 'center' }]}>
+        <TouchableOpacity 
+            style={[styles.songItem, { flexDirection: 'row', alignItems: 'center' }]}
+            onPress={() => handlePlaySong(item)}
+        >
             <Image 
                 source={(item.image_url && item.image_url !== "") ? { uri: item.image_url } : require('../assets/images/song5.jpg')}
                 style={styles.songImage} 
@@ -104,10 +141,31 @@ export default function PlaylistSong() {
             >
                 <Ionicons name="trash-outline" size={24} color="white" />
             </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
     );
 
-    const handleVectorPress = () => console.log('Vector icon pressed');
+    const shuffleArray = (array: ISong[]) => {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
+    };
+
+    const handleShufflePress = async () => {
+        if (playlistData?.songs && playlistData.songs.length > 0) {
+            const shuffledSongs = shuffleArray(playlistData.songs);
+            setPlaylistData(prev => prev ? { ...prev, songs: shuffledSongs } : null);
+            if (miniPlayerRef.current) miniPlayerRef.current.expand();
+            const fullQueue = convertToPlayerQueue(shuffledSongs);
+            await playList(fullQueue, 0);
+            console.log("Playlist shuffled and playing first song:", shuffledSongs[0].title);
+        } else {
+            Alert.alert("Thông báo", "Playlist này chưa có bài hát nào để trộn.");
+        }
+    };
+
     const handleDeletePress = async () => {
         Alert.alert(
             "Xóa Playlist",
@@ -119,8 +177,7 @@ export default function PlaylistSong() {
                     style: "destructive", 
                     onPress: async () => {
                         setIsLoading(true);
-                        const token = await AsyncStorage.getItem(CACHE_KEY_TOKEN);
-                        
+                        const token = await SecureStore.getItemAsync("accessToken");
                         if (token && playlistId) {
                             const success = await deletePlaylist(token, playlistId);
                             if (success) {
@@ -139,15 +196,24 @@ export default function PlaylistSong() {
             ]
         );
     };
-    const handlePlayPress = () => console.log('Play icon pressed');
+
+    const handlePlayPress = async () => {
+        if (playlistData?.songs && playlistData.songs.length > 0) {
+            if (miniPlayerRef.current) miniPlayerRef.current.expand();
+            const fullQueue = convertToPlayerQueue(playlistData.songs);
+            await playList(fullQueue, 0);
+        } else {
+            Alert.alert("Thông báo", "Playlist này chưa có bài hát nào.");
+        }
+    };
 
     return (
         <Background>
             <View style={{
-                flex: 1, 
-                paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0, 
-                paddingBottom: insets.bottom ? Math.max(insets.bottom, 12) : 12,
-            }}>
+                        flex: 1,
+                        paddingTop: (Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0) + insets.top,
+                        paddingBottom: insets.bottom ? Math.max(insets.bottom, 12) : 12,
+                      }}>
                 <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
 
                 <View style={styles.headerWrap}>
@@ -173,7 +239,7 @@ export default function PlaylistSong() {
 
                 <View style={{flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginBottom: 10, justifyContent: 'space-between'}}>
                     <View style={{flexDirection: 'row', alignItems: 'center', gap: 20}}>
-                        <TouchableOpacity onPress={handleVectorPress}>
+                        <TouchableOpacity onPress={handleShufflePress}>
                             <Ionicons name="shuffle" size={28} color="#FFFFFF" />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleDeletePress}>
@@ -196,7 +262,7 @@ export default function PlaylistSong() {
                         data={playlistData?.songs || []}
                         renderItem={renderSongItem}
                         keyExtractor={(item) => item.songId}
-                        contentContainerStyle={{ paddingVertical: 5, marginBottom: "5%", paddingHorizontal: 20 }}
+                        contentContainerStyle={{ paddingTop: 5, marginBottom: "5%", paddingHorizontal: 20, paddingBottom: "30%" }}
                         ListEmptyComponent={
                             <Text style={{color: 'white', textAlign: 'center', marginTop: 20}}>
                                 No songs in this playlist

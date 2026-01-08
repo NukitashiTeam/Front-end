@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Switch, TouchableOpacity, Modal } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "../styles/HeaderStyles";
 import UserOptionsSheet from "./UserOptionsSheet";
+import getUserInfo, { UserData } from "@/fetchAPI/userAPI"; 
 
 type HeaderProps = {
     appName?: string;
@@ -19,6 +20,18 @@ export default function Header({
 }: HeaderProps) {
     const [showSheet, setShowSheet] = useState(false);
     const [mountSheet, setMountSheet] = useState(false);
+
+    const [userInfo, setUserInfo] = useState<UserData | null>(null);
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const response = await getUserInfo();
+            if (response && response.data) {
+                setUserInfo(response.data);
+                console.log("Header fetched user:", response.data.username);
+            }
+        };
+        fetchUserData();
+    }, []);
 
     const openSheet = () => {
         setMountSheet(true);
@@ -74,7 +87,12 @@ export default function Header({
                     onRequestClose={closeSheet}
                     statusBarTranslucent
                 >
-                    <UserOptionsSheet visible={showSheet} onClose={closeSheet} name="Name" email="email id" />
+                    <UserOptionsSheet 
+                        visible={showSheet} 
+                        onClose={closeSheet} 
+                        name={userInfo?.username || "Đang tải..."} 
+                        email={userInfo?.email || "..."} 
+                    />
                 </Modal>
             )}
         </View>

@@ -36,20 +36,18 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import searchSongsByKeyword, { SongPreview } from "@/fetchAPI/SearchMusic";
 import getAllMoods, { IMood } from "@/fetchAPI/getAllMoods";
-import getUserContexts, { IContext } from "@/fetchAPI/getUserContexts"; 
+import getContextUser, { IContextData } from "@/fetchAPI/getContextUserHome"; 
 import { refreshTokenUse } from '@/fetchAPI/loginAPI';
+import { IMusicDetail } from "@/fetchAPI/getMusicById";
+import { usePlayer } from "./PlayerContext";
+
+const RECENT_SONGS_KEY = 'RECENT_PLAYED_SONGS_HISTORY';
+const CACHE_KEY_LAST_MOOD = 'CACHE_LAST_MOOD';
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CONTEXT_ITEM_WIDTH = SCREEN_WIDTH * 0.3;
 const CONTEXT_ITEM_SIZE = CONTEXT_ITEM_WIDTH;
 const SPACER = (SCREEN_WIDTH - CONTEXT_ITEM_SIZE) / 2;
-
-type Song = {
-    id: string;
-    cover: any;
-    title: string;
-    artist: string;
-};
 
 type ContextItem = {
     id: string;
@@ -59,12 +57,11 @@ type ContextItem = {
     uniqueKey?: string;
 };
 
-type ListItem = Song | SongPreview;
-
 export default function SearchScreen() {
     const router = useRouter();
     const [isModEnabled, setIsModEnabled] = useState(false);
     const insets = useSafeAreaInsets();
+    const { playTrack, playList, miniPlayerRef } = usePlayer();
 
     let [fontsMontserratLoaded] = useMontserrat({
         Montserrat_400Regular,
@@ -77,17 +74,10 @@ export default function SearchScreen() {
     const [searchedKeyword, setSearchedKeyword] = useState<string>("");
     const [isSearchMode, setIsSearchMode] = useState(false);
     const [moods, setMoods] = useState<IMood[]>([]);
-    const [contexts, setContexts] = useState<IContext[]>([]);
+    
+    const [contexts, setContexts] = useState<IContextData[]>([]);
     const [loadingData, setLoadingData] = useState<boolean>(true);
-
-    const data: Song[] = [
-        { id: `song-1`, cover: require("../assets/images/weebooSong.jpg"), title: "Name of the song", artist: "Artist Name" },
-        { id: `song-2`, cover: require("../assets/images/lonelySong.jpg"), title: "Name of the song", artist: "Artist Name" },
-        { id: `song-3`, cover: require("../assets/images/allegoryOfTheCaveSong.jpg"), title: "Name of the song", artist: "Artist Name" },
-        { id: `song-4`, cover: require("../assets/images/song4.jpg"), title: "Name of the song", artist: "Artist Name" },
-        { id: `song-5`, cover: require("../assets/images/song5.jpg"), title: "Name of the song", artist: "Artist Name" },
-        { id: `song-6`, cover: require("../assets/images/song6.jpg"), title: "Name of the song", artist: "Artist Name" },
-    ];
+    const [recentSongs, setRecentSongs] = useState<SongPreview[]>([]);
 
     const infiniteContextData = useMemo(() => {
         if (contexts.length === 0) return [];
@@ -110,15 +100,48 @@ export default function SearchScreen() {
         scrollX.value = event.contentOffset.x;
     });
     
+    const loadRecentSongs = async () => {
+        try {
+            const savedSongs = await AsyncStorage.getItem(RECENT_SONGS_KEY);
+            if (savedSongs) {
+                setRecentSongs(JSON.parse(savedSongs));
+            }
+        } catch (error) {
+            console.error("Failed to load recent songs", error);
+        }
+    };
+
+    const addToHistory = async (song: SongPreview) => {
+        try {
+            let currentList = [...recentSongs];
+            currentList = currentList.filter(item => 
+                (item.track_id && item.track_id !== song.track_id) || 
+                (item._id && item._id !== song._id)
+            );
+
+            currentList.unshift(song);
+            if (currentList.length > 10) {
+                currentList = currentList.slice(0, 10);
+            }
+
+            setRecentSongs(currentList);
+            await AsyncStorage.setItem(RECENT_SONGS_KEY, JSON.stringify(currentList));
+        } catch (error) {
+            console.error("Failed to save history", error);
+        }
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoadingData(true);
+                await loadRecentSongs();
+
                 let token = await SecureStore.getItemAsync("accessToken");
                 const fetchAll = async (currentToken: string) => {
                     const [moodsData, contextsData] = await Promise.all([
                         getAllMoods(currentToken),
-                        getUserContexts(currentToken)
+                        getContextUser(currentToken)
                     ]);
                     return { moodsData, contextsData };
                 };
@@ -159,7 +182,7 @@ export default function SearchScreen() {
         setIsSearchMode(true);
         setSearchedKeyword(keyword);
         try {
-            const results = await searchSongsByKeyword(keyword, 5);
+            const results = await searchSongsByKeyword(keyword, 10);
             setSearchResults(results);
         } catch (error) {
             console.error("Search error:", error);
@@ -177,33 +200,51 @@ export default function SearchScreen() {
         setIsSearching(false);
     };
 
-    const renderSong = ({ item }: { item: Song }) => (
-        <View style={styles.songRow}>
-            <Image source={item.cover} style={styles.songCover} />
-            <View style={styles.songMeta}>
-                <Text style={styles.songTitle} numberOfLines={1}>{item.title}</Text>
-                <Text style={styles.songArtist} numberOfLines={1}>{item.artist}</Text>
-            </View>
-        </View>
-    );
-
-    const renderSearchResult = ({ item }: { item: SongPreview }) => (
-        <View style={styles.songRow}>
+    const renderSongItem = ({ item, index }: { item: SongPreview, index: number }) => (
+        <TouchableOpacity 
+            style={styles.songRow}
+            onPress={() => {
+                if (miniPlayerRef.current) {
+                    miniPlayerRef.current.expand();
+                }
+                addToHistory(item); 
+                const sourceList = isSearchMode ? searchResult : recentSongs;
+                const fullQueue: IMusicDetail[] = sourceList.map(song => ({
+                    _id: song._id,
+                    track_id: song.track_id,
+                    title: song.title,
+                    artist: song.artist,
+                    album: song.album,
+                    genre: song.genre,
+                    mp3_url: song.mp3_url,
+                    image_url: song.image_url,
+                    release_date: song.release_date,
+                    mood: song.moods && song.moods.length > 0 ? song.moods[0].name : ""
+                }));
+                playList(fullQueue, index);
+            }}
+        >
             <Image source={{ uri: item.image_url }} style={styles.songCover} resizeMode="cover"/>
             <View style={styles.songMeta}>
                 <Text style={styles.songTitle} numberOfLines={1}>{item.title || "Unknown Title"}</Text>
                 <Text style={styles.songArtist} numberOfLines={1}>{item.artist || "Unknown Artist"}</Text>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 
     const renderMoodItem = ({ item }: { item: IMood }) => (
         <TouchableOpacity 
             style={styles.moodItemWrapper}
-            onPress={() => {
+            onPress={async () => {
+                try {
+                    await AsyncStorage.setItem(CACHE_KEY_LAST_MOOD, JSON.stringify(item));
+                } catch (error) {
+                    console.error("Failed to save last mood:", error);
+                }
+
                 router.push({
                     pathname: "/CreateMoodPlaylistScreen",
-                    params: {moodName:item.name}
+                    params: {moodName: item.name}
                 });
             }}
         >
@@ -269,9 +310,9 @@ export default function SearchScreen() {
                 style={StyleSheet.absoluteFill}
             />
             
-            <FlatList<ListItem>
-                data={isSearchMode ? searchResult : data}
-                keyExtractor={(item) => ("track_id" in item ? item.track_id : item.id)}
+            <FlatList<SongPreview>
+                data={isSearchMode ? searchResult : recentSongs}
+                keyExtractor={(item) => item.track_id || item._id}
                 ListHeaderComponent={
                     <View style={styles.headerBlock}>
                         {!isSearchMode && (
@@ -302,21 +343,23 @@ export default function SearchScreen() {
                             )}
                         </View>
 
-                        {isSearchMode ? (
-                            <>
-                                <TouchableOpacity onPress={handleBack} style={{ marginLeft: 5, marginBottom: 10 }}>
-                                    <Ionicons name="arrow-back" size={35} color="#FFF" style={{ width: 50 }} />
+                        {isSearchMode ? (<>
+                            <View style={styles.resultHeaderContainer}>
+                                <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+                                    <Ionicons name="arrow-back" size={28} color="#FFF" />
                                 </TouchableOpacity>
-                                <Text style={[styles.sectionTitle, { textAlign: "center", fontSize: 18 }]}>
-                                    Kết quả cho &quot;{searchedKeyword}&quot;
+
+                                <Text style={styles.resultTitleText} numberOfLines={1}>
+                                    Kết quả cho "{searchedKeyword}"
                                 </Text>
-                                {isSearching && (
-                                    <Text style={{ textAlign: "center", color: "#FFF", fontSize: 16, marginBottom: 20 }}>
-                                        Đang tìm kiếm...
-                                    </Text>
-                                )}
-                            </>
-                        ) : (<>
+                                
+                                <View style={styles.spacer} />
+                            </View>
+
+                            {isSearching && (
+                                <ActivityIndicator size="small" color="#FFF" style={{marginBottom: 10}} />
+                            )}
+                        </>) : (<>
                             <View style={styles.suggestionsMoodPlaylistTextBlock}>
                                 <Text style={styles.sectionTitle}>All Mood Playlist</Text>
                                 <TouchableOpacity onPress={() => router.navigate("/ChoosingMoodPlayScreen")}>
@@ -377,11 +420,8 @@ export default function SearchScreen() {
                         </>)}
                     </View>
                 }
-
-                renderItem={({ item }) => {
-                    if ("track_id" in item) return renderSearchResult({ item: item as SongPreview });
-                    return renderSong({ item: item as Song });
-                }}
+                
+                renderItem={renderSongItem}
                 contentContainerStyle={{ paddingBottom: 96 }}
                 showsVerticalScrollIndicator={false}
                 ListEmptyComponent={
@@ -390,7 +430,11 @@ export default function SearchScreen() {
                             <Ionicons name="musical-notes-outline" size={60} color="#DDD" />
                             <Text style={{ color: "#FFF", marginTop: 10 }}>Không tìm thấy kết quả</Text>
                         </View>
-                    ) : null
+                    ) : (!isSearchMode && recentSongs.length === 0 ? (
+                         <View style={{ alignItems: "center", marginTop: 20 }}>
+                            <Text style={{ color: "#EEE", fontStyle: 'italic' }}>Bạn chưa nghe bài nào gần đây</Text>
+                        </View>
+                    ) : null)
                 }
             />
         </View>

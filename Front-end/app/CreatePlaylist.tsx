@@ -25,13 +25,14 @@ import Background from "../Components/MainBackground";
 import createManualPlaylist from "../fetchAPI/createManualPlaylist";
 import saveRandomMoodPlaylist, { ISongInput } from "../fetchAPI/saveRandomMoodPlaylist";
 import { refreshTokenUse } from "../fetchAPI/loginAPI";
+import addSongToPlaylist from "../fetchAPI/addSongToPlaylist";
 
 export default function CreatePlaylist(){
     const router = useRouter();
     const insets = useSafeAreaInsets();
     
     const params = useLocalSearchParams();
-    const { songsData, defaultTitle } = params;
+    const { songsData, defaultTitle, initialSongId } = params;
 
     const [playlistName, setPlaylistName] = useState('');
     const [isModEnabled, setIsModEnabled] = useState(false);
@@ -60,6 +61,7 @@ export default function CreatePlaylist(){
 
             let token = await SecureStore.getItemAsync("accessToken");
             let isSuccess = false;
+            let createdPlaylistId = ""; 
 
             if (token) {
                 if (songsToSave.length > 0) {
@@ -71,6 +73,7 @@ export default function CreatePlaylist(){
                     const result = await createManualPlaylist(token, playlistName);
                     if (result) {
                         isSuccess = true;
+                        createdPlaylistId = result._id || (result as any).data?._id;
                     }
                 }
             }
@@ -80,11 +83,22 @@ export default function CreatePlaylist(){
                 const newToken = await refreshTokenUse();
                 if (newToken) {
                     const retryResult = await createManualPlaylist(newToken, playlistName);
-                    if (retryResult) isSuccess = true;
+                    if (retryResult) {
+                        isSuccess = true;
+                        createdPlaylistId = retryResult._id || (retryResult as any).data?._id;
+                    }
                 }
             }
 
             if (isSuccess) {
+                if (initialSongId && createdPlaylistId) {
+                    console.log(`Đang thêm bài hát ${initialSongId} vào playlist mới ${createdPlaylistId}...`);
+                    const tokenForAdd = await SecureStore.getItemAsync("accessToken");
+                    if (tokenForAdd) {
+                        await addSongToPlaylist(tokenForAdd, createdPlaylistId, initialSongId as string);
+                    }
+                }
+
                 setShowConfirm(false);
                 setPlaylistName('');
                 router.navigate('/MyMusic'); 

@@ -1,20 +1,13 @@
-import {
-    StyleSheet,
-    Dimensions,
-} from "react-native";
+import { StyleSheet } from "react-native";
 
 const PURPLE = "#4A2F7C";
-const PURPLE_DARK = "#3A2366";
 const LAVENDER = "#EADDFF";
-const SCREEN_HEIGHT = Dimensions.get('screen').height;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: PURPLE,
         paddingHorizontal: 16,
-        flexDirection: "column",
-        justifyContent: "space-between",
     },
     switchHitSlop: {
         padding: 2,
@@ -36,23 +29,19 @@ const styles = StyleSheet.create({
         height: 18,
         borderRadius: 9,
         backgroundColor: "#fff",
-        transform: [{
-            translateX: 0,
-        }],
     },
     fakeSwitchThumbOn: {
-        transform: [{
-            translateX: 18,
-        }],
+        transform: [{ translateX: 18 }],
     },
 
-    /* ART */
     artWrapper: {
+        width: "100%",
+        aspectRatio: 1,
+        maxHeight: "45%",
         borderRadius: 12,
         overflow: "hidden",
         backgroundColor: "#111",
-        height: 0.5 * SCREEN_HEIGHT,
-        marginBottom: 16,
+        alignSelf: "center",
     },
     artImage: {
         width: "100%",
@@ -64,141 +53,117 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        marginBottom: 8,
+        marginVertical: 10, 
     },
     titleCenter: {
         alignItems: "center",
         justifyContent: "center",
         flex: 1,
+        paddingHorizontal: 10,
     },
     songTitle: {
         color: "#fff",
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: "700",
+        textAlign: "center",
     },
     songSubtitle: {
         color: "rgba(255, 255, 255, 0.7)",
-        marginTop: 2,
-        fontSize: 12,
+        marginTop: 4,
+        fontSize: 14,
+        textAlign: "center",
     },
 
-    /* TRANSPORT & ACTIONS */
     actionRow: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        marginTop: 6,
-        marginBottom: 10,
     },
     smallIconBtn: {
-        padding: 8,
+        padding: 10,
         borderRadius: 999,
         backgroundColor: "transparent",
     },
     transportRow: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 22 as any,
+        justifyContent: "center",
+        gap: 20, 
     },
     playBtn: {
-        width: 46,
-        height: 46,
-        borderRadius: 23,
+        width: 60, 
+        height: 60,
+        borderRadius: 30,
         backgroundColor: LAVENDER,
         alignItems: "center",
         justifyContent: "center",
-        marginHorizontal: 6,
-    },
-    miniProgressRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-    },
-    progressTrack: {
-        flex: 1,
-        height: 14,
-        backgroundColor: "#E8DEF8",
-        borderRadius: 999,
-        overflow: "hidden",
-    },
-    progressFill: {
-        height: "100%",
-        backgroundColor: "#6750A4",
-        borderRadius: 999,
-    },
-    miniDivider: {
-        width: 8,
-        height: 26,
-        borderRadius: 4,
-        backgroundColor: "rgba(255, 255, 255, 0.7)",
         marginHorizontal: 10,
+        elevation: 5,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
     },
 
     /* SLIDERS */
     slidersBlock: {
-        marginTop: 6,
-        marginBottom: 16,
+        justifyContent: 'flex-end',
     },
     progressSliderContainer: {
-        marginBottom: 12, 
+        marginBottom: 5, 
         display: "flex",
         flexDirection: "row",
+        alignItems: "center",
     },
     volumeIconContainer: {
-        width: 20,
-        height: 20,
+        width: 30,
+        height: 30,
         alignItems: "center",
         justifyContent: "center",
     },
     muteSlash: {
         position: 'absolute',
-        width: "120%",
+        width: "100%",
         height: 2,
         backgroundColor: "#EADDFF",
-        transform: [
-            { rotate: "-45deg" }
-        ]
+        transform: [{ rotate: "-45deg" }]
     },
     volumeSliderContainer: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 12,
-        marginBottom: 10,
+        gap: 10,
+        marginTop: 5,
     },
     slider: {
         flex: 1,
-        height: 30,
+        height: 40,
     },
     sliderContainer: {
         flex: 1,
-        height: 30,
+        height: 40,
+        marginHorizontal: 10,
     },
     sliderTrack: {
-        height: 8,
-        borderRadius: 4,
-        backgroundColor: '#E8DEF8',
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: 'rgba(232, 222, 248, 0.3)',
     },
     sliderMinTrack: {
-        height: 8,
-        borderRadius: 4,
-        backgroundColor: '#6750A4',
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: '#EADDFF',
     },
     sliderThumb: {
-        width: 6,
-        height: 16,
-        borderRadius: 8,
+        width: 12,
+        height: 12,
+        borderRadius: 6,
         backgroundColor: '#FFFFFF',
-    },
-    timeRow: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginTop: -8,
     },
     timeText: {
         color: "rgba(255, 255, 255, 0.7)",
         fontSize: 12,
-        width: "8%",
-        textAlignVertical: "center",
+        width: 40,
+        textAlign: "center",
     },
 });
 
