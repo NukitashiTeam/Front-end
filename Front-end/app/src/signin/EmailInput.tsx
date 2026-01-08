@@ -4,24 +4,22 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-   StatusBar,
-   Alert
+  Alert,
+  ActivityIndicator,
+  Modal
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter, useLocalSearchParams } from 'expo-router'; // nếu dùng Expo Router
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import Background from "../../../Components/background";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import NextBackButton from "../../../Components/NextBackButton";
 import styles from '@/styles/style';
 import { signupStep2 } from '@/fetchAPI/signupAPI';
+
 export default function EmailScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // Thêm loading
   const { username, password } = useLocalSearchParams<{ username?: string; password?: string }>();
+
   const handleNext = async () => {
     if (!email.trim()) {
         Alert.alert("Lỗi", "Vui lòng nhập email");
@@ -32,10 +30,11 @@ export default function EmailScreen() {
         await signupStep2({ contact: email.trim() });
         router.push({
           pathname: "/src/signin/Otpsign",
-          params: { email: email.trim(),
+          params: { 
+            email: email.trim(),
             username: username,
             password: password
-           } 
+          } 
         });
     } catch (error: any) {
         Alert.alert("Gửi OTP thất bại", error.message);
@@ -43,38 +42,42 @@ export default function EmailScreen() {
         setLoading(false);
     }
   };
-  const insets = useSafeAreaInsets()
+
   return (
     <Background>
-          <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'flex-start', 
-            paddingTop:80, 
-            paddingHorizontal: 20,
-            width:"100%"
-          }}
-        >
-          {/* Tiêu đề */}
-          <Text style={styles.signintitle}>Enter Your Email</Text>
-
-          {/* Input Email */}
-          <TextInput
-                          style={[styles.textinput, { width: "90%"}]}
-                          placeholder="Enter your email"
-                          placeholderTextColor="#999"
-                          value={email}
-                          onChangeText={setEmail}
-                      />
+      <Modal visible={loading} transparent animationType="fade">
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#fff" />
         </View>
-          
-          
+      </Modal>
 
-          {/* Text Terms */}
-          <Text style={[styles.termtext,{color:"white"}]}>By creating an account, you agree to the Terms and Privacy Policy</Text>
-             <NextBackButton onNextPage={handleNext} onBackPage ={() => router.back()}/>
-          
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'flex-start', 
+          paddingTop:80, 
+          paddingHorizontal: 20,
+          width:"100%"
+        }}
+      >
+        <Text style={styles.signintitle}>Enter Your Email</Text>
+
+        <TextInput
+          style={[styles.textinput, { width: "90%"}]}
+          placeholder="Enter your email"
+          placeholderTextColor="#999"
+          value={email}
+          onChangeText={setEmail}
+        />
+      </View>
+
+      <Text style={[styles.termtext,{color:"white"}]}>By creating an account, you agree to the Terms and Privacy Policy</Text>
+      <NextBackButton 
+        onNextPage={handleNext} 
+        onBackPage={() => router.back()}
+        // loading={loading} 
+      />
     </Background>
   );
 }
