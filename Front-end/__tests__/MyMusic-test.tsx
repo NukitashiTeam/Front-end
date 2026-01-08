@@ -19,7 +19,9 @@ jest.mock("../fetchAPI/getAllPlaylist", () => ({
 jest.mock("../fetchAPI/loginAPI", () => ({
   refreshTokenUse: jest.fn(),
 }));
-
+jest.mock('@react-native-async-storage/async-storage', () => 
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock.js')
+);
 const mockGetAllPlaylist = require("../fetchAPI/getAllPlaylist").default;
 const mockRefreshTokenUse = require("../fetchAPI/loginAPI").refreshTokenUse;
 
@@ -109,20 +111,21 @@ describe("MyMusic", () => {
   });
 
   it("navigates to PlaylistSong when pressing a playlist item", async () => {
-    const mockPlaylists = [
-      { _id: "123", title: "Chillhop Essentials", songs: [{ image_url: "https://example.com/chill.jpg" }] },
-    ];
+  const mockPlaylists = [
+    { _id: "123", title: "Chillhop Essentials", songs: [{ image_url: "https://example.com/chill.jpg" }] },
+  ];
 
-    mockGetAllPlaylist.mockResolvedValue(mockPlaylists);
+  mockGetAllPlaylist.mockResolvedValue(mockPlaylists);
 
-    const { getByText } = render(<MyMusic />);
+  const { getByText } = render(<MyMusic />);
 
-    triggerFocus();
+  triggerFocus();
 
-    await waitFor(() => expect(getByText("Chillhop Essentials")).toBeTruthy());
+  await waitFor(() => getByText("Chillhop Essentials")); // Improved: throws if not found
 
-    fireEvent.press(getByText("Chillhop Essentials"));
+  fireEvent.press(getByText("Chillhop Essentials"));
 
+  await waitFor(() => {
     expect(mockNavigate).toHaveBeenCalledWith({
       pathname: "/PlaylistSong",
       params: {
@@ -130,6 +133,7 @@ describe("MyMusic", () => {
         title: "Chillhop Essentials",
         pic: "https://example.com/chill.jpg",
       },
+      });
     });
   });
 
