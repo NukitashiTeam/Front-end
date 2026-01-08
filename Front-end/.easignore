@@ -1,0 +1,17 @@
+# --- PHẦN QUAN TRỌNG NHẤT BẠN ĐANG THIẾU ---
+node_modules/
+.expo/
+dist/
+web-build/
+.env
+# ---------------------------------------------
+
+# 2. Them phan danh rieng cho EAS de giam dung luong
+.git/
+.gitignore
+.github/
+.vscode/
+
+# Bo thu muc native build neu dung prebuild
+android/
+ios/
