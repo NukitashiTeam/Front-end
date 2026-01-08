@@ -87,7 +87,7 @@ const Otpsign = () =>{
                 />
               ))}
             </View>
-            <Text style={styles.otpsubtitle}> We sent an SMS with a 4-digit Code to your phone number</Text>
+            <Text style={styles.otpsubtitle}> We sent an SMS with a 4-digit Code to your email</Text>
             <TouchableOpacity onPress={handleNext} style={styles.otpbutton}>
               <Text style={styles.buttonText}>Next</Text>
             </TouchableOpacity>
@@ -97,11 +97,11 @@ const Otpsign = () =>{
               </View>
               <Text style={{fontWeight: "600"}}>Resend OTP</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleResend} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
+            <TouchableOpacity onPress={() => router.push("/src/signin/EmailInput")} style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
               <View>
                 <Image source={require("../../../assets/images/Vector.png")} style={styles.icon} />
               </View>
-              <Text style={{fontWeight: "600"}}>Edit Phone number</Text>
+              <Text style={{fontWeight: "600"}}>Edit Email</Text>
             </TouchableOpacity>
           </View>
         </Background>
