@@ -235,10 +235,10 @@ describe('SignIn SignUp Process Components', () => {
     it('renders correctly', () => {
       const { getByText } = render(<Otpsign />);
       expect(getByText('Enter OTP')).toBeTruthy();
-      expect(getByText(' We sent an SMS with a 4-digit Code to your phone number')).toBeTruthy();
+      expect(getByText(' We sent an SMS with a 4-digit Code to your email')).toBeTruthy();
       expect(getByText('Next')).toBeTruthy();
       expect(getByText('Resend OTP')).toBeTruthy();
-      expect(getByText('Edit Phone number')).toBeTruthy();
+      expect(getByText('Edit Email')).toBeTruthy();
     });
 
     it('handles OTP input changes', () => {
